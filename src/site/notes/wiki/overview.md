@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/overview/","title":"Overview","tags":["gestione-consensi","sanita-piemonte","srs","exprivia"],"dg-note-properties":{"title":"Overview","aliases":["Overview"],"type":"overview","tags":["gestione-consensi","sanita-piemonte","srs","exprivia"],"created":"2026-05-05","updated":"2026-06-19","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03","2019-02-01-sfu-gestione-consensi-v1-7","2026-03-12-pile-tecnologiche-csi"]}}
+{"dg-publish":true,"permalink":"/wiki/overview/","title":"Overview","tags":["gestione-consensi","sanita-piemonte","srs","exprivia"],"dg-note-properties":{"title":"Overview","aliases":["Overview"],"type":"overview","tags":["gestione-consensi","sanita-piemonte","srs","exprivia"],"created":"2026-05-05","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03","2019-02-01-sfu-gestione-consensi-v1-7","2026-03-12-pile-tecnologiche-csi"]}}
 ---
 
 
@@ -15,14 +15,14 @@
 
 [[wiki/entities/exprivia\|Exprivia S.p.A.]] sta analizzando il rifacimento completo dell'applicativo [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]] della Regione Piemonte. Il sistema gestisce i consensi sanitari dei cittadini piemontesi (tre livelli: nazionale, regionale, aziendale) attraverso 17 casi d'uso, 2 processi batch (più il CDU-17 PULL) e 6 sistemi esterni.
 
-Il documento centrale è **CONSPREF-SRS-V1.0** (bozza v2), redatto da Marco Forneris/Exprivia il 02/03/2026, che specifica il sistema TO-BE con stack tecnologico Angular 19 + Spring Boot 3 + PostgreSQL 17 su infrastruttura cloud [[wiki/concepts/architettura-iaas\|Architettura IaaS]] (IaaS Nivola — ambienti DEV/TEST/PROD, provisioning CSI).
+Il documento centrale è **CONSPREF-SRS-V1.0**, redatto da Marco Forneris/Exprivia il 02/03/2026, che specifica il sistema TO-BE con stack tecnologico Angular 19 + Spring Boot 3 + PostgreSQL 17 su infrastruttura cloud [[wiki/concepts/architettura-iaas\|Architettura IaaS]] (IaaS Nivola, provisioning CSI). Ultima revisione recepita: **`CONSPREF-SRS-V1.0-revised_v5`** (07/2026 — GASP Shibboleth SP, sicurezza API Manager APIMBBONE, DBaaS DEV/pre-prod, toolchain ADA/Chef). In questa fase gli ambienti provisionati sono **DEV e pre-produzione** (PROD rinviato per costi); il modello IaaS resta valido per tutti gli ambienti.
 
 ---
 
 ## Stato dell'analisi
 
 **Giudizio:** alta qualità per un documento in bozza. Il lavoro è stato fatto bene. Le lacune principali sono:
-1. **CONSPREF-DMP non formalizzato** — rischio critico per Fase 6 migrazione PG9→PG17
+1. **CONSPREF-DMP non formalizzato** — rischio critico per Fase 6 migrazione PG9→PG17; redazione in carico a **CSI Piemonte** (confermato 16/07/2026 — GOV-03 chiuso)
 2. ✅ ~~Protocollo GASP Salute (OIDC vs SAML2) — aperto, blocca CDU-01~~ → **SAML2 confermato** da CSI (verbale 11/06/2026) — CDU-01 può procedere alla progettazione
 3. **OpenAPI CDU-15/16** — [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]]; 5 TBD da confermare con CSI prima di condividere con [[wiki/concepts/sistemi-esterni-integrati\|SIA ASR]]
 
@@ -47,11 +47,11 @@ Spring Boot → AURA (SOAP), Deleghe (SOAP), UNP (REST), SIA-ASR (SOAP+REST)
 5 stati: NON_ESPRESSO → ATTIVO/NEGATO → SCADUTO/ANNULLATO. No sovrascrittura. Notifica asincrona via BATCH-01 ogni 5 minuti.
 
 ### Migrazione PostgreSQL 9 → 17
-8 major release di salto. Strategia dump/restore. CONSPREF-DMP da redigere. Rischi documentati: autenticazione (md5→scram), tipi deprecati, comportamento timestamp.
+8 major release di salto. Strategia dump/restore. CONSPREF-DMP da redigere (in carico a CSI Piemonte, 16/07/2026). Rischi documentati: autenticazione (md5→scram), tipi deprecati, comportamento timestamp.
 
 ### Sicurezza
-**AS-IS:** sicurezza applicativa Spring Security diretta (no API Gateway esterno). **TO-BE (nuovi fruitori):** doppia esposizione — certificati firmati (AS-IS invariato) + **API Manager CSI Piemonte** con token JWS (verbale 11/06/2026). Credenziali gestite lato infrastruttura IaaS CSI. OWASP Top 10. CF mascherato nei log.
-Per CDU-15/16 (servizi REST verso SIA ASR): OAuth2 Client Credentials + JWT, isolamento per ente via tabella `cons_t_client_ente` + filter custom + WHERE clause repository (difesa a 3 livelli). Dettaglio: [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]].
+**AS-IS:** sicurezza applicativa Spring Security diretta (no API Gateway esterno). **TO-BE (nuovi fruitori):** doppia esposizione — certificati firmati (AS-IS invariato) + **API Manager CSI Piemonte (APIMBBONE)** (verbale 11/06/2026; modello confermato 07/2026). Credenziali gestite lato infrastruttura IaaS CSI. OWASP Top 10. CF mascherato nei log.
+Per CDU-15/16/17 (servizi REST verso SIA ASR): token **OAuth2 `client_credentials` emesso e validato dall'API Manager APIMBBONE** (Key Manager + Gateway; rate limiting a carico APIM, non più `bucket4j`/JWKS lato backend). Resta a nostro carico l'isolamento per ente via tabella `cons_t_client_ente` + filter custom + WHERE clause repository, e la produzione dello **swagger** per la sottoscrizione. Dettaglio: [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]].
 
 ---
 
@@ -86,4 +86,5 @@ Per CDU-15/16 (servizi REST verso SIA ASR): OAuth2 Client Credentials + JWT, iso
 - **2026-05-14** — **Tracker unificato punti aperti CSI** ([[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]]): 38 punti consolidati da 8 pagine, raggruppati per area (Identità, Sicurezza CDU-15/16, Pull CDU-17, OpenAPI, Batch, Integrazioni, Infra, Gov) e prioritizzati per sprint. 10 punti Giorno 1 / Sprint 0 critico. Corpus 31→32 pagine.
 - **2026-05-14** — **Lint wiki:** zero dead-links, zero orfani. Fix: rinomina page "Pile Tecnologiche CSI Piemonte" (era "(marzo 2026)") — chiude 6 riferimenti dead. Aggiornati frontmatter `related` in source SRS-v1-revised (3 link). Q&A CSI #N nel checklist convertiti in alias verso [[wiki/sources/2026-03-02-domande-srs-csi-v02\|Domande SRS Consensi — Revisione CSI V02]]. Rimosso duplicato Concept/Source nell'index. Corpus ricalibrato 32→31 (errore di conteggio precedente).
 - **2026-06-17-18** — **Audit post-verbale 11/06/2026 (CSI/Exprivia):** 29 fix applicati. IaaS Nivola confermato per tutti gli ambienti DEV/TEST/PROD — superati tutti i riferimenti ECaaS/Kubernetes (ADR-002 → superseded). GASP Salute SAML2 confermato (ID-01 chiuso; CDU-01 può procedere). Sicurezza: doppia esposizione AS-IS (certificati) + TO-BE (API Manager CSI + JWS) per nuovi fruitori. Batch manutenzione ASR documentato. Gestione Deleghe via API-Piemonte/`getDelegantiService` formalizzata.
+- **2026-07-13** — **Recepimento risposte CSI (email 07/2026), 4 punti:** (1) **GASP** — metadata Service Provider ricevuti; integrazione via **Shibboleth SP** (non `spring-security-saml2`). (2) **Sicurezza** — token servizi SIA gestito dall'**API Manager CSI (APIMBBONE)** OAuth2 `client_credentials` (Key Manager + Gateway); rate limiting a carico APIM; **swagger** prerequisito; superati Authorization Server/JWKS/`bucket4j`/"token JWS". (3) **Database** — provisioning DBaaS **DEV + pre-prod** (PROD rinviato); ribaltamento dati da **TEST PG 9.6** su DEV. (4) **IaaS** — toolchain **GitLab/Jenkins/SonarQube/Artifactory/ADA-Chef/ASGARD**; deploy via **ADA/Chef** (no Helm/K8s); residui: ingress/TLS + segreti. Prodotto deliverable **`CONSPREF-SRS-V1.0-revised_v5`** (.md/.docx) con S-01…S-04 applicate. Concept aggiornati: gasp-salute, sicurezza-cdu-15-16, architettura-iaas, migrazione-postgres, stack-tecnologico; tracker INF/SEC/ID; overview.
 

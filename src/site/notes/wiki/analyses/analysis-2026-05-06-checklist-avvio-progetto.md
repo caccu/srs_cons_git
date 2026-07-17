@@ -109,7 +109,7 @@ Punti validati dalla Q&A CSI V02 o esplicitamente documentati nell'SRS e negli a
 
 | #   | Deliverable                                                                         | Responsabile             | Scadenza   | Note                                                               |
 | --- | ----------------------------------------------------------------------------------- | ------------------------ | ---------- | ------------------------------------------------------------------ |
-| C1  | **CONSPREF-DMP bozza v1** — Data Migration Plan PG9→PG17                            | Da assegnare formalmente | Sprint 0   | Senza questo, Fase 6 migrazione a rischio slittamento              |
+| C1  | **CONSPREF-DMP bozza v1** — Data Migration Plan PG9→PG17                            | ✅ **CSI Piemonte** (confermato 16/07/2026 — GOV-03 chiuso) | Sprint 0   | Senza questo, Fase 6 migrazione a rischio slittamento              |
 | C2  | **Specifica OpenAPI 3.x CDU-15/16** — API stato consensi + configurazione per SIA   | Da assegnare             | Sprint 1-2 | **Non rimandare a Sprint 6** — le ASR devono recepirla in anticipo |
 | C3  | **Audit DDL PG9** — `\d` su ogni tabella AS-IS su DB reale, focus `cons_s_consenso` | Team database            | Sprint 0   | Verificare struttura fisica vs DDL atteso TO-BE                    |
 
@@ -124,7 +124,7 @@ Punti validati dalla Q&A CSI V02 o esplicitamente documentati nell'SRS e negli a
 | R3  | BATCH-01 usa operazione WSDL sbagliata (SRV-01 vs SRV-03)                                                            | Media       | Critico  | B10 — conferma scritta da CSI prima di implementare    |
 | R4  | Semantica SCADUTO AS-IS ≠ TO-BE — SIA ASR non allineati                                                              | Media       | Alto     | B11 + C2 — documentare in OpenAPI + verificare con ASR |
 | R5  | `cons_s_consenso` AS-IS struttura incompatibile TO-BE                                                                | Media       | Alto     | C3 — audit DDL Sprint 0                                |
-| R6  | DMP non formalizzato → blocco Fase 6                                                                                 | Alta        | Alto     | C1 — assegnare responsabile subito                     |
+| R6  | DMP non formalizzato → blocco Fase 6                                                                                 | Alta        | Alto     | C1 — responsabile confermato (CSI, 16/07/2026); sollecitare bozza v1 |
 | R7  | ✅ OpenAPI CDU-15/16 — [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]] Sprint 0; 5 TBD CSI da chiudere | Alta        | Moderato | Condividere con ASR dopo conferma TBD Sprint 1-2       |
 
 ---
@@ -138,7 +138,7 @@ Ordine di priorità per il kick-off:
 3. **Richiedere WSDL AURA + Gestione Deleghe** (B5/B6)
 4. **Richiedere accesso automation skeleton + repo QUASAR** (B4/B8)
 5. **Richiedere conferma scritta operazione WSDL BATCH-01** (B10)
-6. **Assegnare responsabile interno CONSPREF-DMP** (C1)
+6. ~~Assegnare responsabile CONSPREF-DMP~~ ✅ (C1 — CSI Piemonte, confermato 16/07/2026)
 7. ✅ **OpenAPI CDU-15/16 v0.1-DRAFT prodotta** — portare a Sprint 0, chiudere 5 TBD con CSI, condividere v0.2 con ASR entro Sprint 2
 8. **Avviare audit DDL PG9** (C3) — accesso DB AS-IS necessario
 

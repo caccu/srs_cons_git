@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati/","title":"Punti Aperti — Spiegati in Modo Semplice","tags":["punti-aperti","csi-piemonte","guida-semplice","sprint-0","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti — Spiegati in Modo Semplice","type":"analysis","tags":["punti-aperti","csi-piemonte","guida-semplice","sprint-0","da-chiedere"],"created":"2026-05-27","updated":"2026-06-18","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[analysis-2026-05-14-punti-aperti-csi|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]]","[[analysis-2026-05-06-checklist-avvio-progetto|Checklist Avvio Progetto — Gestione Consensi]]","[[gasp-salute|GASP Salute]]","[[batch-processes|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[sicurezza-cdu-15-16|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]"]}}
+{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati/","title":"Punti Aperti — Spiegati in Modo Semplice","tags":["punti-aperti","csi-piemonte","guida-semplice","sprint-0","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti — Spiegati in Modo Semplice","type":"analysis","tags":["punti-aperti","csi-piemonte","guida-semplice","sprint-0","da-chiedere"],"created":"2026-05-27","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[analysis-2026-05-14-punti-aperti-csi|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]]","[[analysis-2026-05-06-checklist-avvio-progetto|Checklist Avvio Progetto — Gestione Consensi]]","[[gasp-salute|GASP Salute]]","[[batch-processes|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[sicurezza-cdu-15-16|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]"]}}
 ---
 
 
@@ -13,7 +13,7 @@ Versione "in parole povere" del [[wiki/analyses/analysis-2026-05-14-punti-aperti
 
 ## ✅ Già chiusi o recepiti (non più da chiedere)
 
-- **Login cittadini/operatori (GASP Salute):** protocollo confermato **SAML2** (verbale 11/06/2026). Resta solo da farsi dare i metadata/endpoint (vedi sotto).
+- **Login cittadini/operatori (GASP Salute):** ✅ protocollo **SAML2** confermato + **metadata ricevuti** (07/2026, ambiente TEST/preprod). L'integrazione è tramite un **Shibboleth SP** del CSI (non codice SAML nostro). Resta solo da censire il SP con il modulo di federazione.
 - **Chi crea lo scheletro del progetto:** lo fa **Exprivia** (ambiente IaaS, non ECaaS), con confronto sul POM con CSI.
 - **Due notificatori distinti:** nel documento ora è chiaro — *Notificatore di Deleghe* per la conferma di rilascio, *UNP* per annullamenti e notifiche generiche.
 - **Diagramma dell'architettura:** aggiornato (tolto l'API Gateway dal percorso interno, infrastruttura IaaS, SIA 1‑a‑n, aggiunti Snapshot Service/CDU‑17).
@@ -36,20 +36,20 @@ Versione "in parole povere" del [[wiki/analyses/analysis-2026-05-14-punti-aperti
 
 ## 2. Bloccanti — da chiarire subito (Sprint 0)
 
-### 🔴 Metadata di GASP Salute (ID-01)
-**Cosa significa:** il protocollo è SAML2; per integrarlo servono i metadata XML dell'Identity Provider e gli indirizzi (endpoint). **Come si chiude:** CSI consegna metadata + endpoint di GASP.
+### ✅ Metadata di GASP Salute (ID-01) — RICEVUTI
+**Cosa significa:** protocollo SAML2; per integrarlo servivano i metadata del Service Provider e gli indirizzi. **Stato:** ✅ CSI ha fornito i metadata (ambiente TEST/preprod, 07/2026). L'autenticazione passa da un **Shibboleth SP** del CSI (host `tst-consprefbo-spid.isan.csi.it`, IdP GASPRP_SALUTE, livelli LIV1/2/3). **Resta:** compilare il modulo di federazione del SP e inviarlo a CSI.
 
-### 🔴 Server che rilascia i token e come è firmato (SEC-01 / SEC-02 / SEC-05)
-**Cosa significa:** i sistemi esterni che chiamano le nostre API ottengono prima un token da un "Authorization Server" di CSI. Ci servono: l'indirizzo (test/prod), l'algoritmo di firma del token, l'URL per scaricare le chiavi (JWKS) e l'elenco dei "permessi" (scope: `consensi:read`, `consensi:snapshot`). **Come si chiude:** CSI comunica URL, algoritmo, JWKS e scope.
+### ✅ Server che rilascia i token (SEC-01 / SEC-02 / SEC-05) — CHIARITO
+**Cosa significa:** i sistemi esterni che chiamano le nostre API ottengono prima un token. **Stato (07/2026):** il token **non** lo gestiamo noi né un server a sé: lo rilascia e valida l'**API Manager del CSI (APIMBBONE)** in OAuth2 (client_credentials). Le nostre API stanno **dietro il gateway** dell'API Manager, che fa anche il rate limiting. **Resta da fare da parte nostra:** produrre lo **swagger (OpenAPI)** dei servizi (serve per sottoscrivere l'API sull'API Manager); e concordare quali dati il gateway ci passa per capire "quale ente" sta chiamando. L'accreditamento allo Store di test passa dal referente CSI (rete interna/VPN).
 
-### 🔴 Database DEV e PROD (INF-01 / INF-02)
-**Cosa significa:** il database lo fornisce CSI su Nivola tramite richiesta formale ("scheda di provisioning"), una per sviluppo e una per produzione. Tempi lunghi: meglio chiederlo presto. **Come si chiude:** Exprivia invia le schede; CSI/Nivola crea le istanze PostgreSQL 17.
+### 🟠 Database DEV e pre-prod (INF-01 / INF-02) — in corso
+**Cosa significa:** il database lo fornisce CSI su Nivola. **Stato (07/2026):** provisioning **in corso**; per contenere i costi si creano **solo DEV e pre-prod** (la produzione più avanti). Sul DB di **DEV** ci verrà caricato un **ribaltamento dei dati** oggi presenti sul DB di **TEST (PostgreSQL 9.6)** — utile per lavorare con dati reali e per provare la migrazione a PostgreSQL 17. **Resta:** completamento del provisioning.
 
-### 🔴 Dettagli dell'ambiente IaaS (INF-05)
-**Cosa significa:** abbiamo deciso che l'ambiente è IaaS (non ECaaS/Kubernetes). Restano da definire i dettagli pratici: come si rilascia l'applicazione, ingress/TLS, dove si tengono i segreti, la pipeline CI/CD, e quale "pila" CSI usare (oggi quelle di riferimento hanno l'etichetta "k8s", legata al vecchio modello). **Come si chiude:** CSI indica il modello operativo IaaS e la pila di riferimento.
+### 🟠 Dettagli dell'ambiente IaaS (INF-05) — in gran parte chiariti
+**Cosa significa:** l'ambiente è IaaS (non ECaaS/Kubernetes). **Stato (07/2026, doc `ElencoUrlTools`):** il modello operativo è ora chiaro — il codice sta su **GitLab**, build e controlli qualità con **Jenkins + SonarQube**, artefatti su **Artifactory**, e il **rilascio avviene con automation Chef tramite ADA** (non Helm/GitOps/Kubernetes); la consegna al committente passa da **ASGARD**. **Restano da definire solo due cose:** come si gestisce **ingress/TLS** e dove/come si tengono i **segreti applicativi**. **Come si chiude:** CSI precisa questi due dettagli.
 
-### 🔴 Responsabile della migrazione dati (GOV-03)
-**Cosa significa:** si passa da PostgreSQL 9 a 17; serve un piano scritto (CONSPREF-DMP) e qualcuno lato CSI che lo guidi. **Come si chiude:** CSI nomina il referente.
+### ✅ Responsabile della migrazione dati (GOV-03) — CHIUSO 16/07/2026
+**Cosa significa:** si passa da PostgreSQL 9 a 17; serve un piano scritto (CONSPREF-DMP) e qualcuno lato CSI che lo guidi. **Stato:** la redazione del CONSPREF-DMP è **in carico a CSI Piemonte**. Resta da produrre la bozza v1 (Sprint 0).
 
 ---
 

@@ -9,6 +9,8 @@
 
 `accepted` — risposta tecnica autoritativa MF59-62R58 (ex commento TR30/TR58) sulla revisione SRS bozza v3.
 
+> ✅ **Aggiornamento 07/2026 (APIMBBONE):** con l'API Manager CSI confermato, il **Livello A** (emissione/validazione token, JWKS, Authorization Server) e il **rate limit `bucket4j`** sono **assorbiti dall'APIM** (Key Manager + Gateway + Traffic Manager). Restano pienamente validi e a nostro carico i **Livelli B e C** (mapping `cons_t_client_ente` + `WHERE codice_ente`) e l'audit log. Prerequisito nuovo: **swagger (OpenAPI)** per la sottoscrizione. Modello autoritativo aggiornato: [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4 e §8 (versione recepita in SRS v5).
+
 ## Context
 
 Il cliente CSI/Regione ha posto il quesito **TR30/TR58**:

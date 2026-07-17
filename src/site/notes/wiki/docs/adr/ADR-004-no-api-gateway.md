@@ -7,7 +7,9 @@
 
 ## Status
 
-`partially-superseded` — **verbale CSI/Exprivia 11/06/2026**: valido per fruitori **AS-IS esistenti** (sicurezza Spring Security applicativa). Per **nuovi fruitori TO-BE**: doppia esposizione tramite **API Manager CSI Piemonte** (token JWS). Vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16]] §1 per modello aggiornato.
+`partially-superseded` — **verbale CSI/Exprivia 11/06/2026**: valido per fruitori **AS-IS esistenti** (sicurezza Spring Security applicativa). Per **nuovi fruitori TO-BE**: doppia esposizione tramite **API Manager CSI Piemonte**. Vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16]] §1 per modello aggiornato.
+
+> ✅ **Aggiornamento 07/2026 (APIMBBONE):** per i fruitori TO-BE il token è **OAuth2 `client_credentials`** rilasciato/validato dal **Key Manager APIMBBONE** (non "token JWS" né firma lato nostro) e i servizi passano dall'**API Gateway** APIM, che fa anche **rate limiting/throttling** (quindi `bucket4j`/`resilience4j` **non** più necessari per i SIA). Restano applicativi solo l'isolamento per ente e l'audit log. La tabella "Funzioni APIM ripiegate nell'app" sotto vale per i **soli fruitori AS-IS**.
 
 ## Context
 

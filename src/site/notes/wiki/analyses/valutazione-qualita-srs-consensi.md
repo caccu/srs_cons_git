@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/analyses/valutazione-qualita-srs-consensi/","title":"Valutazione Qualità SRS — Gestione Consensi","tags":["valutazione","qualita","srs","analisi-critica","gestione-consensi"],"dg-note-properties":{"title":"Valutazione Qualità SRS — Gestione Consensi","aliases":["Valutazione Qualità SRS — Gestione Consensi"],"type":"analysis","tags":["valutazione","qualita","srs","analisi-critica","gestione-consensi"],"created":"2026-05-05","updated":"2026-06-17","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03","2019-02-01-sfu-gestione-consensi-v1-7"],"related":["[[Gestione Consensi - Applicativo]]","[[ciclo-vita-consenso|Ciclo di Vita del Consenso]]","[[Architettura IaaS]]","[[exprivia|Exprivia S.p.A.]]","[[CSI Piemonte]]","[[analysis-2026-05-14-risposte-mf-srs-v3|Risposte MF — Revisione SRS v3 lavorazione (69 commenti)]]"]}}
+{"dg-publish":true,"permalink":"/wiki/analyses/valutazione-qualita-srs-consensi/","title":"Valutazione Qualità SRS — Gestione Consensi","tags":["valutazione","qualita","srs","analisi-critica","gestione-consensi"],"dg-note-properties":{"title":"Valutazione Qualità SRS — Gestione Consensi","aliases":["Valutazione Qualità SRS — Gestione Consensi"],"type":"analysis","tags":["valutazione","qualita","srs","analisi-critica","gestione-consensi"],"created":"2026-05-05","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03","2019-02-01-sfu-gestione-consensi-v1-7"],"related":["[[Gestione Consensi - Applicativo]]","[[ciclo-vita-consenso|Ciclo di Vita del Consenso]]","[[Architettura IaaS]]","[[exprivia|Exprivia S.p.A.]]","[[CSI Piemonte]]","[[analysis-2026-05-14-risposte-mf-srs-v3|Risposte MF — Revisione SRS v3 lavorazione (69 commenti)]]"]}}
 ---
 
 
@@ -62,7 +62,7 @@ L'AS-IS aveva 6 CDU (2019). Il TO-BE ne specifica 16, con espansione logica e be
 ### RISCHIO CRITICO 1 — CONSPREF-DMP non formalizzato
 **Problema:** Il Data Migration Plan PG9→PG17 non esiste ancora come documento formale.
 **Impatto:** Sprint 0 include la bozza v1, ma se il provisioning DBaaS è lento (alta latenza), la Fase 6 Migrazione (sett. 13-16) rischia di slittare.
-**Azione raccomandata:** Avviare la redazione DMP in parallelo all'SRS. Assegnare responsabile formale al team.
+**Azione raccomandata:** Avviare la redazione DMP in parallelo all'SRS. ✅ Responsabile redazione confermato 16/07/2026: **CSI Piemonte** (GOV-03 chiuso); resta la produzione della bozza v1.
 
 ### ✅ RISCHIO CRITICO 2 — Protocollo GASP Salute — CHIUSO (verbale 11/06/2026)
 **Protocollo confermato: SAML2.** Dipendenza Spring: `spring-security-saml2-service-provider`.
@@ -140,7 +140,7 @@ Per analisi dettagliata del delta vedi [[wiki/analyses/analysis-gap-as-is-to-be\
 
 1. Chi è il referente formale CSI per GASP Salute? Quando è disponibile la documentazione tecnica?
 2. La specifica OpenAPI CDU-15/16 va condivisa con i SIA ASR: quali ASR sono coinvolte e chi è il referente?
-3. Il CONSPREF-DMP: chi è il responsabile formale in Exprivia?
+3. ~~Il CONSPREF-DMP: chi è il responsabile formale?~~ ✅ Chiuso 16/07/2026: redazione in carico a CSI Piemonte (GOV-03)
 4. I [PROPOSTA] nell'SRS (es. ALG02 BATCH-01 gestione tentativi, CDU-06 PDF) sono stati condivisi con CSI? Qual è la loro risposta?
 5. Il documento `Mermaid.txt` contiene il diagramma architetturale. È la versione concordata con CSI o è una proposta?
 

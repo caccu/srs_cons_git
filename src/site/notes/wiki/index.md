@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/index/","title":"Wiki Index","tags":["gardenEntry"],"dg-note-properties":{"title":"Wiki Index","aliases":["Wiki Index"],"type":"index","updated":"2026-06-19"}}
+{"dg-publish":true,"permalink":"/wiki/index/","title":"Wiki Index","tags":["gardenEntry"],"dg-note-properties":{"title":"Wiki Index","aliases":["Wiki Index"],"type":"index","updated":"2026-07-16"}}
 ---
 
 
@@ -14,7 +14,7 @@ Master catalogo di tutte le pagine. Aggiornato.
 | Rischio                                                                             | Impatto                                              | Azione                                                                                        |
 | ----------------------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | ~~GASP Salute: OIDC vs SAML2~~ — ✅ **CHIUSO** SAML2 confermato (verbale 11/06/2026) | CDU-01 può procedere alla progettazione              | —                                                                                             |
-| [[wiki/analyses/conspref-dmp-tracker\|conspref-dmp-tracker]] non formalizzato                                           | Slittamento Fase 6 migrazione PG9→PG17               | Assegnare responsabile formale                                                                |
+| [[wiki/analyses/conspref-dmp-tracker\|conspref-dmp-tracker]] non formalizzato                                           | Slittamento Fase 6 migrazione PG9→PG17               | ✅ Responsabile: **CSI Piemonte** (16/07/2026 — GOV-03 chiuso); sollecitare bozza v1 Sprint 0 |
 | OpenAPI CDU-15/16 — [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]], 5 TBD aperti con CSI | Blocca go-live integrazione SIA ASR                  | Condividere bozza con ASR, confermare 5 TBD Sprint 1-2                                        |
 | BATCH-01: SRV-01 vs SRV-03?                                                         | Errore implementativo WSDL                           | Conferma scritta da CSI                                                                       |
 | SCADUTO AS-IS ≠ TO-BE                                                               | Rottura integrazione SIA ASR                         | Documentare diff in OpenAPI                                                                   |
@@ -38,7 +38,7 @@ Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazion
 
 - [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]] — Sistema centrale consensi sanitari Regione Piemonte: 3 livelli, 4 profili, 17 CDU, 2 batch (BATCH-03 rimosso → CDU-17 PULL)
 - [[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]] — Macchina a stati: NON_ESPRESSO → ATTIVO/NEGATO → SCADUTO/ANNULLATO; no sovrascrittura
-- [[wiki/concepts/architettura-iaas\|Architettura IaaS]] — Infrastruttura IaaS Nivola CSI (non ECaaS/Kubernetes) — DEV/TEST/PROD, provisioning CSI (verbale 11/06/2026)
+- [[wiki/concepts/architettura-iaas\|Architettura IaaS]] — Infrastruttura IaaS Nivola CSI (non ECaaS/Kubernetes), provisioning CSI; deploy ADA/Chef; 07/2026: ambienti DEV + pre-prod (PROD in fase successiva)
 - [[wiki/concepts/gasp-salute\|GASP Salute]] — Identity Provider federato SPID/CIE; protocollo **SAML2** confermato (verbale 11/06/2026)
 - [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] — Notifica/scadenza/allineamento asincrono; ⚠️ BATCH-01 ambiguità WSDL SRV-01 vs SRV-03
 - [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] — AURA, SIA ASR, Notificatore UNP, Gestione Deleghe, PUA/Configuratore; stato approvvigionamento Sprint 0
@@ -93,6 +93,7 @@ Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazion
 - [[wiki/analyses/analysis-2026-06-10-riassunto-presentazione-cliente\|Riassunto Esecutivo — Presentazione Progetto Gestione Consensi]] — Sintesi completa per presentazione cliente: contesto, funzionalità, architettura, sicurezza, batch, migrazione, pianificazione, ADR, punti aperti
 - [[wiki/analyses/conspref-dmp-tracker\|CONSPREF-DMP — Tracker Piano Migrazione Dati]] — Tracker stato Data Migration Plan PG9→PG17; 7 sezioni con owner.
 - [[wiki/analyses/proposte-allineamento-SRS-vs-wiki\|Proposte di allineamento SRS ↔ Wiki]] — esiti audit A/B/C, deliverable SRS allineato 2026-06-18 (APPLICATO)
+- [[wiki/analyses/analysis-2026-07-15-allineamento-srs-wiki\|Allineamento SRS v1.0 revised v5 → Wiki (2026-07-15)]] — Audit workflow SRS v5 vs wiki: 16 incongruenze (1 critica Manutenzione ASR assente, 4 alte "no API Gateway"/residuo GASP/Trident, 7 medie, 4 basse) con correzioni da applicare al DOCX
 
 ---
 

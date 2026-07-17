@@ -7,7 +7,7 @@
 
 ## Status
 
-`accepted` — strategia confermata in appunti e checklist; CONSPREF-DMP formale **non ancora prodotto** (rischio aperto).
+`accepted` — strategia confermata in appunti e checklist; CONSPREF-DMP formale **non ancora prodotto** (rischio aperto); redazione in carico a **CSI Piemonte** (confermato 16/07/2026 — GOV-03 chiuso).
 
 ## Context
 
@@ -67,7 +67,7 @@ Finestra cutover stimata: 21 giorni in Fase 6 (Sprint 9). Vincolata da volumi re
 
 ## Open issues
 
-- GOV-03: responsabile formale lato CSI per migrazione (tracker [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §8)
+- ~~GOV-03: responsabile formale lato CSI per migrazione~~ ✅ chiuso 16/07/2026 — CSI Piemonte (tracker [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §8)
 - D2 [[wiki/analyses/conspref-dmp-tracker\|CONSPREF-DMP]]: valutare logical replication come alternativa per ridurre downtime
 - D3: tipi deprecati (`money`, `xml`) — conversione target dipende da audit DDL Sprint 0
 - TECH-01: audit DDL PG9 bloccato da accessi DB

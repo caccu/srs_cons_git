@@ -105,7 +105,7 @@ ADR con open issues:
 - **ADR-006**: PULL-01÷07 (variante race, canale notifica, scope, page_size, conferma, deprecation)
 - **ADR-007**: BAT-01 (WSDL SRV-01 vs SRV-03)
 - **ADR-010**: ID-01 (GASP Salute protocollo)
-- **ADR-013**: GOV-03 (responsabile CSI migrazione), TECH-01 (audit DDL PG9)
+- **ADR-013**: ~~GOV-03 (responsabile CSI migrazione)~~ ✅ chiuso 16/07/2026 (CSI Piemonte), TECH-01 (audit DDL PG9)
 - **ADR-016**: SC67 (logica INSERT storicizzazione BATCH-02), BAT-03 (comunicazione ASR cambio semantica)
 - **ADR-017**: INT-03 (acronimo LIS + spec integrazione)
 - **ADR-019**: GOV-02 (validazione `[PROPOSTA]` struttura PDF)

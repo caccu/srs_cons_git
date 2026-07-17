@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/alternativa-batch-03-pull/","title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"dg-note-properties":{"title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","aliases":["Alternativa BATCH-03 — PULL CDU-17 (centro stella)"],"type":"concept","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"created":"2026-05-14","updated":"2026-06-17","sources":["2026-03-02-conspref-srs-v1-revised"],"related":["[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/alternativa-batch-03-pull/","title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"dg-note-properties":{"title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","aliases":["Alternativa BATCH-03 — PULL CDU-17 (centro stella)"],"type":"concept","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"created":"2026-05-14","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised"],"related":["[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
 ---
 
 
@@ -127,7 +127,7 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
 
 **Identica a [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]**, nessuna modifica:
 
-- OAuth2 Client Credentials + JWT firmato dall'AS CSI Piemonte
+- OAuth2 Client Credentials — token **emesso e validato dall'API Manager CSI (APIMBBONE)**, non da un Authorization Server a sé (aggiornamento 07/2026, cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4)
 - Tabella `cons_t_client_ente` lega `client_id` → `codice_ente`
 - Filter `EnteAuthorizationFilter` rigetta con 403 ogni mismatch
 - Repository query forza `WHERE codice_ente = :authorizedEnte`
@@ -136,7 +136,7 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
 - `consensi:snapshot` — distinto da `consensi:read` per consentire concessione granulare
 - Motivo: snapshot è operazione "bulk" che può essere abilitata solo durante onboarding/allineamento, poi disattivata
 
-**Rate limit dedicato:** `bucket4j` con quota separata per `/snapshot` (es. 600 req/min) → impedisce che pull aggressivo di un SIA degradi le risposte CDU-15 real-time degli altri.
+**Rate limit dedicato:** quota separata per `/snapshot` (es. 600 req/min) configurata sull'**API Manager CSI (Traffic Manager APIM)** — non più `bucket4j` applicativo (07/2026) → impedisce che pull aggressivo di un SIA degradi le risposte CDU-15 real-time degli altri.
 
 ---
 

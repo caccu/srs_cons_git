@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-06-10-riassunto-presentazione-cliente/","title":"Riassunto Esecutivo — Presentazione Progetto Gestione Consensi","tags":["presentazione","riassunto","executive-summary","gestione-consensi","cliente"],"dg-note-properties":{"title":"Riassunto Esecutivo — Presentazione Progetto Gestione Consensi","aliases":["Riassunto Esecutivo — Presentazione Progetto Gestione Consensi"],"type":"analysis","tags":["presentazione","riassunto","executive-summary","gestione-consensi","cliente"],"created":"2026-06-10","updated":"2026-06-17","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03"],"related":["[[overview|Overview]]","[[gestione-consensi-applicativo|Gestione Consensi - Applicativo]]","[[analysis-2026-05-14-punti-aperti-csi|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]","[[wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati\|Punti Aperti — Spiegati in Modo Semplice]]"]}}
+{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-06-10-riassunto-presentazione-cliente/","title":"Riassunto Esecutivo — Presentazione Progetto Gestione Consensi","tags":["presentazione","riassunto","executive-summary","gestione-consensi","cliente"],"dg-note-properties":{"title":"Riassunto Esecutivo — Presentazione Progetto Gestione Consensi","aliases":["Riassunto Esecutivo — Presentazione Progetto Gestione Consensi"],"type":"analysis","tags":["presentazione","riassunto","executive-summary","gestione-consensi","cliente"],"created":"2026-06-10","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-appunti-e-pianificazione","2026-03-02-domande-srs-csi-v02","2023-09-01-conspref-srs-01-v03"],"related":["[[overview|Overview]]","[[gestione-consensi-applicativo|Gestione Consensi - Applicativo]]","[[analysis-2026-05-14-punti-aperti-csi|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]","[[wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati\|Punti Aperti — Spiegati in Modo Semplice]]"]}}
 ---
 
 
@@ -120,7 +120,7 @@ Due scelte architetturali da evidenziare:
 
 Il database attuale è su PostgreSQL 9: il salto è di **8 versioni major**. Strategia scelta: **dump & restore logico** ([[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013]], [[wiki/concepts/migrazione-postgres-9-17\|Migrazione PostgreSQL 9 → 17]]), con procedura di cutover completa e piano di rollback (istanza PG9 in standby per 48 ore).
 
-Rischi tecnici già censiti: cambio autenticazione (md5→scram), tipi deprecati (SERIAL), comportamento timestamp, sequenze orfane. Punto aperto: il **piano di migrazione formale (CONSPREF-DMP)** non è ancora stato formalizzato — serve un responsabile lato CSI.
+Rischi tecnici già censiti: cambio autenticazione (md5→scram), tipi deprecati (SERIAL), comportamento timestamp, sequenze orfane. Punto aperto: il **piano di migrazione formale (CONSPREF-DMP)** non è ancora stato formalizzato — redazione in carico a **CSI Piemonte** (confermato 16/07/2026).
 
 ---
 
@@ -171,7 +171,7 @@ Il tracker unificato ([[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punt
 | ✅ ~~GASP Salute: OIDC o SAML2?~~ | **CHIUSO** — SAML2 confermato (verbale 11/06/2026). Richiedere metadata XML IdP in Sprint 0. |
 | **Provisioning DBaaS Nivola (DEV e PROD)** | Senza database non parte lo Sprint 1 |
 | ✅ ~~Accesso automation CSI~~ | **CHIUSO** — Skeleton in carico a Exprivia (IaaS; verbale 11/06/2026) |
-| **CONSPREF-DMP senza responsabile** | Rischio slittamento della Fase 6 di migrazione |
+| ✅ ~~CONSPREF-DMP senza responsabile~~ | **CHIUSO** — redazione in carico a CSI Piemonte (16/07/2026); resta la bozza v1 (rischio slittamento Fase 6 finché non prodotta) |
 | **URL Authorization Server + algoritmo firma JWT** | Bloccano qualsiasi test di integrazione con i SIA |
 | **CDU-17: conferma modello PULL** | I SIA sanno fare chiamate REST attive? (PULL-08) Va scritta la specifica end-to-end (PULL-09) |
 | **OpenAPI CDU-15/16: 5 TBD** | Da confermare prima di condividere la specifica con le ASR |

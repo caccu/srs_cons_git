@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/sicurezza-cdu-15-16/","title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"dg-note-properties":{"title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","aliases":["Sicurezza CDU-15-16 — Modello Autorizzazione per Ente"],"type":"concept","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"created":"2026-05-14","updated":"2026-06-17","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[Gestione Consensi - Applicativo]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/sicurezza-cdu-15-16/","title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"dg-note-properties":{"title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","aliases":["Sicurezza CDU-15-16 — Modello Autorizzazione per Ente"],"type":"concept","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"created":"2026-05-14","updated":"2026-07-13","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[Gestione Consensi - Applicativo]]"]}}
 ---
 
 
@@ -22,12 +22,12 @@ Le richieste provenienti dalle ASR esistenti sono firmate tramite **certificato*
 
 ### 1.2 TO-BE — Doppia esposizione
 
-**Per nuovi fruitori esterni:** API esposte tramite **API Manager CSI Piemonte**; sicurezza demandata all'API Manager con **token JWS**.
+**Per nuovi fruitori esterni:** API esposte tramite **API Manager CSI Piemonte (APIMBBONE)**; sicurezza demandata all'API Manager con **token OAuth2 (`client_credentials`)** rilasciato dal Key Manager (cfr. §1.4 — non una firma JWS lato nostro).
 
 | Canale | Auth | Fruitori |
 |---|---|---|
 | Certificato (AS-IS) | Firma certificato X.509 — non ripudiabile | SIA ASR esistenti |
-| API Manager (TO-BE) | Token JWS via API Manager | Nuovi fruitori esterni |
+| API Manager (TO-BE) | Token OAuth2 (`client_credentials`) via API Manager APIMBBONE | Nuovi fruitori esterni |
 
 CSI Piemonte fornirà componente bridge tra API Manager e prodotto. Forneris abilitato come guest su "deleghe API" per consultare l'esempio.
 
@@ -42,7 +42,40 @@ Consumer (es. Telemedicina / Gestione Consensi)
 
 Gestione Consensi seguirà lo stesso schema: accreditamento sul portale API-Piemonte, chiamate instradate via API Manager. Vedi [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §Gestione Deleghe.
 
-> ⚠️ **Firma token JWS: punto ancora aperto.** L'immagine conferma la topologia (API-Piemonte come intermediario) ma non il meccanismo di firma del token. Da chiarire con CSI.
+> ✅ **Aggiornamento 07/2026 (doc `LG_APIMBBONE-APIStore_Sottoscrizione`):** il token è **OAuth2** (grant `client_credentials`) **rilasciato e gestito dal Key Manager dell'API Manager CSI (APIMBBONE)**; i servizi SIA (CDU-15/16/17) sono esposti **dietro l'API Gateway** dell'APIM. Non è quindi un Authorization Server a sé né una firma JWS da implementare lato nostro. Dettaglio nel §1.4.
+
+---
+
+### 1.4 API Manager CSI (APIMBBONE) — modello confermato (07/2026)
+
+Fonte: `LG_APIMBBONE-APIStore_Sottoscrizione_EXT_SI_V1.0.0` (guida per System Integrator esterni).
+
+Il token per i servizi REST verso i SIA è **rilasciato e gestito dall'API Manager CSI (APIMBBONE)**, non da un Authorization Server a sé né dal nostro backend. I servizi Gestione Consensi (CDU-15/16/17) sono **esposti dietro l'API Gateway** dell'APIM.
+
+**Componenti APIMBBONE:**
+- **API Store** — portale di accreditamento e sottoscrizione per i fruitori
+- **Publisher** — dove il provider pubblica l'API (endpoint backend, throttling)
+- **API Gateway** — proxy runtime: tutte le chiamate passano di qui; applica rate limiting/throttling e instrada al backend
+- **Key Manager** — rilascia/valida i token OAuth2 (verifica `client_id`/`client_secret`)
+- **Traffic Manager** — politiche di traffico in real time
+
+**OAuth2 — grant supportati:** `client_credentials` (usato dai SIA), `authorization_code`, `refresh_token`, `resource_owner_password`.
+
+**Flusso di onboarding del fruitore SIA:**
+1. Accreditamento allo **API Store** (SPID per aziende IT; CSI/fornitori con VPN via IdP "Unified Communication").
+2. Creazione **applicazione** (contenitore delle sottoscrizioni) → validazione admin → chiavi OAuth (`client_id`/`client_secret`).
+3. **Sottoscrizione** all'API — **richiede lo swagger (OpenAPI) del servizio**.
+4. Generazione **token** (`client_credentials`) alla token API.
+5. Invocazione dell'API **via gateway** con `Authorization: Bearer <token>`.
+
+**Store / endpoint (pattern):**
+- Store **test** `https://tst-api-<ente>-store.csi.it/` — **accessibile solo da rete interna CSI/VPN**; per i fruitori esterni le operazioni sono **mediate dal referente CSI**, che fornisce le chiavi OAuth. Gli **endpoint del gateway di test** (token + API) sono raggiungibili **da internet solo via https**.
+- Store **prod** `https://api-<ente>-store.csi.it/`.
+
+> **Implicazioni per il progetto:**
+> - Va **prodotto e consegnato lo swagger (OpenAPI) di CDU-15/16/17** per poter sottoscrivere l'API sull'APIM (prerequisito).
+> - Token e rate limiting/throttling sono **gestiti dall'APIM** → il backend può **non** validare il JWT via JWKS né implementare `bucket4j`; resta a noi l'**isolamento dei dati per ente**. Da definire con CSI **quali header/claim il gateway inoltra** al backend per mappare consumer → `codice_ente`.
+> - Conferma la **doppia esposizione** (§1.2): per i SIA/nuovi fruitori si passa dall'API Manager; per l'app interna Frontend→Backend resta l'integrazione diretta (ADR-004).
 
 ---
 
@@ -56,29 +89,32 @@ Decisione confermata da CSI ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Doma
 
 ### Implicazioni operative
 
-| Funzione tipica APIM | Chi la gestisce in TO-BE | Componente |
+> ⚠️ Tabella aggiornata al modello APIMBBONE confermato (07/2026): token e traffico sono gestiti dall'API Manager, non più dal backend (cfr. §1.4).
+
+| Funzione | Chi la gestisce (TO-BE, SIA) | Componente |
 |---|---|---|
-| Autenticazione (token validation) | Backend applicativo | Spring Security + nimbus-jose-jwt |
-| Autorizzazione granulare | Backend applicativo | Filter custom `EnteAuthorizationFilter` |
-| Rate limiting / throttling | Backend applicativo | `bucket4j` o `resilience4j-ratelimiter` |
-| TLS termination | Piattaforma | Layer rete IaaS CSI/Nivola |
+| Rilascio/validazione token OAuth2 | **API Manager (APIMBBONE)** | Key Manager APIM |
+| Rate limiting / throttling | **API Manager (APIMBBONE)** | Traffic Manager APIM |
+| Autorizzazione granulare **per ente** | Backend applicativo | Filter custom `EnteAuthorizationFilter` + `cons_t_client_ente` |
+| TLS termination | Piattaforma / APIM Gateway | Gateway APIM + layer rete IaaS CSI/Nivola |
 | WAF | Piattaforma | Layer di rete CSI/Nivola |
-| Audit log centralizzato | Backend applicativo | Logger applicativo strutturato JSON |
-| Quota per client | Backend applicativo | Tabella DB + filter |
+| Audit log applicativo | Backend applicativo | Logger applicativo strutturato JSON |
 
 ---
 
 ## 2. Flusso end-to-end (SIA ASR → Gestione Consensi)
 
+> Nota (07/2026): token rilasciato/validato dall'**API Manager APIMBBONE** (Key Manager + Gateway). Il backend riceve la richiesta **già autenticata dal gateway** e si concentra sull'isolamento per ente; la validazione JWT via JWKS lato backend potrebbe non essere necessaria (da confermare con CSI quali header/claim il gateway inoltra). Cfr. §1.4.
+
 ```
 [SIA ASR x]
    │ 1. POST /token  (grant_type=client_credentials, client_id, client_secret)
    ▼
-[Authorization Server CSI Piemonte]  ──► JWT firmato (claims: client_id, scope, exp, iss, aud)
+[API Manager APIMBBONE — Key Manager]  ──► access token OAuth2 (client_credentials)
    │
-   │ 2. GET /api/v1/...  +  Header: Authorization: Bearer <JWT>
+   │ 2. GET /api/v1/...  +  Header: Authorization: Bearer <token>
    ▼
-[Layer rete IaaS CSI/Nivola]  ──► TLS termination, instradamento al Service
+[API Gateway APIMBBONE]  ──► valida token, rate limiting/throttling, instrada al backend
    │
    ▼
 [Spring Boot Backend Gestione Consensi]
@@ -97,6 +133,12 @@ Decisione confermata da CSI ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Doma
 ```
 
 ---
+
+> ⚠️ **Inquadramento (07/2026) delle sezioni §3–§8.** Le sezioni seguenti descrivono il disegno di sicurezza **pre-APIM**. Con il modello **API Manager APIMBBONE confermato** (§1.4):
+> - **Emissione/validazione token** (ex Livello A, JWKS, Authorization Server) e **rate limiting** (ex `bucket4j`) sono **a carico dell'APIM** → i riferimenti a JWKS/`bucket4j`/Authorization Server qui sotto sono **superati** e mantenuti come storico.
+> - **Restano validi e a nostro carico** l'**isolamento per ente** (Livello B `cons_t_client_ente` + Livello C `WHERE codice_ente`) e l'**audit log applicativo**.
+> - Il backend riceverà dal **Gateway APIM** l'identità del consumer via header/claim (da concordare con CSI) da cui derivare il `codice_ente`.
+> - Il **testo per l'SRS** effettivamente recepito in `CONSPREF-SRS-V1.0-revised_v5` §6.16 è la versione **APIM** (vedi §8, riquadro aggiornato).
 
 ## 3. Isolamento dati per ente — difesa a 3 livelli
 
@@ -279,30 +321,34 @@ Codice fiscale **NON** loggato in chiaro (vedi [[wiki/analyses/valutazione-quali
 
 | # | Domanda | Blocco |
 |---|---|---|
-| Q1 | URL produzione/test Authorization Server CSI Piemonte | ⚠️ Sprint 0 |
-| Q2 | Algoritmo firma JWT (RS256? ES256?) + URL endpoint JWKS | ⚠️ Sprint 0 |
-| Q3 | Procedura onboarding nuovo SIA (chi crea `client_id`, chi popola mapping) | Sprint 1 |
+| Q1 | ~~URL produzione/test Authorization Server CSI~~ → **risolto:** token via API Manager APIMBBONE (Store test `tst-api-<ente>-store.csi.it`, gateway https). Resta: **quali header/claim il Gateway inoltra** al backend | ⚠️ Sprint 0 |
+| Q2 | ~~Algoritmo firma JWT + URL JWKS~~ → **non più a nostro carico:** token gestito dall'APIM (Key Manager). Prerequisito nostro: **produrre lo swagger (OpenAPI)** per la sottoscrizione | ⚠️ Sprint 0 |
+| Q3 | Procedura onboarding nuovo SIA (accreditamento Store, chi crea l'applicazione/chiavi OAuth, chi popola il mapping `cons_t_client_ente`) | Sprint 1 |
 | Q4 | TTL token raccomandato e politica refresh | Sprint 1 |
 | Q5 | Scope predefiniti CSI o liberi a definire dal progetto? | Sprint 1 |
 | Q6 | Politica revoca credenziali compromesse (blacklist? rotation?) | Sprint 2 |
 
 ---
 
-## 8. Testo proposto per inserimento in SRS §6.15 e §6.16
+## 8. Testo per SRS §6.15 e §6.16 — versione APIM (recepita in v5)
+
+> ⚠️ **Aggiornato 07/2026.** Il riquadro sotto è la versione **APIMBBONE** effettivamente inserita in `CONSPREF-SRS-V1.0-revised_v5` §6.16. La precedente formulazione (Authorization Server + JWKS + `bucket4j`, "senza API Gateway/Manager") è **superata** ed è conservata solo nel log storico.
 
 > **Modello di sicurezza CDU-15/16**
 >
-> L'accesso ai servizi CDU-15 e CDU-16 è regolato da autenticazione OAuth2 Client Credentials con token JWT emesso dall'Authorization Server del CSI Piemonte, e da un modello di autorizzazione applicativo a tre livelli, **senza intermediazione di API Gateway/Manager** (cfr. §3.2).
+> L'accesso ai servizi CDU-15 e CDU-16 è regolato da autenticazione OAuth2 `client_credentials`, con token **emesso e validato dall'API Manager del CSI Piemonte (APIMBBONE)** (Key Manager) e servizi esposti dietro l'**API Gateway** dell'API Manager; l'autorizzazione applicativa a livelli (isolamento per ente) resta a carico del Backend.
 >
 > L'isolamento dei dati per ente (visibilità unicamente dei propri consensi/configurazioni) è garantito da:
 >
-> **(a)** JWT firmato dall'AS CSI Piemonte contenente il claim `client_id` univoco del SIA chiamante, validato dal backend tramite chiave pubblica esposta su endpoint JWKS;
+> **(a)** token OAuth2 emesso dall'API Manager CSI (APIMBBONE) e da esso validato, associato al `client_id` univoco del SIA chiamante; il backend riceve dal Gateway l'identità del client (header/claim da concordare con CSI) e non gestisce direttamente la validazione JWKS;
 >
 > **(b)** tabella applicativa `cons_t_client_ente` che lega ogni `client_id` a un singolo `codice_ente` autorizzato, popolata in fase di onboarding del SIA e gestita dall'amministratore di sistema;
 >
 > **(c)** filtro Spring Security (`EnteAuthorizationFilter`) che confronta il `codice_ente` presente nella request (path/query) con quello autorizzato per il `client_id` autenticato, rispondendo `403 Forbidden` in caso di discrepanza, e repository che applica sempre `WHERE codice_ente = :authorizedEnte` come difesa in profondità.
 >
-> La funzionalità di rate limiting, normalmente fornita da un API Manager, è implementata a livello applicativo tramite `bucket4j` (default: 60 richieste/minuto per client, configurabile). Un audit log strutturato è obbligatorio per ogni invocazione e registra `client_id`, `codice_ente_requested`, `codice_ente_authorized`, `outcome`, `latency_ms`, `trace_id`. Il codice fiscale non viene loggato in chiaro.
+> Il rate limiting/throttling è fornito dall'**API Manager CSI (APIMBBONE — Traffic Manager)** e non è più implementato a livello applicativo. Resta a carico del Backend un audit log strutturato, obbligatorio per ogni invocazione, che registra `client_id`, `codice_ente_requested`, `codice_ente_authorized`, `outcome`, `latency_ms`, `trace_id`. Il codice fiscale non viene loggato in chiaro.
+>
+> **Prerequisito:** produzione e consegna dello **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione dell'API sull'APIM.
 
 ---
 

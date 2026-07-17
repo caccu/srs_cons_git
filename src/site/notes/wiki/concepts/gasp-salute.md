@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/gasp-salute/","title":"GASP Salute","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"dg-note-properties":{"title":"GASP Salute","aliases":["GASP Salute"],"type":"concept","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"created":"2026-05-05","updated":"2026-06-17","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02","2026-03-12-pile-tecnologiche-csi"],"related":["[[CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/gasp-salute/","title":"GASP Salute","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"dg-note-properties":{"title":"GASP Salute","aliases":["GASP Salute"],"type":"concept","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"created":"2026-05-05","updated":"2026-07-13","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02","2026-03-12-pile-tecnologiche-csi"],"related":["[[CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
 ---
 
 
@@ -23,9 +23,28 @@ Tutti i CDU Cittadino (CDU-01 ÷ CDU-06) in [[wiki/concepts/gestione-consensi-ap
 | --------------------- | ----------------------------------------------------------------------------------------------- |
 | Protocollo            | **SAML2** (confermato verbale 11/06/2026)                                                       |
 | Responsabilità scelta | [[wiki/entities/csi-piemonte\|CSI Piemonte]] (referente GASP)                                                 |
-| Impatto implementativo | `spring-security-saml2-service-provider`, configurazione keystores, metadata IdP XML           |
-| Azione rimanente      | Acquisire documentazione tecnica GASP (endpoint, metadata XML) — da richiedere a CSI Sprint 0  |
-| Stato                 | ✅ Protocollo definito — CDU-01 può essere progettato                                           |
+| Impatto implementativo | Integrazione tramite **Shibboleth SP** (reverse-proxy CSI davanti all'app); il backend riceve l'identità già autenticata come attributi/header dal SP — **NON** `spring-security-saml2` diretto |
+| Azione rimanente      | ✅ Metadata SP **ricevuti** (ambiente TEST/preprod, 07/2026). Resta: compilare il template di federazione e censire il SP presso `identita.federazione@csi.it` |
+| Stato                 | ✅ Protocollo definito + metadata ricevuti — CDU-01 può essere progettato                       |
+
+---
+
+## Metadata Service Provider ricevuti (TEST/preprod) — 07/2026
+
+File fornito da CSI: `preprod_metadata_tst-consprefbo-spid.isan.csi.it_gasprp_salute.xml`.
+
+| Aspetto | Valore |
+|---|---|
+| Identity Provider | **GASPRP_SALUTE** — "Proxy SPID Regione Piemonte – SALUTE" (aggregatore SPID) |
+| Ambiente | TEST / preprod |
+| Tipo SP | **Shibboleth SP** (reverse-proxy), host `tst-consprefbo-spid.isan.csi.it` |
+| EntityID | `SERVICE_PROVIDER_TST-CONSPREFBO-SPID.ISAN.CSI.IT_443_LIVx_GASPRP_SALUTE` (x = LIV1 / LIV2 / LIV3) |
+| ACS (POST) | `https://tst-consprefbo-spid.isan.csi.it/tst-consprefbo-spid_443slivXgasprp_salute/Shibboleth.sso/SAML2/POST` (+ SimpleSign, Artifact) |
+| Livelli autenticazione | **LIV3 SISP + LIV2 SPID**, oppure LIV3 CNS + LIV2 SPID |
+| NameID | transient / persistent / unspecified |
+| Federazione | inviare metadata + template a `identita.federazione@csi.it` (rif. `Template-richiesta-Federazione-Service-Provider-V02`) |
+
+> ⚠️ **Correzione da riportare nell'SRS (§3.3.1):** l'integrazione avviene tramite **Shibboleth SP**, non `spring-security-saml2-service-provider`. Il backend Spring riceve l'identità già autenticata (attributi/header dal SP), senza implementare direttamente il flusso SAML.
 
 ---
 
@@ -42,11 +61,11 @@ Tutti i CDU Cittadino (CDU-01 ÷ CDU-06) in [[wiki/concepts/gestione-consensi-ap
 
 | Aspetto | Dettaglio |
 |---|---|
-| Dipendenza Spring | `spring-security-saml2-service-provider` |
-| Flow | SAML2 POST binding |
-| Token | SAML Assertion XML |
-| Configurazione | Keystore + IdP metadata XML |
-| Complessità | Media-Alta |
+| Componente SP | **Shibboleth SP** (reverse-proxy CSI) davanti all'applicativo |
+| Flow | SAML2 POST binding (Shibboleth.sso), SP-initiated |
+| Token | SAML Assertion XML gestita dal SP → attributi utente (incl. CF) verso l'app |
+| Configurazione | metadata SP fornito + certificato; l'app legge gli attributi/header dal SP |
+| Complessità | Media (il SP gestisce il protocollo; l'app consuma l'identità) |
 
 ---
 
@@ -56,7 +75,7 @@ Tutti i CDU Cittadino (CDU-01 ÷ CDU-06) in [[wiki/concepts/gestione-consensi-ap
 | ------------------- | ---------------------------------- | ---------------------------------------------------- |
 | GASP Salute         | Cittadino (SPID/CIE)               | Esterno a [[wiki/concepts/architettura-iaas\|Architettura IaaS]] |
 | PUA / RUPAR / IRIDE | Operatore Sanitario/Amministrativo | Gestito da [[wiki/entities/csi-piemonte\|CSI Piemonte]]            |
-| OAuth2 Bearer JWT   | SIA Aziendale (CDU-15/16)          | Gestito internamente                                 |
+| OAuth2 `client_credentials` | SIA Aziendale (CDU-15/16/17) | **API Manager CSI (APIMBBONE)** — Key Manager (cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4) |
 
 ---
 
