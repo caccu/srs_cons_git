@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/entities/csi-piemonte/","title":"CSI Piemonte","tags":["organizzazione","committente","infrastruttura","piemonte"],"dg-note-properties":{"title":"CSI Piemonte","aliases":["CSI Piemonte"],"type":"entity","tags":["organizzazione","committente","infrastruttura","piemonte"],"created":"2026-05-05","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-12-pile-tecnologiche-csi","2026-03-02-domande-srs-csi-v02"],"related":["[[Regione Piemonte]]","[[Architettura IaaS]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[Gestione Consensi - Applicativo]]"]}}
+{"dg-publish":true,"permalink":"/wiki/entities/csi-piemonte/","title":"CSI Piemonte","tags":["organizzazione","committente","infrastruttura","piemonte"],"dg-note-properties":{"title":"CSI Piemonte","aliases":["CSI Piemonte"],"type":"entity","tags":["organizzazione","committente","infrastruttura","piemonte"],"created":"2026-05-05","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-12-pile-tecnologiche-csi","2026-03-02-domande-srs-csi-v02"],"related":["[[Regione Piemonte]]","[[Architettura IaaS]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[Gestione Consensi - Applicativo]]"]}}
 ---
 
 
@@ -13,7 +13,8 @@ Centro Servizi per il sistema informativo della Pubblica Amministrazione piemont
 
 - Committente tecnico del rifacimento Gestione Consensi
 - Gestore infrastruttura cloud IaaS/Nivola — provisioning in carico a CSI (07/2026: in questa fase solo ambienti **DEV** e **pre-prod**, PROD in fase successiva)
-- Fornitore di componenti tecnici (QUASAR, CI/CD GitLab+Jenkins, Helm chart) — skeleton progetto in carico a Exprivia per CONSPREF (verbale 11/06/2026)
+- Fornitore di componenti tecnici (QUASAR, CI/CD GitLab+Jenkins/SonarQube/Artifactory) — skeleton progetto in carico a Exprivia per CONSPREF (verbale 11/06/2026)
+  - ⚠️ *Nota: gli **Helm chart** CSI (`helm-base`/`helm-projects`) valgono per i progetti **ECaaS/Kubernetes**; **CONSPREF è IaaS Nivola** → deploy via **ADA/Chef**, niente Helm/GitOps/K8s. Cfr. [[wiki/concepts/architettura-iaas\|Architettura IaaS]] §Toolchain CSI.*
 - Gestore sistemi integrati (GASP Salute, AURA, Gestione Deleghe, PUA)
 
 ---

@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/batch-processes/","title":"Processi Batch — BATCH-01, BATCH-02, BATCH-03","tags":["batch","notifica","scadenza","allineamento","soap","asincrono","rischio","mf64","mf66","mf33","skip-locked"],"dg-note-properties":{"title":"Processi Batch — BATCH-01, BATCH-02, BATCH-03","aliases":["Processi Batch — BATCH-01, BATCH-02, BATCH-03"],"type":"concept","tags":["batch","notifica","scadenza","allineamento","soap","asincrono","rischio","mf64","mf66","mf33","skip-locked"],"created":"2026-05-05","updated":"2026-05-14","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2019-03-20-acc-del-cdu-01-servizi-acquisizione"],"related":["[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/sources/2019-06-01-webservice-consenso-regionale-v03\|Specifica WebService ConsensoRegionaleAziendale v03 (AS-IS)]]","[[Sistemi Esterni Integrati]]","[[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazione Qualità SRS — Gestione Consensi]]","[[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/batch-processes/","title":"Processi Batch — BATCH-01, BATCH-02, BATCH-03","tags":["batch","notifica","scadenza","allineamento","soap","asincrono","rischio","mf64","mf66","mf33","skip-locked"],"dg-note-properties":{"title":"Processi Batch — BATCH-01, BATCH-02, BATCH-03","aliases":["Processi Batch — BATCH-01, BATCH-02, BATCH-03"],"type":"concept","tags":["batch","notifica","scadenza","allineamento","soap","asincrono","rischio","mf64","mf66","mf33","skip-locked"],"created":"2026-05-05","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2019-03-20-acc-del-cdu-01-servizi-acquisizione"],"related":["[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/sources/2019-06-01-webservice-consenso-regionale-v03\|Specifica WebService ConsensoRegionaleAziendale v03 (AS-IS)]]","[[Sistemi Esterni Integrati]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]","[[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
 ---
 
 
@@ -86,15 +86,15 @@ Distinzione canale:
 >
 > Implementare BATCH-01 chiamando SRV-01 invece di SRV-03 = contratto WSDL sbagliato = errore grave di integrazione.
 >
-> Per le notifiche di **revoca/annullamento** l'operazione corretta è **SRV-04 NotificaRevocaConsenso** (anch'essa in uscita). L'SRS §7.1 recepisce SRV-03/SRV-04 come nota; operazione e tag esatti da confermare con CSI.
+> Per le notifiche di **revoca/annullamento** l'operazione corretta è **SRV-04 NotificaRevocaConsenso** (anch'essa in uscita). L'SRS §7.1 recepisce SRV-03/SRV-04 come nota.
 >
-> **Azione:** Conferma scritta da [[wiki/entities/csi-piemonte\|CSI Piemonte]] prima di implementare BATCH-01. Vedi [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazione Qualità SRS — Gestione Consensi]] §RISCHIO AGGIUNTO 4.
+> ✅ **Confermato (call CSI 20/07/2026):** SRV-03/SRV-04 sono le operazioni esistenti, **"solo da svecchiare e integrare la nuova logica"**. Non ci sono nuovi servizi. **Resta solo** il dettaglio dei nomi esatti dei campi del tracciato, da recepire in implementazione.
 
 ---
 
 ## BATCH-02 — Scadenza informative
 
-**Trigger:** Schedulato — **giornaliero notturno (SRS §7.2)**; cadenza esatta da confermare con CSI
+**Trigger:** Schedulato — **giornaliero notturno (SRS §7.2)**. ✅ **Call CSI 20/07/2026:** la cadenza esatta è **non vincolante**, da concordare in seguito (ipotesi confermata: una volta al giorno, notturno).
 **Azione:** Quando un'informativa scade, aggiorna i consensi collegati in base al parametro `annulla_consensi`:
 
 | `annulla_consensi` | Nuovo stato | Notifica ASR? |
@@ -132,7 +132,13 @@ WHERE d_informativa_id = :id_informativa_scaduta
 
 ### ALG02 — Aggiornamento storicizzato (SC67 aperto)
 
-> 🟠 **APERTO — SC67:** "da approfondire e verificare meglio" su INSERT cons_t_consenso da batch (logica storicizzazione)
+> 🟠 **APERTO — SC67 (call CSI 20/07/2026: domanda da riformulare).** CSI **non ha compreso** la domanda posta in astratto. Va riproposta con uno scenario concreto che rende evidente la divergenza §6.13 vs §7.2:
+>
+> **Scenario.** L'informativa **A** (`annulla_consensi = NO`) scade e viene sostituita dall'informativa corrente **B** (`annulla_consensi = SI`), stesso `sotto_tipo_consenso`. Un consenso in stato **ATTIVO** collegato ad A viene storicizzato da BATCH-02.
+>
+> **Domanda mirata:** il nuovo stato del consenso deve essere **SCADUTO** (leggendo `annulla_consensi` dall'informativa **scaduta A**, come da §6.13) oppure **ANNULLATO** (leggendo il flag dalla **nuova B**, come implicherebbe l'SQL §7.2)? E qual è la **sorgente autoritativa** del flag (quale tabella/campo) al momento della storicizzazione?
+>
+> **Interpretazione tecnica proposta (da validare):** il flag descrive *cosa accade ai consensi alla scadenza di quella informativa* → sembra logico leggerlo dall'informativa **scaduta A** (§6.13). L'SQL §7.2 va allineato di conseguenza. La risposta CSI scioglie il nodo e uniforma il testo SRS.
 
 Per ogni `cons_id` individuato:
 1. **Chiudere il record corrente:** `UPDATE cons_t_consenso SET data_fine = NOW(), data_modifica = NOW(), login_operazione = 'BATCH_SCADENZA_INF' WHERE cons_id = :id AND data_fine IS NULL;`
@@ -153,6 +159,8 @@ Note tecniche (SRS §BATCH-02):
 > Paradigmi diversi. Se i [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] SIA ASR si aspettano comportamento AS-IS (scadenza sincrona durante acquisizione), il TO-BE potrebbe rompere l'integrazione.
 >
 > **Azione:** Documentare la differenza nella specifica OpenAPI CDU-15/16 e verificare con tutti i SIA coinvolti.
+>
+> 🟠 **Stato (call CSI 20/07/2026 — BAT-03):** CSI considera lo Stato SCADUTO un **componente da gestire** e ha rinviato a una **call dedicata** per definirne la gestione asincrona e la comunicazione alle ASR. Punto **ancora aperto**.
 
 ---
 
@@ -241,9 +249,9 @@ Nuovo endpoint configurato (CDU-14 Back Office)
 
 | ID | Origine | Argomento | Stato |
 |---|---|---|---|
-| SC67 | Revisione SRS v3 lavorazione | Logica INSERT cons_t_consenso da batch storicizzazione "da approfondire e verificare meglio" | 🟠 Aperto — discutere con CSI |
-| BATCH-01 SRV-01 vs SRV-03 | Rischio interno | Ambiguità contratto WSDL outbound | 🔴 Critico — conferma CSI prima implementazione |
-| BATCH-02 frequenza | SRS non specifica | Schedulazione precisa BATCH-02 | 🟠 Da definire con CSI |
+| SC67 | Revisione SRS v3 lavorazione | Sorgente `annulla_consensi` (informativa scaduta vs nuova) in storicizzazione batch | 🟠 Aperto — **domanda riformulata a scenario** (call 20/07/2026: CSI non aveva capito) |
+| BATCH-01 SRV-01 vs SRV-03 | Rischio interno | Ambiguità contratto WSDL outbound | ✅ Confermato (call 20/07/2026): SRV-03/SRV-04, "solo da svecchiare"; restano nomi campi |
+| BATCH-02 frequenza | SRS non specifica | Schedulazione precisa BATCH-02 | ⚪ Non vincolante (call 20/07/2026), da concordare in seguito |
 
 ---
 

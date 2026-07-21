@@ -80,9 +80,11 @@ Storicizzazione segue [[wiki/docs/adr/ADR-015-storicizzazione-immutabile\|ADR-01
 
 ## Open issues
 
-- SC67 (BAT-02 nei punti aperti): logica INSERT storicizzazione da approfondire con CSI
-- BAT-03: comunicazione ASR su cambio semantica AS-IS → TO-BE
-- Frequenza BATCH-02 da definire
+> **Aggiornamento call CSI 20/07/2026.**
+
+- **SC67 (BAT-02)** — 🟠 aperto, **domanda riformulata a scenario** (CSI non aveva compreso la domanda astratta): *informativa A (`annulla_consensi=NO`) scade e viene sostituita da B (`annulla_consensi=SI`); un consenso ATTIVO legato ad A → **SCADUTO** (flag di A, §6.13) o **ANNULLATO** (flag di B, §7.2 SQL)? Sorgente autoritativa del flag?* Interpretazione proposta: leggere il flag dall'informativa **scaduta A**. Vedi [[wiki/concepts/batch-processes\|Processi Batch]] §ALG02.
+- **BAT-03** — 🟠 aperto: CSI considera lo Stato SCADUTO "componente da gestire" → **call dedicata pending** per la gestione asincrona e la comunicazione alle ASR.
+- **Frequenza BATCH-02** — ⚪ non vincolante (call 20/07/2026), da concordare in seguito.
 
 ## References
 

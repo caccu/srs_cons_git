@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/gasp-salute/","title":"GASP Salute","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"dg-note-properties":{"title":"GASP Salute","aliases":["GASP Salute"],"type":"concept","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"created":"2026-05-05","updated":"2026-07-13","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02","2026-03-12-pile-tecnologiche-csi"],"related":["[[CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/gasp-salute/","title":"GASP Salute","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"dg-note-properties":{"title":"GASP Salute","aliases":["GASP Salute"],"type":"concept","tags":["autenticazione","idp","spid","cie","sso","saml2","csi-piemonte"],"created":"2026-05-05","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02","2026-03-12-pile-tecnologiche-csi"],"related":["[[CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
 ---
 
 
@@ -76,6 +76,8 @@ File fornito da CSI: `preprod_metadata_tst-consprefbo-spid.isan.csi.it_gasprp_sa
 | GASP Salute         | Cittadino (SPID/CIE)               | Esterno a [[wiki/concepts/architettura-iaas\|Architettura IaaS]] |
 | PUA / RUPAR / IRIDE | Operatore Sanitario/Amministrativo | Gestito da [[wiki/entities/csi-piemonte\|CSI Piemonte]]            |
 | OAuth2 `client_credentials` | SIA Aziendale (CDU-15/16/17) | **API Manager CSI (APIMBBONE)** — Key Manager (cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4) |
+
+> ✅ **Propagazione identità confermata (call CSI 20/07/2026).** Per le chiamate SIA CDU-15/16/17, il Gateway APIMBBONE inoltra al backend, in header/claim, il **Codice Fiscale recuperato da Shibboleth/GASP** e il **`codice_ente`** del fruitore. È il ponte tra l'autenticazione GASP (che produce il CF) e l'isolamento per ente lato backend: il backend non rifà la validazione del token. Dettaglio in [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4/§7.
 
 ---
 

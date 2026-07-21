@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-14-punti-aperti-csi/","title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","aliases":["Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato"],"type":"analysis","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"created":"2026-05-14","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|Checklist Avvio Progetto — Gestione Consensi]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[GASP Salute]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[Sistemi Esterni Integrati]]","[[wiki/sources/2026-05-05-mermaid-architettura\|Diagramma Architettura Sistema — Mermaid]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
+{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-14-punti-aperti-csi/","title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","aliases":["Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato"],"type":"analysis","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"created":"2026-05-14","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|Checklist Avvio Progetto — Gestione Consensi]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[GASP Salute]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[Sistemi Esterni Integrati]]","[[wiki/sources/2026-05-05-mermaid-architettura\|Diagramma Architettura Sistema — Mermaid]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
 ---
 
 
@@ -10,6 +10,8 @@
 **Stato corpus alla data:** 31 pagine, 30/30 risposte MF da SRS v3_lavorazione propagate, 0 dead-link.
 
 > 🔄 **Aggiornamento 18/06/2026 (allineato all'agenda riunione):** chiusi/recepiti nel documento — **ID-01** (GASP=SAML2, restano solo metadata), **INF-03** (skeleton Exprivia/IaaS), **INT-05** (Notificatore di Deleghe ≠ UNP), **INF-04** (diagramma aggiornato). Nuovi/raffinati — **INF-05** (dettagli operativi IaaS: deploy/ingress/segreti/CI-CD + pila «k8s»), **BAT-01** (SRV-03 + SRV-04), **BAT-02/SC67** (sorgente `annulla_consensi`: informativa scaduta vs nuova), **GOV-02** (deroga V03 su `online`/`annulla_consensi`). L'ordine del giorno operativo è in `Agenda-riunione-CSI-CONSPREF_2026-06-18`.
+
+> ✅ **Aggiornamento call CSI 20/07/2026 — chiusure di massa.** Chiusi/delegati: **SEC-01÷06** (Q1 header CF+`codice_ente` risolto; Q3/Q4/Q5/Q6 delegati ad APIMBBONE), **INT-01** (AURA: nessun servizio nuovo, stessi WSDL nei properties, credenziali IRIS DEV incluse → chiude anche **ID-03**), **INT-02** (Gestione Deleghe già integrata), **GOV-02** (deroga V03 `online`/`annulla_consensi` approvata, sorgente unica `cons_d_informativa` confermata), **BAT-01** (SRV-03/SRV-04 confermati, "svecchiare + nuova logica"). **Differiti/non vincolanti:** onboarding SIA (evento raro → CR), Manutenzione ASR §7.4 (post-Sprint 0), frequenza BATCH-02, **GOV-05/API-05** (lista ASR), Stato SCADUTO **BAT-03** (call dedicata pending). **Da riformulare:** **BAT-02/SC67** (CSI non ha capito la domanda → domanda mirata a scenario, vedi sotto). **Non toccato:** CDU-17 (attende delucidazioni via mail).
 
 **Legenda priorità:**
 - 🔴 **CRITICO** — blocca Sprint 0/1, da chiarire **Giorno 1**
@@ -25,7 +27,7 @@
 | ----- | -------------------------------------------------------------------------------------- | ---- | -------- | ---------------------------------------------------------------------------------- |
 | ID-01 | ~~GASP Salute: protocollo OIDC o SAML2? metadata?~~ ✅ **CHIUSO** — **SAML2** confermato (verbale 11/06/2026); **metadata SP ricevuti** (TEST/preprod, 07/2026: Shibboleth SP `tst-consprefbo-spid.isan.csi.it`, IdP GASPRP_SALUTE, LIV1/2/3). Resta: censire il SP via `Template-richiesta-Federazione-Service-Provider` a `identita.federazione@csi.it`. | ✅   | Giorno 1 | [[wiki/concepts/gasp-salute\|GASP Salute]], [[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|analysis-2026-05-06-checklist-avvio-progetto]] §B1 |
 | ID-02 | Registrazione app PUA — 2 profili (Operatore, Amministratore)                          | 🟠   | Sprint 2 | Checklist §B9                                                                      |
-| ID-03 | Credenziali IRIS per autenticazione AURA (ambiente DEV)                                | 🟠   | Sprint 1 | Checklist §B7                                                                      |
+| ID-03 | ~~Credenziali IRIS per autenticazione AURA (ambiente DEV)~~ ✅ **CHIUSO (call 20/07/2026):** incluse tra i parametri già presenti nei file di properties AURA | ✅   | Sprint 1 | Checklist §B7                                                                      |
 
 ---
 
@@ -33,16 +35,16 @@
 
 Tutte da [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]] §Punti da chiarire con CSI.
 
-> 🔄 **Aggiornamento 07/2026 (doc APIMBBONE):** il token è gestito dall'**API Manager CSI APIMBBONE** (OAuth2 `client_credentials`, Key Manager + Gateway). Molti punti sotto sono ricondotti al modello APIM (cfr. [[wiki/concepts/sicurezza-cdu-15-16\|sicurezza-cdu-15-16]] §1.4). **Nuovo prerequisito:** produrre e consegnare lo **swagger (OpenAPI)** dei servizi CDU-15/16/17 per abilitare la sottoscrizione.
+> ✅ **CHIUSI in call CSI 20/07/2026.** Il token è gestito dall'**API Manager CSI APIMBBONE** (OAuth2 `client_credentials`, Key Manager + Gateway). Q1 (header/claim) risolto; Q3/Q4/Q5/Q6 delegati ad APIMBBONE. **Unico residuo attivo:** produrre e consegnare lo **swagger (OpenAPI)** dei servizi CDU-15/16/17 per abilitare la sottoscrizione. Dettaglio in [[wiki/concepts/sicurezza-cdu-15-16\|sicurezza-cdu-15-16]] §7.
 
-| #     | Domanda                                                                                                    | Prio | Sprint   |
-|-------|------------------------------------------------------------------------------------------------------------|------|----------|
-| SEC-01 | ~~URL Authorization Server CSI~~ ✅ **CHIARITO** — token via **API Manager APIMBBONE** (token API del gateway); Store test `tst-api-<ente>-store.csi.it` (VPN/mediato dal referente CSI); gateway raggiungibile da internet https. Resta: URL puntuali istanza CONSPREF. | 🟠 | Sprint 0/1 |
-| SEC-02 | ~~Firma JWT + JWKS~~ ✅ **NON a nostro carico** — token OAuth2 rilasciato/validato dal **Key Manager APIM**; backend dietro il gateway. Resta: quali header/claim il gateway inoltra per il mapping consumer→`codice_ente`. | 🟠 | Sprint 1 |
-| SEC-03 | Procedura onboarding nuovo SIA — accreditamento Store + creazione applicazione (chiavi OAuth) + sottoscrizione; chi popola `cons_t_client_ente` lato prodotto | 🟠   | Sprint 1 |
-| SEC-04 | TTL token raccomandato + politica refresh (default proposto: 3600s) — ora definito dall'APIM | 🟡   | Sprint 1 |
-| SEC-05 | Scope/subscription OAuth via APIM da concordare in sottoscrizione (`consensi:read`, `consensi:snapshot`). **Prerequisito: consegnare lo swagger** all'APIM. | 🟠   | Sprint 1 |
-| SEC-06 | Politica revoca credenziali compromesse (blacklist? rotation?)                                            | 🟡   | Sprint 2 |
+| #     | Domanda                                                                                                    | Esito |
+|-------|------------------------------------------------------------------------------------------------------------|------|
+| SEC-01 | ~~URL Authorization Server / header-claim~~ | ✅ **RISOLTO** — il Gateway APIM inoltra sempre **CF (da Shibboleth) + `codice_ente`**; backend deriva l'ente da qui |
+| SEC-02 | ~~Firma JWT + JWKS~~ | ✅ **Non a nostro carico** — token validato dal Key Manager APIM. Prerequisito: **swagger** |
+| SEC-03 | ~~Onboarding nuovo SIA + chi popola `cons_t_client_ente`~~ | ✅ **Delegato ad APIMBBONE** (http interno); mapping fuori scope V1.0; evento **raro** → **CR** |
+| SEC-04 | ~~TTL token + refresh~~ | ✅ **Delegato ad APIMBBONE** (policy interne) |
+| SEC-05 | ~~Scope OAuth~~ | ✅ **Delegato ad APIMBBONE** |
+| SEC-06 | ~~Revoca credenziali compromesse~~ | ✅ **Delegato** — credenziali fornite da CSI, revoca a **terza parte** |
 
 ---
 
@@ -74,7 +76,7 @@ Da [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-op
 | API-02 | Scope OAuth richiesto per `/consensi/stato` (TODO-M2) — confluisce con SEC-05                             | 🟠   | Sprint 1 |
 | API-03 | Schema paginazione cursor-based — `page_size` default + max accettato (TODO-M3)                          | 🟡   | Sprint 2 |
 | API-04 | SLA tempo risposta + throughput target per CDU-15/16 (TODO-M4)                                            | 🟡   | UAT      |
-| API-05 | Lista ASR coinvolte nel TO-BE + referenti tecnici per recepimento OpenAPI (TODO-M5)                       | 🟠   | Sprint 2 |
+| API-05 | Lista ASR coinvolte nel TO-BE + referenti tecnici (TODO-M5). **Call 20/07/2026:** non vincolante, differito. | ⚪ (differito)   | Sprint 2 |
 
 ---
 
@@ -82,9 +84,9 @@ Da [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-op
 
 | #     | Domanda                                                                                                    | Prio | Sprint   | Fonte                                                              |
 |-------|------------------------------------------------------------------------------------------------------------|------|----------|--------------------------------------------------------------------|
-| BAT-01 | **Operazioni WSDL per BATCH-01: confermare SRV-03 NotificaAcquisizioneConsenso (acquisizioni, in uscita) e SRV-04 NotificaRevocaConsenso (revoche/annullamenti), distinte da SRV-01 (in ingresso); + nomi esatti dei campi del tracciato.** Recepito in SRS §7.1 come nota; resta da confermare con CSI. | 🟡 (rischio implementativo grave) | Sprint 1 | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §RISCHIO, Checklist §B10 |
-| BAT-02 | **SC67 — Storicizzazione BATCH-02 (ALG02). Punto concreto: il flag `annulla_consensi` va letto dall'informativa SCADUTA o dalla NUOVA? L'SRS §6.13 (scaduta) e §7.2 SQL (nuova) divergono → riconciliare con CSI.** | 🟠   | Prima di chiudere SRS | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §ALG02, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] §Tema J |
-| BAT-03 | Stato SCADUTO — semantica cambiata AS-IS vs TO-BE: SIA ASR devono aggiornare logica business. Conferma comunicazione ASR? | 🟠   | Sprint 1 | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §Differenza semantica, [[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE — Gestione Consensi]] |
+| BAT-01 | ~~Confermare SRV-03 NotificaAcquisizioneConsenso + SRV-04 NotificaRevocaConsenso~~ ✅ **CONFERMATO (call 20/07/2026):** operazioni esistenti, **"solo da svecchiare e integrare la nuova logica"**. Restano solo i nomi esatti dei campi del tracciato. | ✅ | Sprint 1 | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §RISCHIO, Checklist §B10 |
+| BAT-02 | **SC67 — DA RIFORMULARE (call 20/07/2026): CSI non ha compreso la domanda astratta.** Domanda mirata a scenario: *Informativa A (`annulla_consensi=NO`) scade e viene sostituita da B (`annulla_consensi=SI`); un consenso ATTIVO legato ad A → **SCADUTO** (flag di A) o **ANNULLATO** (flag di B)? Sorgente autoritativa del flag (tabella/campo) al momento della storicizzazione?* SRS §6.13 (scaduta) vs §7.2 SQL (nuova) divergono. | 🟠   | Prima di chiudere SRS | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §ALG02, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] §Tema J |
+| BAT-03 | Stato SCADUTO — semantica cambiata AS-IS vs TO-BE. **Call 20/07/2026:** CSI lo considera "componente da gestire" → **call dedicata pending** per definire la comunicazione ai SIA ASR (gestione asincrona). | 🟠   | Sprint 1 (call pending) | [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] §Differenza semantica, [[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE — Gestione Consensi]] |
 
 ---
 
@@ -92,8 +94,8 @@ Da [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-op
 
 | #      | Domanda                                                                                   | Prio | Sprint   | Fonte                                                                                                             |
 | ------ | ----------------------------------------------------------------------------------------- | ---- | -------- | ----------------------------------------------------------------------------------------------------------------- |
-| INT-01 | **WSDL AURA** — lista completa servizi (CDU-07/08 ricerca paziente + operatori)           | 🟠   | Sprint 0 | Checklist §B5                                                                                                     |
-| INT-02 | **WSDL Gestione Deleghe** — operazione SOAP: `getDelegantiService`; routing via **API-Piemonte** (accreditamento portale). Accreditamento Exprivia su portale API-Piemonte da richiedere a CSI. | 🟠   | Sprint 0 | Checklist §B6, [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §Gestione Deleghe |
+| INT-01 | ~~**WSDL AURA** — lista servizi (CDU-07/08)~~ ✅ **CHIUSO (call 20/07/2026):** nessun servizio nuovo, **gli stessi già presenti nei file di properties** (`FindProfiliAnagrafici`, `getProfiloSanitario`); credenziali IRIS DEV incluse. | ✅   | Sprint 0 | Checklist §B5                                                                                                     |
+| INT-02 | ~~**WSDL Gestione Deleghe** — `getDelegantiService`, accreditamento portale API-Piemonte~~ ✅ **CHIUSO (call 20/07/2026):** **già integrato, nulla da fare.** | ✅   | Sprint 0 | Checklist §B6, [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §Gestione Deleghe |
 | INT-03 | **LIS — acronimo + spec integrazione canale acquisizione consensi** (MF3R1, MF4R1)        | 🟠   | Sprint 1 | [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §LIS, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] §Tema A |
 | INT-04 | Accesso repo **QUASAR CSI** (componenti UI)                                               | 🟠   | Sprint 1 | Checklist §B8                                                                                                     |
 | INT-05 | ~~Distinzione Notificatore di Deleghe ≠ Notificatore UNP in SRS~~ ✅ **RECEPITO** in SRS §4.2/§7 (Deleghe = conferma rilascio post-COMPLETATO; UNP = annullamento/scadenza e notifiche generiche) | ✅   | — | [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §Notificatore                                            |
@@ -118,10 +120,10 @@ Da [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-op
 | #      | Domanda                                                                                                                   | Prio | Sprint         | Fonte                                                                        |
 | ------ | ------------------------------------------------------------------------------------------------------------------------- | ---- | -------------- | ---------------------------------------------------------------------------- |
 | GOV-01 | **Approvazione formale SRS V1.0 bozza v2** da CSI (post-recepimento risposte MF v3_lavorazione)                           | 🟠   | Prima Sprint 1 | Checklist §B12, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]                   |
-| GOV-02 | **Validazione [PROPOSTA] nell'SRS** — ALG02 BATCH-01 (gestione tentativi), CDU-06 PDF (MF49R48 MF51R50), 11 proposte §8.4, e in particolare la **deroga al requisito V03** su `online`/`annulla_consensi` mantenuti su `cons_d_informativa` in V1.0 (SRS §8.4.5) | 🟠   | Prima Sprint 2 | Checklist §B13, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] §Tema D           |
+| GOV-02 | **Validazione [PROPOSTA] nell'SRS** — ALG02 BATCH-01, CDU-06 PDF, 11 proposte §8.4. ✅ **Deroga V03 su `online`/`annulla_consensi` APPROVATA (call 20/07/2026):** confermata la scelta V1.0 di mantenerli su `cons_d_informativa` (sorgente autoritativa unica); CSI conferma il funzionamento. Restano le altre [PROPOSTA]. | 🟠 (deroga V03 ✅) | Prima Sprint 2 | Checklist §B13, [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] §Tema D           |
 | GOV-03 | **CONSPREF-DMP** — ~~chi è responsabile lato CSI?~~ ✅ **CHIUSO 16/07/2026:** redazione in carico a **CSI Piemonte**. Resta la produzione della bozza v1 (Sprint 0) | ✅   | Sprint 0       | [[wiki/sources/2026-03-02-domande-srs-csi-v02\|2026-03-02-domande-srs-csi-v02]], Q11,[[wiki/analyses/valutazione-qualita-srs-consensi\|valutazione-qualita-srs-consensi]] |
 | GOV-04 | **SLA e NFR performance** — tempo risposta max CDU-02, throughput BATCH-01, disponibilità (99.x%)                         | 🟡   | Prima UAT      | Checklist §B15                                                               |
-| GOV-05 | **Lista ASR coinvolte** + referenti tecnici (confluisce con API-05)                                                       | 🟠   | Sprint 2       | Checklist §B11                                                               |
+| GOV-05 | **Lista ASR coinvolte** + referenti tecnici (confluisce con API-05). **Call 20/07/2026:** componente **non vincolante**, smarcabile in seguito. | ⚪ (differito)   | Sprint 2       | Checklist §B11                                                               |
 
 ---
 
@@ -135,6 +137,13 @@ Da [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-op
 | Sprint 2+                 | ID-02, SEC-06, PULL-04, PULL-05, PULL-07, API-03, API-05, BAT-01, BAT-02, INT-05, GOV-02, GOV-05 → **12 punti**                                |
 | Prima UAT                 | API-04, GOV-04 → **2 punti**                                                                                                                  |
 | **Totale**                | **40 punti aperti** (dedupli: PULL-03↔SEC-05, API-01↔SEC-01, API-02↔SEC-05, API-05↔GOV-05 → ~36 distinti)                                       |
+
+> ✅ **Stato residuo post-call CSI 20/07/2026.** Chiusi/delegati in questa call: **SEC-01÷06, INT-01, INT-02, ID-03, BAT-01, GOV-02** (deroga V03). Differiti non vincolanti: **GOV-05/API-05** (lista ASR), Manutenzione ASR §7.4, frequenza BATCH-02, onboarding SIA (→ CR). **Ancora aperti e attivi:**
+> - **Swagger (OpenAPI) CDU-15/16/17** — prerequisito APIM (bloccante per la sottoscrizione).
+> - **BAT-02/SC67** — domanda riformulata a scenario, in attesa risposta CSI.
+> - **BAT-03 (Stato SCADUTO)** — call dedicata pending.
+> - **CDU-17 / PULL-01÷09** — in attesa di delucidazioni via mail; lavorazione successiva.
+> - **INF-01/INF-02** (DBaaS DEV in corso, PROD rinviato), **INF-05** (ingress/TLS + segreti), **GOV-01** (approvazione formale SRS v6).
 
 ---
 

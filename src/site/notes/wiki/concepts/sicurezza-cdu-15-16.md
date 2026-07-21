@@ -1,9 +1,16 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/sicurezza-cdu-15-16/","title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"dg-note-properties":{"title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","aliases":["Sicurezza CDU-15-16 — Modello Autorizzazione per Ente"],"type":"concept","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"created":"2026-05-14","updated":"2026-07-13","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[Gestione Consensi - Applicativo]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/sicurezza-cdu-15-16/","title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"dg-note-properties":{"title":"Sicurezza CDU-15-16 — Modello Autorizzazione per Ente","aliases":["Sicurezza CDU-15-16 — Modello Autorizzazione per Ente"],"type":"concept","tags":["sicurezza","cdu-15","cdu-16","oauth2","jwt","multi-tenancy","spring-security","tr30"],"created":"2026-05-14","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[Gestione Consensi - Applicativo]]"]}}
 ---
 
 
 # Sicurezza CDU-15/16 — Modello Autorizzazione per Ente
+
+> ✅ **Aggiornamento call CSI 20/07/2026 — punti sicurezza chiusi.** CSI ha confermato:
+> - **Q1 (header/claim) — RISOLTO:** l'**API Manager APIMBBONE inoltra sempre al backend il Codice Fiscale (recuperato da Shibboleth/GASP) e il `codice_ente`** in header/claim. Il backend deriva l'ente da qui, non serve più validazione token lato nostro.
+> - **Q3 (onboarding SIA), Q4 (TTL/refresh), Q5 (scope), Q6 (revoca credenziali): interamente DELEGATI ad APIMBBONE** (esposto in http internamente; credenziali fornite da CSI, revoca affidata a servizio di terza parte). L'onboarding di un nuovo SIA è **evento raro**, integrabile in seguito via **CR**.
+> - **Conseguenza design (decisione progetto):** la tabella `cons_t_client_ente` (ex Livello B) **esce dallo scope V1.0** — il `codice_ente` autoritativo arriva dal gateway. Resta il **Livello C** (`WHERE codice_ente`) come difesa residua; la tabella è documentata come **estensione futura** per scenari multi-ente/aggregatori. Vedi §3 e §7.
+>
+> Le sezioni §3–§8 sotto conservano il disegno storico pre-call; i riquadri aggiornati indicano cosa resta valido.
 
 **Origine:** risposta tecnica al commento cliente **TR30** sulla revisione SRS bozza v3 (PDF righe 4456–4459, sez. §6.16). Rinumerato come **TR58** nella revisione `CONSPREF-SRS-V1.0-revised_bozza_v3_CSI_lavorazione.pdf` (MF59-62R58). Vedi mapping in [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]].
 
@@ -74,7 +81,8 @@ Il token per i servizi REST verso i SIA è **rilasciato e gestito dall'API Manag
 
 > **Implicazioni per il progetto:**
 > - Va **prodotto e consegnato lo swagger (OpenAPI) di CDU-15/16/17** per poter sottoscrivere l'API sull'APIM (prerequisito).
-> - Token e rate limiting/throttling sono **gestiti dall'APIM** → il backend può **non** validare il JWT via JWKS né implementare `bucket4j`; resta a noi l'**isolamento dei dati per ente**. Da definire con CSI **quali header/claim il gateway inoltra** al backend per mappare consumer → `codice_ente`.
+> - Token e rate limiting/throttling sono **gestiti dall'APIM** → il backend può **non** validare il JWT via JWKS né implementare `bucket4j`; resta a noi l'**isolamento dei dati per ente**.
+> - ✅ **Header/claim inoltrati dal gateway — confermati (call CSI 20/07/2026):** l'APIM inoltra al backend il **Codice Fiscale** (recuperato da **Shibboleth/GASP**) e il **`codice_ente`**. Il backend usa il `codice_ente` del gateway come sorgente autoritativa per l'isolamento per ente (niente lookup su `cons_t_client_ente` in V1.0) e il CF come soggetto della query. `client_id` resta disponibile lato APIM per audit/onboarding.
 > - Conferma la **doppia esposizione** (§1.2): per i SIA/nuovi fruitori si passa dall'API Manager; per l'app interna Frontend→Backend resta l'integrazione diretta (ADR-004).
 
 ---
@@ -104,7 +112,7 @@ Decisione confermata da CSI ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Doma
 
 ## 2. Flusso end-to-end (SIA ASR → Gestione Consensi)
 
-> Nota (07/2026): token rilasciato/validato dall'**API Manager APIMBBONE** (Key Manager + Gateway). Il backend riceve la richiesta **già autenticata dal gateway** e si concentra sull'isolamento per ente; la validazione JWT via JWKS lato backend potrebbe non essere necessaria (da confermare con CSI quali header/claim il gateway inoltra). Cfr. §1.4.
+> Nota (aggiornata call CSI 20/07/2026): token rilasciato/validato dall'**API Manager APIMBBONE** (Key Manager + Gateway). Il backend riceve la richiesta **già autenticata dal gateway**, con **CF (da Shibboleth) e `codice_ente` inoltrati in header/claim**, e si concentra sull'isolamento per ente derivandolo dal `codice_ente` del gateway. La validazione JWT via JWKS lato backend **non è necessaria**. Cfr. §1.4.
 
 ```
 [SIA ASR x]
@@ -115,30 +123,29 @@ Decisione confermata da CSI ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Doma
    │ 2. GET /api/v1/...  +  Header: Authorization: Bearer <token>
    ▼
 [API Gateway APIMBBONE]  ──► valida token, rate limiting/throttling, instrada al backend
-   │
+   │        inoltra header/claim: Codice Fiscale (da Shibboleth) + codice_ente
    ▼
 [Spring Boot Backend Gestione Consensi]
-   ├─ A) Spring Security filter chain
-   │     ├─ Validazione firma JWT (chiave pubblica AS via JWKS endpoint)
-   │     ├─ Check claim: exp, iss, aud
-   │     └─ Estrazione client_id
-   ├─ B) EnteAuthorizationFilter (custom)
-   │     ├─ Lookup tabella cons_t_client_ente: client_id → codice_ente_autorizzato
-   │     ├─ Estrazione codice_ente dalla request (path/query)
-   │     └─ Confronto: mismatch → 403 Forbidden
+   ├─ A) Gateway trust boundary (call CSI 20/07/2026)
+   │     ├─ Token già validato dall'APIM (Key Manager) — no JWKS lato backend
+   │     └─ Estrazione da header/claim: codice_ente (autoritativo) + CF (soggetto)
+   ├─ B) EnteAuthorizationFilter (custom, semplificato)
+   │     ├─ codice_ente = header del gateway (NO lookup cons_t_client_ente in V1.0)
+   │     ├─ Estrazione codice_ente eventuale dalla request (path/query)
+   │     └─ Confronto header vs request: mismatch → 403 Forbidden
    ├─ C) Business logic (RestController CDU-15/16)
    │     └─ Repository query SEMPRE con WHERE codice_ente = :authorizedEnte
-   │        (preso da SecurityContext, NON dal parametro request)
+   │        (preso dall'header del gateway, NON dal parametro request)
    └─ D) Response 200 / 401 / 403 / 404 / 500
 ```
 
 ---
 
-> ⚠️ **Inquadramento (07/2026) delle sezioni §3–§8.** Le sezioni seguenti descrivono il disegno di sicurezza **pre-APIM**. Con il modello **API Manager APIMBBONE confermato** (§1.4):
+> ⚠️ **Inquadramento (aggiornato call CSI 20/07/2026) delle sezioni §3–§8.** Le sezioni seguenti descrivono il disegno di sicurezza **pre-APIM**. Con il modello **API Manager APIMBBONE confermato** (§1.4) e i chiarimenti della call 20/07:
 > - **Emissione/validazione token** (ex Livello A, JWKS, Authorization Server) e **rate limiting** (ex `bucket4j`) sono **a carico dell'APIM** → i riferimenti a JWKS/`bucket4j`/Authorization Server qui sotto sono **superati** e mantenuti come storico.
-> - **Restano validi e a nostro carico** l'**isolamento per ente** (Livello B `cons_t_client_ente` + Livello C `WHERE codice_ente`) e l'**audit log applicativo**.
-> - Il backend riceverà dal **Gateway APIM** l'identità del consumer via header/claim (da concordare con CSI) da cui derivare il `codice_ente`.
-> - Il **testo per l'SRS** effettivamente recepito in `CONSPREF-SRS-V1.0-revised_v5` §6.16 è la versione **APIM** (vedi §8, riquadro aggiornato).
+> - **Livello B — `cons_t_client_ente` è FUORI SCOPE V1.0:** il `codice_ente` autoritativo arriva dal **Gateway APIM** via header/claim (insieme al CF da Shibboleth). La tabella di mapping `client_id → codice_ente` è mantenuta come **estensione futura** (scenari multi-ente/aggregatori), non implementata in V1.0.
+> - **Restano validi e a nostro carico** l'**isolamento per ente** tramite **Livello C** (`WHERE codice_ente = :authorizedEnte`, con ente preso dall'header del gateway) e l'**audit log applicativo**.
+> - Il **testo per l'SRS** effettivamente recepito in `CONSPREF-SRS-V1.0-revised_v5/v6` §6.16 è la versione **APIM** (vedi §8, riquadro aggiornato).
 
 ## 3. Isolamento dati per ente — difesa a 3 livelli
 
@@ -146,12 +153,16 @@ Il requisito "vedere unicamente i propri WS/consensi" non si poggia sul trasport
 
 ### Livello A — Identità del client
 
+> ⚠️ **Superato (call CSI 20/07/2026):** rilascio credenziali e validazione token sono a carico di **APIMBBONE**; le credenziali sono fornite da CSI e la revoca è affidata a servizio di terza parte (Q6). Niente JWKS lato backend. Contenuto sotto = storico.
+
 - Ogni SIA ASR riceve coppia `client_id` + `client_secret` dall'AS CSI Piemonte (procedura onboarding da concordare).
 - AS emette JWT firmato (RS256/ES256) con claim `client_id` immodificabile.
 - La chiave pubblica AS è pubblicata via endpoint JWKS; il backend la usa per verificare la firma.
 - Nessun client può spacciarsi per altro ente: rotazione/revoca gestita lato AS.
 
-### Livello B — Mapping client_id → codice_ente
+### Livello B — Mapping client_id → codice_ente (ESTENSIONE FUTURA, fuori scope V1.0)
+
+> ⚠️ **Fuori scope V1.0 (decisione progetto, call CSI 20/07/2026):** il `codice_ente` autoritativo è **inoltrato dal Gateway APIM** in header/claim, quindi il mapping applicativo `client_id → codice_ente` **non serve in V1.0**. La tabella `cons_t_client_ente` è conservata come **estensione futura** per scenari multi-ente/aggregatori (un `client_id` che deve vedere più enti) ed è attivabile via CR. Contenuto sotto = riferimento per l'estensione futura.
 
 - Tabella applicativa `cons_t_client_ente` (da aggiungere in SRS §8 modello dati) lega ogni `client_id` a **uno e un solo** `codice_ente` autorizzato.
 - Lookup eseguito dal filter, non encoded nel JWT → consente revoca senza riemissione token, audit storico, ruoli speciali (es. ente "aggregatore" multi-ente in futuro).
@@ -166,10 +177,12 @@ Il requisito "vedere unicamente i propri WS/consensi" non si poggia sul trasport
 | `data_revoca` | timestamp NULL | NULL = attivo |
 | `note` | text | Riferimento contratto/ticket onboarding |
 
-### Livello C — Filtro query (defense in depth)
+### Livello C — Filtro query (defense in depth) — VALIDO in V1.0
 
-- Tutte le query repository di CDU-15/16 prendono `codice_ente` da `SecurityContext`, **mai dal parametro request**.
-- Anche se il filter B fosse bypassato per bug, la query `WHERE codice_ente = :authEnte` impedisce data leak.
+> ✅ **Difesa residua a nostro carico (call CSI 20/07/2026):** con Livello B fuori scope, il Livello C è l'isolamento per ente effettivo di V1.0.
+
+- Tutte le query repository di CDU-15/16 prendono `codice_ente` **dall'header/claim inoltrato dal Gateway APIM** (via `SecurityContext`/attributo di request), **mai dal parametro request** applicativo.
+- Anche in caso di bug nel filter, la query `WHERE codice_ente = :authEnte` impedisce data leak.
 - Pattern repository:
 
 ```java
@@ -227,9 +240,40 @@ security:
 }
 ```
 
-**TTL raccomandato:** 3600 secondi (da confermare con CSI).
+**TTL raccomandato:** 3600 secondi (storico). ✅ **Call CSI 20/07/2026:** TTL e politica di refresh sono **gestiti internamente da APIMBBONE** con proprie policy — non a carico del progetto (Q4).
 
 ### 5.3 Pseudocodice filter Spring Security
+
+> ⚠️ **Versione storica (pre-call 20/07/2026)** — legge `client_id` dal JWT e risolve l'ente via `mapper.resolveEnte()` (tabella `cons_t_client_ente`). In **V1.0** il filter è **semplificato**: legge il `codice_ente` **direttamente dall'header/claim inoltrato dal Gateway APIM** (nessun lookup su DB), poi confronta con l'eventuale `codice_ente` in request → 403 su mismatch. Vedi pseudocodice V1.0 sotto.
+
+```java
+// --- V1.0 (call CSI 20/07/2026): codice_ente autoritativo dall'header del Gateway APIM ---
+@Component
+public class EnteAuthorizationFilter extends OncePerRequestFilter {
+
+    private static final String HDR_ENTE = "X-Codice-Ente";   // header/claim inoltrato dal gateway (nome esatto da APIM)
+    private static final String HDR_CF   = "X-Codice-Fiscale"; // CF recuperato da Shibboleth/GASP
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+                                    FilterChain chain) throws ServletException, IOException {
+        String authorizedEnte = req.getHeader(HDR_ENTE);
+        if (authorizedEnte == null || authorizedEnte.isBlank()) {
+            problem(res, 403, "ente_header_missing", "Header codice_ente assente dal gateway APIM");
+            return;
+        }
+        String requestedEnte = extractEnteFromRequest(req);          // se presente in path/query
+        if (requestedEnte != null && !authorizedEnte.equals(requestedEnte)) {
+            problem(res, 403, "ente_mismatch", "Ente richiesto ≠ ente autorizzato dal gateway");
+            return;
+        }
+        req.setAttribute("authorizedEnte", authorizedEnte);          // usato da Livello C nelle query
+        chain.doFilter(req, res);
+    }
+}
+```
+
+<details><summary>Versione storica (con lookup <code>cons_t_client_ente</code>) — riferimento estensione futura</summary>
 
 ```java
 @Component
@@ -266,6 +310,8 @@ public class EnteAuthorizationFilter extends OncePerRequestFilter {
     }
 }
 ```
+
+</details>
 
 ### 5.4 HTTP status codes
 
@@ -312,21 +358,23 @@ Codice fiscale **NON** loggato in chiaro (vedi [[wiki/analyses/valutazione-quali
 |---|---|---|
 | G1 | §6.15, §6.16 | Aggiungere paragrafo "Modello di sicurezza per ente" (testo proposto in §8 sotto) |
 | G2 | §3.3 Componenti software | Aggiungere componente `EnteAuthorizationFilter` (Spring Security custom filter) |
-| G3 | §3.6 (sicurezza, se esistente) | Documentare rate limiting applicativo `bucket4j` come sostituto APIM |
-| G4 | §8 Modello dati | Aggiungere entità `cons_t_client_ente` (schema in §3.2 sopra) |
+| G3 | §3.6 (sicurezza, se esistente) | ~~rate limiting `bucket4j`~~ → **superato:** rate limiting a carico APIM (Traffic Manager) |
+| G4 | §8 Modello dati | ~~Aggiungere `cons_t_client_ente`~~ → **fuori scope V1.0:** `codice_ente` inoltrato dal Gateway APIM; tabella solo come estensione futura |
 | G5 | §10 Test plan | Aggiungere caso E2E cross-tenant: client A tenta lettura ente B → atteso 403 |
 | G6 | §11 Ops/Monitoring | Definire dashboard audit log con outcome 401/403/429 anomali |
 
-### Punti da chiarire con CSI
+### Punti da chiarire con CSI — ✅ CHIUSI (call CSI 20/07/2026)
 
-| # | Domanda | Blocco |
+| # | Domanda | Esito |
 |---|---|---|
-| Q1 | ~~URL produzione/test Authorization Server CSI~~ → **risolto:** token via API Manager APIMBBONE (Store test `tst-api-<ente>-store.csi.it`, gateway https). Resta: **quali header/claim il Gateway inoltra** al backend | ⚠️ Sprint 0 |
-| Q2 | ~~Algoritmo firma JWT + URL JWKS~~ → **non più a nostro carico:** token gestito dall'APIM (Key Manager). Prerequisito nostro: **produrre lo swagger (OpenAPI)** per la sottoscrizione | ⚠️ Sprint 0 |
-| Q3 | Procedura onboarding nuovo SIA (accreditamento Store, chi crea l'applicazione/chiavi OAuth, chi popola il mapping `cons_t_client_ente`) | Sprint 1 |
-| Q4 | TTL token raccomandato e politica refresh | Sprint 1 |
-| Q5 | Scope predefiniti CSI o liberi a definire dal progetto? | Sprint 1 |
-| Q6 | Politica revoca credenziali compromesse (blacklist? rotation?) | Sprint 2 |
+| Q1 | ~~Quali header/claim il Gateway inoltra al backend~~ | ✅ **RISOLTO:** l'APIM inoltra sempre **CF (da Shibboleth) + `codice_ente`**. Backend deriva l'ente dal `codice_ente` del gateway |
+| Q2 | ~~Algoritmo firma JWT + URL JWKS~~ | ✅ **Chiuso:** token gestito dall'APIM (Key Manager). Nostro unico prerequisito: **swagger (OpenAPI)** CDU-15/16/17 |
+| Q3 | ~~Onboarding nuovo SIA + chi popola il mapping~~ | ✅ **Delegato ad APIMBBONE** (esposto http interno). Mapping `cons_t_client_ente` fuori scope V1.0. Evento **raro** → integrabile in seguito via **CR** |
+| Q4 | ~~TTL token + politica refresh~~ | ✅ **Delegato ad APIMBBONE** (policy interne) |
+| Q5 | ~~Scope predefiniti CSI o liberi~~ | ✅ **Delegato ad APIMBBONE** |
+| Q6 | ~~Revoca credenziali compromesse~~ | ✅ **Delegato:** credenziali fornite da CSI, revoca affidata a servizio di **terza parte** |
+
+**Unico residuo attivo:** produrre e consegnare lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM (prerequisito). CDU-17 in attesa di delucidazioni via mail.
 
 ---
 
@@ -340,11 +388,11 @@ Codice fiscale **NON** loggato in chiaro (vedi [[wiki/analyses/valutazione-quali
 >
 > L'isolamento dei dati per ente (visibilità unicamente dei propri consensi/configurazioni) è garantito da:
 >
-> **(a)** token OAuth2 emesso dall'API Manager CSI (APIMBBONE) e da esso validato, associato al `client_id` univoco del SIA chiamante; il backend riceve dal Gateway l'identità del client (header/claim da concordare con CSI) e non gestisce direttamente la validazione JWKS;
+> **(a)** token OAuth2 emesso e validato dall'API Manager CSI (APIMBBONE — Key Manager), associato al `client_id` univoco del SIA chiamante; il **Gateway APIM inoltra al backend, in header/claim, il Codice Fiscale (recuperato da Shibboleth/GASP) e il `codice_ente`** del fruitore. Il backend non gestisce la validazione JWKS;
 >
-> **(b)** tabella applicativa `cons_t_client_ente` che lega ogni `client_id` a un singolo `codice_ente` autorizzato, popolata in fase di onboarding del SIA e gestita dall'amministratore di sistema;
+> **(b)** il backend assume come **sorgente autoritativa dell'ente il `codice_ente` inoltrato dal Gateway APIM** (non un mapping applicativo): l'onboarding dei SIA e l'assegnazione delle credenziali sono gestiti da APIMBBONE. *(Estensione futura, non in V1.0: tabella `cons_t_client_ente` per scenari multi-ente/aggregatori.)*
 >
-> **(c)** filtro Spring Security (`EnteAuthorizationFilter`) che confronta il `codice_ente` presente nella request (path/query) con quello autorizzato per il `client_id` autenticato, rispondendo `403 Forbidden` in caso di discrepanza, e repository che applica sempre `WHERE codice_ente = :authorizedEnte` come difesa in profondità.
+> **(c)** filtro Spring Security (`EnteAuthorizationFilter`) che, quando la request contiene un `codice_ente` (path/query), lo confronta con quello inoltrato dal Gateway, rispondendo `403 Forbidden` in caso di discrepanza; il repository applica sempre `WHERE codice_ente = :authorizedEnte` (ente preso dall'header del Gateway) come difesa in profondità.
 >
 > Il rate limiting/throttling è fornito dall'**API Manager CSI (APIMBBONE — Traffic Manager)** e non è più implementato a livello applicativo. Resta a carico del Backend un audit log strutturato, obbligatorio per ogni invocazione, che registra `client_id`, `codice_ente_requested`, `codice_ente_authorized`, `outcome`, `latency_ms`, `trace_id`. Il codice fiscale non viene loggato in chiaro.
 >

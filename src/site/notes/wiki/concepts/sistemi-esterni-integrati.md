@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/sistemi-esterni-integrati/","title":"Sistemi Esterni Integrati","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"dg-note-properties":{"title":"Sistemi Esterni Integrati","aliases":["Sistemi Esterni Integrati"],"type":"concept","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"created":"2026-05-05","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2026-03-02-domande-srs-csi-v02"],"related":["[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[GASP Salute]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/sistemi-esterni-integrati/","title":"Sistemi Esterni Integrati","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"dg-note-properties":{"title":"Sistemi Esterni Integrati","aliases":["Sistemi Esterni Integrati"],"type":"concept","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"created":"2026-05-05","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2026-03-02-domande-srs-csi-v02"],"related":["[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[GASP Salute]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
 ---
 
 
@@ -15,11 +15,13 @@ Sistemi esterni con cui [[wiki/concepts/gestione-consensi-applicativo\|Gestione 
 | -------------------------- | -------------------------------------------------------------------- |
 | Gestore                    | [[wiki/entities/csi-piemonte\|CSI Piemonte]]                                       |
 | Protocollo                 | SOAP + WS-Security UsernameToken (credenziali IRIS)                  |
-| Credenziali                | IRIS — da richiedere a referente CSI Sprint 0 ❌                      |
+| Credenziali                | IRIS — ✅ **incluse nei file di properties** (call CSI 20/07/2026)    |
 | Uso                        | Ricerca assistito per codice fiscale (CDU-07, CDU-08 area Operatore) |
 | Servizi invocati (MF53R52) | **FindProfiliAnagrafici**, **getProfiloSanitario**                   |
 | Fallback                   | **NESSUNO** — vedi nota sotto                                        |
-| WSDL                       | Da richiedere a CSI (lista servizi da specificare) ❌                 |
+| WSDL                       | ✅ **Nessun servizio nuovo** — gli stessi già nei properties (call CSI 20/07/2026) |
+
+> ✅ **Chiuso (call CSI 20/07/2026 — INT-01/ID-03):** CSI conferma che **non ci saranno nuovi servizi**, sono **sempre gli stessi già presenti nei file di properties**; le **credenziali IRIS per DEV** sono incluse. Niente da richiedere.
 
 ### Comportamento ricerca assistito (MF53R52, MF55R54)
 
@@ -136,8 +138,10 @@ Il filtro opera a 3 livelli su ogni richiesta SIA:
 | Routing            | **via API-Piemonte** (API Manager) — non chiamata diretta                                                       |
 | Accreditamento     | Tramite **portale API-Piemonte** (richiesto da Exprivia a CSI)                                                  |
 | Uso                | Verifica deleghe familiari — cittadino che opera per conto di un delegante (pulsante "Deleghe" webapp, MF20R19) |
-| WSDL               | Da richiedere a [[wiki/entities/csi-piemonte\|CSI Piemonte]] Sprint 0 ❌                                                       |
+| WSDL               | ✅ **Già integrato — nulla da fare** (call CSI 20/07/2026)                                                       |
 | Stato produzione   | Scenario delegante già attivo in produzione (MF22R21)                                                           |
+
+> ✅ **Chiuso (call CSI 20/07/2026 — INT-02):** l'integrazione con Gestione Deleghe (`getDelegantiService` via API-Piemonte) è **già integrata, non c'è nulla da fare**. Cadono l'accreditamento portale e la firma del token come punti aperti.
 
 **Flusso di integrazione (da immagine DelegheApi — verbale 11/06/2026):**
 
@@ -202,9 +206,9 @@ Registrazione app PUA (2 profili operatore) da richiedere a [[wiki/entities/csi-
 
 | Sistema | Cosa serve | Stato |
 |---|---|---|
-| AURA | Credenziali IRIS + WSDL (FindProfiliAnagrafici, getProfiloSanitario) | ❌ Da richiedere |
-| SIA ASR | Certificati X509 per ogni ASR | ❌ Da richiedere |
-| Gestione Deleghe | WSDL | ❌ Da richiedere |
+| AURA | Credenziali IRIS + WSDL (FindProfiliAnagrafici, getProfiloSanitario) | ✅ Nei properties (call 20/07/2026) — nessun servizio nuovo |
+| SIA ASR | Certificati X509 per ogni ASR (AS-IS) / credenziali OAuth via APIMBBONE (TO-BE) | ❌ Da richiedere (AS-IS) · TO-BE gestito da APIM |
+| Gestione Deleghe | WSDL | ✅ Già integrato (call 20/07/2026) |
 | Notificatore di Deleghe | API + integration spec | ❌ Da richiedere (distinta da UNP) |
 | Notificatore UNP | Già documentato — gitlab.csi.it | ✅ Riferimento disponibile |
 | PUA | Registrazione 2 profili applicativo | ❌ Da richiedere |

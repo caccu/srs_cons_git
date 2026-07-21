@@ -9,7 +9,9 @@
 
 `accepted` — risposta tecnica autoritativa MF59-62R58 (ex commento TR30/TR58) sulla revisione SRS bozza v3.
 
-> ✅ **Aggiornamento 07/2026 (APIMBBONE):** con l'API Manager CSI confermato, il **Livello A** (emissione/validazione token, JWKS, Authorization Server) e il **rate limit `bucket4j`** sono **assorbiti dall'APIM** (Key Manager + Gateway + Traffic Manager). Restano pienamente validi e a nostro carico i **Livelli B e C** (mapping `cons_t_client_ente` + `WHERE codice_ente`) e l'audit log. Prerequisito nuovo: **swagger (OpenAPI)** per la sottoscrizione. Modello autoritativo aggiornato: [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4 e §8 (versione recepita in SRS v5).
+> ✅ **Aggiornamento 07/2026 (APIMBBONE):** con l'API Manager CSI confermato, il **Livello A** (emissione/validazione token, JWKS, Authorization Server) e il **rate limit `bucket4j`** sono **assorbiti dall'APIM** (Key Manager + Gateway + Traffic Manager). Prerequisito nuovo: **swagger (OpenAPI)** per la sottoscrizione.
+>
+> ✅ **Aggiornamento call CSI 20/07/2026:** il Gateway APIM **inoltra al backend CF (da Shibboleth) + `codice_ente`** in header/claim. Di conseguenza il **Livello B** (mapping `cons_t_client_ente`) **esce dallo scope V1.0** — il `codice_ente` autoritativo arriva dal gateway; la tabella resta come **estensione futura** (multi-ente/aggregatori). Resta pienamente valido e a nostro carico il **Livello C** (`WHERE codice_ente` con ente dall'header del gateway) + audit log. TTL/refresh, scope, onboarding e revoca credenziali **delegati ad APIMBBONE** (SEC-01÷06 chiusi). Modello autoritativo aggiornato: [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4, §3, §7 e §8.
 
 ## Context
 
@@ -74,13 +76,15 @@ Componenti aggiuntivi:
 
 ## Open issues
 
-Domande aperte verso CSI (tracker [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §2):
-- SEC-01: URL AS CSI Piemonte (DEV/PROD)
-- SEC-02: Algoritmo firma JWT + endpoint JWKS
-- SEC-03: Procedura onboarding SIA
-- SEC-04: TTL token + politica refresh
-- SEC-05: Scope OAuth predefiniti CSI o liberi
-- SEC-06: Politica revoca credenziali compromesse
+✅ **CHIUSI in call CSI 20/07/2026** (tracker [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §2):
+- ~~SEC-01: URL AS / header-claim~~ → il Gateway APIM inoltra **CF + `codice_ente`**
+- ~~SEC-02: Firma JWT + JWKS~~ → gestito dal Key Manager APIM
+- ~~SEC-03: Onboarding SIA~~ → delegato ad APIMBBONE; evento raro → CR
+- ~~SEC-04: TTL + refresh~~ → policy interne APIMBBONE
+- ~~SEC-05: Scope OAuth~~ → delegato ad APIMBBONE
+- ~~SEC-06: Revoca credenziali~~ → credenziali fornite da CSI, revoca a terza parte
+
+**Unico residuo attivo:** produrre lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM (CDU-17 in attesa di delucidazioni via mail).
 
 ## References
 
