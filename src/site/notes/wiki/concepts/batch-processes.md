@@ -196,13 +196,13 @@ Alla nascita di un nuovo sistema dipartimentale aziendale, il processo di alline
 
 ---
 
-## ~~BATCH-03~~ — sostituito da PULL CDU-17 (**proposed**, attende sign-off CSI)
+## ~~BATCH-03~~ — sostituito da PULL CDU-17 (✅ **confermato dal committente 20/07/2026**)
 
-> 🟡 **DESIGN RIVISTO — risposta MF69R68 (ex TR34/TR68):**
+> ✅ **DESIGN RIVISTO E CONFERMATO — risposta MF69R68 (ex TR34/TR68) + rifacimento call CSI 20/07/2026:**
 >
-> BATCH-03 push viene **sostituito** dalla specifica TO-BE da modello **PULL** via CDU-17 (REST snapshot paginato, SIA pulla autonomamente). Proposta tecnica Exprivia (2026-05-14) come accoglimento del commento cliente TR68 "centro stella" — vedi [ADR-006](ADR-006-batch-03-pull-cdu-17.md), status `proposed`. Propagazione interna sulla wiki completata; **attende sign-off formale CSI Piemonte** prima di chiudere SRS e rimuovere fisicamente §7.3.
+> BATCH-03 push è **sostituito** dalla specifica TO-BE a modello **PULL** via CDU-17 (REST snapshot paginato, SIA pulla autonomamente). Il committente ha fornito il **rifacimento completo** del caso d'uso (call 20/07/2026): blocco obbligatorio, passo 5 (notifica esito webapp), servizi endpoint CRUD esposti alle aziende via API Manager, nuovo scenario di manutenzione (`IN_MANUTENZIONE`). Vedi [ADR-006](ADR-006-batch-03-pull-cdu-17.md) — status **`accepted`**.
 >
-> Dettaglio progettuale completo: [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]
+> Dettaglio progettuale completo: [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]. Diagrammi: [[CDU-17_diagramma-sequenza\|CDU-17]] · [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]].
 
 Design storico (push, deprecato):
 - Trigger: nuovo endpoint ASR (`cons_t_endpoint` con `stato_allineamento=DA_ALLINEARE`)
@@ -261,6 +261,6 @@ Nuovo endpoint configurato (CDU-14 Back Office)
 |---|---|
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5 min con SKIP LOCKED |
 | [ADR-016](ADR-016-scaduto-async-batch-02.md) | Stato SCADUTO async via BATCH-02 |
-| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | BATCH-03 push → CDU-17 PULL (**proposed**) |
+| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | BATCH-03 push → CDU-17 PULL (**accepted** — confermato 20/07/2026) |
 | [ADR-012](ADR-012-notificatore-deleghe-post-completato.md) | Notifica cittadino via Notificatore di Deleghe post-COMPLETATO |
 | [ADR-014](ADR-014-apache-cxf-soap-client.md) | Apache CXF client SOAP (BATCH-01 outbound) |

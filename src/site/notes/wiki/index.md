@@ -18,7 +18,7 @@ Master catalogo di tutte le pagine. Aggiornato.
 | OpenAPI CDU-15/16 — [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]], 5 TBD aperti con CSI | Blocca go-live integrazione SIA ASR                  | Condividere bozza con ASR, confermare 5 TBD Sprint 1-2                                        |
 | BATCH-01: SRV-01 vs SRV-03?                                                         | Errore implementativo WSDL                           | Conferma scritta da CSI                                                                       |
 | SCADUTO AS-IS ≠ TO-BE                                                               | Rottura integrazione SIA ASR                         | Documentare diff in OpenAPI                                                                   |
-| BATCH-03 push contestato TR34                                                       | Onere infra regionale, cliente vuole "centro stella" | Proposta PULL CDU-17 ([[wiki/docs/adr/ADR-006-batch-03-pull-cdu-17\|ADR-006-batch-03-pull-cdu-17]], **proposed**) in attesa sign-off CSI |
+| ~~BATCH-03 push contestato TR34~~ ✅ risolto                                        | Onere infra regionale, cliente vuole "centro stella" | PULL CDU-17 ([[wiki/docs/adr/ADR-006-batch-03-pull-cdu-17\|ADR-006-batch-03-pull-cdu-17]], **accepted**) — **confermato dal committente 20/07/2026**, Variante B eliminata |
 | SC67 — INSERT storicizzazione BATCH-02                                              | "Da approfondire e verificare meglio"                | Discutere con CSI prima di chiudere SRS                                                       |
 
 Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazione Qualità SRS — Gestione Consensi]]
@@ -43,7 +43,7 @@ Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazion
 - [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]] — Notifica/scadenza/allineamento asincrono; ⚠️ BATCH-01 ambiguità WSDL SRV-01 vs SRV-03
 - [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] — AURA, SIA ASR, Notificatore UNP, Gestione Deleghe, PUA/Configuratore; stato approvvigionamento Sprint 0
 - [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]] — Risposta TR30: OAuth2 Client Credentials + JWT + tabella client_ente + filter Spring Security; AS-IS **no API Manager**, difesa a 3 livelli; TO-BE API Manager CSI per nuovi fruitori
-- [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]] — Risposta TR34: sostituzione BATCH-03 push con PULL REST paginato cursor-based; **hub-and-spoke**, zero push, zero downtime, riusa security CDU-15/16
+- [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]] — Sostituzione BATCH-03 push con PULL REST paginato cursor-based; **hub-and-spoke**, zero push, blocco obbligatorio, riusa security CDU-15/16. **Rielaborato e confermato 20/07/2026** (Variante B eliminata, passo 5, endpoint CRUD via APIM, scenario manutenzione)
 - [[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso — Single Source of Truth]] — Pattern SSoT Form Renderer unico Citt+Op (CDU-02/03/04/09/10/11); MF26/28/30/35/37/39/41/43/45/57
 - [[wiki/concepts/informativa\|Informativa Consenso]] — Oggetto dichiarativo del consenso: modello `cons_d_informativa`, ciclo di vita, lookup CDU-03, base Form Renderer
 - [[wiki/concepts/migrazione-postgres-9-17\|Migrazione PostgreSQL 9 → 17]] — Strategia dump/restore Fase 6 Sprint 9; rischi tipi/auth scram/timestamp; audit DDL prerequisito Sprint 0
@@ -86,7 +86,7 @@ Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazion
 - [[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|Checklist Avvio Progetto — Gestione Consensi]] — Quadro completo per sviluppatori: 6 sezioni (confermato/da chiedere CSI/da produrre/rischi/azioni giorno 1)
 - `openapi-cdu-15-16-v0.1.yaml` — Specifica OpenAPI 3.0 DRAFT: CDU-15 (stato consenso) + CDU-16 (configurazione ente), Bearer JWT, RFC 7807, 5 TBD da confermare con CSI (file YAML in `wiki/analyses/`, vedi [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]])
 - [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]] — Descrizione OpenAPI CDU-15/16: 19 punti consolidati, 5 TBD CSI, 8 attività interne, cronologia versioni, prossimi passi
-- [[wiki/analyses/analysis-2026-05-14-tr34-alternativa-batch-03\|analysis-2026-05-14-tr34-alternativa-batch-03]] — Risposta TR34: tracker decisionale proposta CDU-17 PULL (centro stella); status PROPOSTA, 7 domande aperte CSI
+- [[wiki/analyses/analysis-2026-05-14-tr34-alternativa-batch-03\|analysis-2026-05-14-tr34-alternativa-batch-03]] — Risposta TR34: tracker decisionale CDU-17 PULL (centro stella); ✅ **confermato 20/07/2026** (storico della proposta iniziale)
 - [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] — Tracker master 69 commenti SRS v3 lavorazione + 30 risposte MF; mappatura per tema (A–J) e propagazione wiki
 - [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato]] — Consolidato 38 punti aperti aggregati da 8 pagine, raggruppati per area (auth, security, pull, openapi, batch, integrazioni, infra, gov) e sprint
 - [[wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati\|Punti Aperti — Spiegati in Modo Semplice]] — Versione in linguaggio piano del tracker: per ogni punto cosa significa, perché blocca, come si chiude
@@ -110,7 +110,7 @@ Indice completo: [docs/adr/README.md](wiki/docs/adr/README.md)
 | [ADR-003](ADR-003-dbaas-nivola.md) | DBaaS Nivola esterno al namespace | accepted |
 | [ADR-004](ADR-004-no-api-gateway.md) | No API Gateway — sicurezza applicativa Spring Security | accepted |
 | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) | Sicurezza CDU-15/16 OAuth2 CC + JWT + per-ente | accepted |
-| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | BATCH-03 push → CDU-17 PULL centro stella | **proposed** |
+| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | BATCH-03 push → CDU-17 PULL centro stella | **accepted** |
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5 min con SKIP LOCKED | accepted |
 | [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer (Citt + Op) | accepted |
 | [ADR-009](ADR-009-eliminazione-sistemats.md) | Eliminazione SistemaTS | accepted |

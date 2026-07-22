@@ -49,7 +49,7 @@ Le risposte MF nel PDF sono **decisioni autoritative** del responsabile tecnico 
 | MF59-62R58   | I — Sicurezza (ex TR30)     | **TR58 = ex TR30.** CDU-15/16: no API Manager, JWT + tabella `cons_t_client_ente` + filter Spring Security. Già in wiki                                                                                                     | [[wiki/concepts/sicurezza-cdu-15-16\|sicurezza-cdu-15-16]]                                                                                                      | ✅               |
 | MF64R63      | H — Scheduling              | Aggiungere tabella transizioni stato `cons_t_notifica`/`cons_t_batch`. BATCH-01 **5 minuti** con `SELECT FOR UPDATE SKIP LOCKED` su `cons_t_notifica`. Sostituisce AS-IS 30 minuti                                          | [[wiki/concepts/batch-processes\|batch-processes]]                                                                                                          | ✅               |
 | MF66R65      | H — BATCH-02 SQL            | SQL per determinare `nuova_d_informativa_id`: SELECT informativa corrente non scaduta con ORDER BY data_decorrenza DESC LIMIT 1                                                                                             | [[wiki/concepts/batch-processes\|batch-processes]]                                                                                                          | ✅               |
-| MF69R68      | I — BATCH-03 PULL (ex TR34) | **TR68 = ex TR34.** Sostituzione BATCH-03 push con PULL CDU-17. Già in wiki                                                                                                                                                 | [[wiki/concepts/alternativa-batch-03-pull\|alternativa-batch-03-pull]]                                                                                                | ✅ propagato internamente · ⏳ attende sign-off CSI ([ADR-006] **proposed**) |
+| MF69R68      | I — BATCH-03 PULL (ex TR34) | **TR68 = ex TR34.** Sostituzione BATCH-03 push con PULL CDU-17. Già in wiki                                                                                                                                                 | [[wiki/concepts/alternativa-batch-03-pull\|alternativa-batch-03-pull]]                                                                                                | ✅ **confermato dal committente 20/07/2026** ([ADR-006] **accepted**) |
 
 ---
 
@@ -203,5 +203,5 @@ Le risposte MF hanno generato decisioni architetturali formalizzate come ADR. Ma
 | H — Scheduling (MF64) | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) BATCH-01 5min |
 | H — BATCH-02 SQL (MF66) | [ADR-016](ADR-016-scaduto-async-batch-02.md) SCADUTO async |
 | I — Sicurezza (MF59-62, ex TR30/TR58) | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) + [ADR-004](ADR-004-no-api-gateway.md) |
-| I — BATCH-03 PULL (MF69, ex TR34/TR68) | [ADR-006](ADR-006-batch-03-pull-cdu-17.md) — **proposed** |
+| I — BATCH-03 PULL (MF69, ex TR34/TR68) | [ADR-006](ADR-006-batch-03-pull-cdu-17.md) — **accepted** (confermato 20/07/2026) |
 

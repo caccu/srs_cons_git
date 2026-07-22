@@ -8,6 +8,8 @@
 **Documento di sintesi per presentazione al cliente** — preparato il 10/06/2026.
 Sintetizza l'intera base di conoscenza del progetto: contesto, funzionalità, architettura, decisioni prese, pianificazione e punti ancora aperti.
 
+> ✅ **Aggiornamenti successivi (non riflessi nel corpo di questo snapshot 10/06):** **CDU-17 rielaborato e confermato** dal committente (call 20/07/2026: Variante B eliminata, passo 5, endpoint CRUD via API Manager, scenario manutenzione `IN_MANUTENZIONE`; ADR-006 → `accepted`). Sicurezza API aggiornata a 07/2026: token via **API Manager APIMBBONE**, `codice_ente` inoltrato dal Gateway, **`cons_t_client_ente` fuori scope V1.0**. Fonti correnti: [[wiki/concepts/alternativa-batch-03-pull\|CDU-17 PULL]] · [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] · [[CDU-17_diagramma-sequenza\|diagramma CDU-17]].
+
 ---
 
 ## 1. Di cosa si tratta

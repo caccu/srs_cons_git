@@ -39,46 +39,52 @@ Sistema bidirezionale — consumatore API REST e destinatario notifiche SOAP.
 
 | Direzione | Protocollo | CDU/Batch | Stato |
 |---|---|---|---|
-| Inbound (SIA→Regionale) | REST OpenAPI 3.x — OAuth2 `client_credentials` via **API Manager CSI (APIMBBONE)** (07/2026) | CDU-15, CDU-16, **CDU-17 (snapshot)** | CDU-15/16: [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]], 5 TBD CSI; CDU-17 in proposta TR68 |
+| Inbound (SIA→Regionale) | REST OpenAPI 3.x — OAuth2 `client_credentials` via **API Manager CSI (APIMBBONE)** (07/2026) | CDU-15, CDU-16, **CDU-17 (snapshot)**, **servizi endpoint CRUD** | CDU-15/16: [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]], 5 TBD CSI; **CDU-17 rielaborato e confermato (call 20/07/2026)** — swagger da produrre |
 | Outbound (Regionale→SIA) | SOAP AS-IS invariato — [[wiki/sources/2019-06-01-webservice-consenso-regionale-v03\|Specifica WebService ConsensoRegionaleAziendale v03 (AS-IS)]] | BATCH-01 (solo notifiche puntuali) | Contratto definito ✅ |
 
 **BATCH-03 push rimosso:** l'allineamento massivo per nuovo endpoint passa a modello PULL (CDU-17). Vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]].
 
 **Sicurezza outbound SOAP (BATCH-01):** WS-Security X509, un certificato per ASR — richiederli in Sprint 0.
-**Sicurezza inbound REST:** OAuth2 Client Credentials + tabella `cons_t_client_ente`. Vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]].
+**Sicurezza inbound REST:** OAuth2 Client Credentials via **API Manager APIMBBONE**; il Gateway inoltra al backend il **`codice_ente`** (isolamento per ente). **`cons_t_client_ente` fuori scope V1.0** (estensione futura). Vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]].
 
 **Rischi aperti:** ambiguità BATCH-01 WSDL + semantica SCADUTO AS-IS≠TO-BE. Vedi [[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]].
 
 ### CDU-17 — Contratto SIA come Caller (modello PULL)
 
-> ⚠️ **Inversione del contratto:** nel modello PULL, SIA non è più destinatario passivo ma **chiamante attivo**. Il sistema Gestione Consensi espone un endpoint REST che SIA invoca periodicamente per ottenere uno snapshot dei consensi aggiornati.
+> ✅ **Rielaborato e confermato (call CSI 20/07/2026).** Diagrammi aggiornati: [[CDU-17_diagramma-sequenza\|CDU-17 — Allineamento PULL]] · [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]]. Il SIA è **chiamante attivo** (confermato); i servizi transitano dall'**API Gateway APIMBBONE**. Oltre allo snapshot, sono esposti alle aziende i **servizi endpoint CRUD** (inserimento/modifica/eliminazione) e lo **scenario di manutenzione** (stato `IN_MANUTENZIONE`). Le operazioni della **web app** restano dirette (senza API Manager).
 
-**Flusso PULL:**
+**Inversione del contratto:** nel modello PULL, SIA non è destinatario passivo ma **chiamante attivo**. Il sistema Gestione Consensi espone un endpoint REST paginato che SIA invoca per ottenere lo snapshot dei consensi.
+
+**Flusso PULL (autoritativo):**
 
 ```
-SIA ASR  →  GET /cdu-17/snapshot?ente={codice_ente}&from={timestamp}
+SIA ASR  →  PATCH /api/v1/endpoints/{endp_id}/stato-allineamento { IN_CORSO }   (blocco obbligatorio)
+         →  loop: GET /api/v1/consensi/snapshot?codice_ente&codice_consenso&cursor&page_size
+                        ↓  (via API Gateway APIMBBONE — codice_ente inoltrato)
+         [EnteAuthorizationFilter → WHERE codice_ente]
                         ↓
-         [EnteAuthorizationFilter — 3 livelli]
-                        ↓
-         Gestione Consensi  →  risponde con payload consensi
+         Gestione Consensi  →  200 { items[], next_cursor, has_more }
+         →  PATCH .../stato-allineamento { COMPLETATO }   (sblocco)
+         →  passo 5: SIA notifica alla webapp COMPLETATO + dati ultimo invio (canalità PULL-02)
 ```
 
-**Parametri attesi nella chiamata SIA→Regionale:**
+**Parametri della chiamata snapshot SIA→Regionale:**
 
 | Parametro | Tipo | Note |
 |---|---|---|
-| `codice_ente` | string | Codice ASR richiedente — validato contro `cons_t_client_ente` |
-| `from` | ISO 8601 timestamp | Data di inizio finestra snapshot (delta, non full dump) |
+| `codice_ente` | string | Codice ASR — **coerenza verificata contro il `codice_ente` inoltrato dal Gateway APIM** |
+| `codice_consenso` | string | Sotto-tipologia di consenso in allineamento |
+| `cursor` | string (opaco) | Cursore base64 per la pagina successiva (no offset) |
+| `page_size` | int | Dimensione pagina (default 1000) |
 | Authorization header | Bearer JWT | OAuth2 Client Credentials via API Manager APIMBBONE — stesso schema CDU-15/16 |
 
 **Applicazione [[wiki/concepts/sicurezza-cdu-15-16\|EnteAuthorizationFilter]] su chiamata inbound:**
 
-Il filtro opera a 3 livelli su ogni richiesta SIA:
-1. **Livello client:** JWT validato → `client_id` mappato a `codice_ente` in `cons_t_client_ente`
-2. **Livello ente:** la risposta include **solo** i consensi dell'ente corrispondente al `client_id` — SIA non può richiedere dati di enti diversi dal proprio
-3. **Livello dato:** eventuali consensi di assistiti senza ASR di riferimento non vengono esposti
+1. **Token** validato dall'**API Manager (Key Manager)**; il Gateway inoltra al backend il **`codice_ente`** (e il CF da Shibboleth)
+2. **Livello ente:** il repository forza `WHERE codice_ente = :authorizedEnte` (ente del Gateway) → SIA vede **solo** i consensi del proprio ente
+3. In V1.0 **nessun lookup** su `cons_t_client_ente` (tabella fuori scope, estensione futura)
 
-> ⚠️ **Gap critico:** il filtro è progettato per richieste interne/webapp. La sua applicazione su chiamate entranti da sistema terzo (SIA) non è documentata nella spec [[wiki/concepts/sicurezza-cdu-15-16\|CDU-15-16]] né nello YAML [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|OpenAPI v0.1]]. La spec CDU-17 non esiste ancora.
+> ✅ **Gap chiuso (20/07/2026):** la capacità del SIA di chiamare (PULL-08) è confermata e il modello di sicurezza inbound è definito (isolamento su `codice_ente` del Gateway). **Resta da produrre lo swagger (OpenAPI) di CDU-17.**
 
 **Differenze rispetto al modello PUSH (BATCH-03 AS-IS):**
 
@@ -88,7 +94,7 @@ Il filtro opera a 3 livelli su ogni richiesta SIA:
 | Frequenza | Schedulata internamente | Definita da SIA (TBD con CSI) |
 | Scope dati | Tutti i delta dal batch precedente | Delta da `from` timestamp |
 | Autorizzazione | Interna — decidiamo noi cosa spedire | SIA chiede → noi filtriamo |
-| Spec contratto | WSDL AS-IS disponibile ✅ | **Spec REST CDU-17 non scritta ❌** |
+| Spec contratto | WSDL AS-IS disponibile ✅ | Modello confermato ✅ — **swagger (OpenAPI) CDU-17 da produrre** |
 
 **Relazione SIA:** 1 a n — un'azienda ASR può avere **più sistemi** SIA. Se uno di questi è in manutenzione, CSI interrompe l'invio verso tutti i sistemi dell'azienda. Vedi [[wiki/concepts/batch-processes\|Processi Batch]] §Gestione Manutenzione ASR.
 
@@ -96,11 +102,11 @@ Il filtro opera a 3 livelli su ogni richiesta SIA:
 
 | Gap | Responsabile | Stato |
 |---|---|---|
-| Spec REST CDU-17 (endpoint, payload, error codes) | Exprivia + CSI | ❌ Non scritta |
-| Conferma CSI che SIA supporta chiamate PULL attive | CSI Piemonte | ❌ Punto aperto (vedi [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]]) |
-| Estensione `EnteAuthorizationFilter` per caller esterno | Exprivia | ❌ Non documentata |
-| Aggiunta security scheme CDU-17 nello YAML OpenAPI | Exprivia | ❌ YAML attuale copre solo CDU-15/16 |
-| Frequenza di polling SIA (SLA snapshot) | CSI Piemonte | ❌ TBD |
+| Swagger (OpenAPI) CDU-17 (endpoint, payload, error codes, passo 5, endpoint CRUD, manutenzione) | Exprivia + CSI | 🟠 **Residuo attivo** |
+| ~~Conferma che SIA supporta chiamate PULL attive~~ | CSI Piemonte | ✅ Confermato (PULL-08, call 20/07/2026) |
+| `EnteAuthorizationFilter` per caller esterno | Exprivia | ✅ Definito — isolamento su `codice_ente` del Gateway |
+| Security scheme CDU-17 nello YAML OpenAPI | Exprivia | 🟠 Da aggiungere nello swagger CDU-17 |
+| Frequenza di polling SIA (SLA snapshot) | CSI Piemonte | ⚪ Da precisare (non bloccante) |
 
 ---
 
@@ -197,7 +203,7 @@ Registrazione app PUA (2 profili operatore) da richiedere a [[wiki/entities/csi-
         ├─ Notificatore UNP  (REST) — notifiche applicative generiche
         ├─ SIA ASR           (SOAP outbound) ← BATCH-01 notifiche puntuali
         ├─ SIA ASR           (REST inbound) ← CDU-15, CDU-16 [spec v0.1-DRAFT]
-        └─ SIA ASR           (REST inbound) ← CDU-17 PULL snapshot [⚠️ spec mancante — SIA come caller]
+        └─ SIA ASR           (REST inbound via API Manager) ← CDU-17 PULL snapshot [✅ confermato 20/07 — swagger da produrre]
 ```
 
 ---

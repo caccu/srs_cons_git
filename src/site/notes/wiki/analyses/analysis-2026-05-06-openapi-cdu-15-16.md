@@ -100,7 +100,7 @@ Il SIA chiamante ottiene un token JWT dall'Authorization Server CSI Piemonte, in
 Authorization: Bearer <token>
 ```
 
-Il token contiene il claim `client_id` del SIA chiamante. L'autorizzazione per ente non si poggia sul claim ma su tabella applicativa `cons_t_client_ente` che lega `client_id` → `codice_ente`. Difesa in profondità a 3 livelli (firma JWT + filter Spring Security + WHERE clause repository).
+Il token è emesso/validato dall'API Manager APIMBBONE. ✅ **Aggiornamento call 20/07/2026:** l'autorizzazione per ente si poggia sul **`codice_ente` inoltrato dal Gateway APIM** (non su una tabella applicativa): `EnteAuthorizationFilter` + `WHERE codice_ente` nel repository. La tabella `cons_t_client_ente` è **fuori scope V1.0** (estensione futura per multi-ente).
 
 > Modello completo, claim minimi, pseudocodice filter, schema tabella, matrice attacchi/mitigazioni, audit log, testo proposto per SRS: **[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]** (risposta tecnica al commento cliente TR30).
 

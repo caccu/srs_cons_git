@@ -11,9 +11,11 @@
 
 > "No, allineamento massivo deve avvenire con un passaggio di dati all'interno dell'azienda, altrimenti ci carichiamo di un onere che non ci è dovuto. Vogliamo spingere verso un centro stella!!!!! Or export dei dati ma con interruzione del servizio online fino al caricamento."
 
-**Status decisionale:** 🟠 PROPOSTA — attende feedback CSI
+**Status decisionale:** ✅ **CONFERMATO dal committente (call CSI 20/07/2026)** — CDU-17 rielaborato per intero.
 
-**Data analisi:** 2026-05-14
+> ✅ **Aggiornamento 20/07/2026 — questo file è lo STORICO della proposta iniziale.** Il committente ha confermato CDU-17 fornendo il rifacimento completo. Rispetto a quanto scritto qui sotto: **Variante B (watermark) ELIMINATA** (blocco obbligatorio); aggiunto **passo 5** (notifica esito webapp); **PULL-02** = email e/o webhook configurabile (webhook → SIA espone REST); **servizi endpoint CRUD** esposti alle aziende via API Manager; **nuovo scenario di manutenzione** (`IN_MANUTENZIONE`); sicurezza aggiornata (`codice_ente` dal Gateway, **`cons_t_client_ente` fuori scope V1.0**). Fonte autoritativa corrente: [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17]] + diagrammi [[CDU-17_diagramma-sequenza\|CDU-17]] · [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]].
+
+**Data analisi:** 2026-05-14 (aggiornata 2026-07-20)
 
 ---
 
@@ -127,6 +129,6 @@ La **variante "export con interruzione del servizio"** citata nel commento è pr
 
 | ADR | Decisione |
 |---|---|
-| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL — **proposed** (questa analysis è la risposta cliente sintetica) |
+| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL — **accepted** (confermato dal committente 20/07/2026; questa analysis è lo storico della proposta) |
 | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) | Pattern sicurezza riusato dal PULL |
 

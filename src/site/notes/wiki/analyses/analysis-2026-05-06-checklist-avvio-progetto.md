@@ -50,7 +50,7 @@ Punti validati dalla Q&A CSI V02 o esplicitamente documentati nell'SRS e negli a
 ### A4. Funzionalità — scope confermato
 
 - **16 CDU** (tutti documentati con scenario principale, varianti, algoritmi, campi validati)
-- **2 processi batch attivi + 1 sostituito** ([[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]): BATCH-01 ogni 5 min, BATCH-02 su scadenza. BATCH-03 push **sostituito** da PULL CDU-17 (vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]] e [ADR-006](ADR-006-batch-03-pull-cdu-17.md) — **proposed**, attende sign-off CSI)
+- **2 processi batch attivi + 1 sostituito** ([[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]): BATCH-01 ogni 5 min, BATCH-02 su scadenza. BATCH-03 push **sostituito** da PULL CDU-17 (vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]] e [ADR-006](ADR-006-batch-03-pull-cdu-17.md) — **accepted**, confermato dal committente 20/07/2026)
 - **25 tabelle TO-BE** (§8.3.1–8.3.25 dell'SRS)
 - **No sovrascrittura consensi** — storicizzazione immutabile via `cons_s_consenso`
 - **CDU-06 PDF** è funzionalità nuova (non presente AS-IS) — firma eIDAS **non richiesta** ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Q&A CSI #13]])

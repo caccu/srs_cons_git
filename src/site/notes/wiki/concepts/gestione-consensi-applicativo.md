@@ -117,7 +117,7 @@ Variante 6.1.3 [PROPOSTA]: se il servizio Gestione Deleghe non risponde o restit
 
 - `GET /api/v1/consensi/stato` (CDU-15)
 - `GET /api/v1/configurazione/{codiceEnte}` (CDU-16)
-- `GET /api/v1/consensi/snapshot` (CDU-17, proposta — vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]])
+- `GET /api/v1/consensi/snapshot` (CDU-17, ✅ confermato 20/07/2026 — vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]])
 
 Sicurezza per tutti gli endpoint SIA: vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]].
 

@@ -103,7 +103,7 @@ Decisione confermata da CSI ([[wiki/sources/2026-03-02-domande-srs-csi-v02\|Doma
 |---|---|---|
 | Rilascio/validazione token OAuth2 | **API Manager (APIMBBONE)** | Key Manager APIM |
 | Rate limiting / throttling | **API Manager (APIMBBONE)** | Traffic Manager APIM |
-| Autorizzazione granulare **per ente** | Backend applicativo | Filter custom `EnteAuthorizationFilter` + `cons_t_client_ente` |
+| Autorizzazione granulare **per ente** | Backend applicativo | Filter custom `EnteAuthorizationFilter` su `codice_ente` inoltrato dal Gateway (`cons_t_client_ente` fuori scope V1.0) |
 | TLS termination | Piattaforma / APIM Gateway | Gateway APIM + layer rete IaaS CSI/Nivola |
 | WAF | Piattaforma | Layer di rete CSI/Nivola |
 | Audit log applicativo | Backend applicativo | Logger applicativo strutturato JSON |
@@ -374,7 +374,7 @@ Codice fiscale **NON** loggato in chiaro (vedi [[wiki/analyses/valutazione-quali
 | Q5 | ~~Scope predefiniti CSI o liberi~~ | ✅ **Delegato ad APIMBBONE** |
 | Q6 | ~~Revoca credenziali compromesse~~ | ✅ **Delegato:** credenziali fornite da CSI, revoca affidata a servizio di **terza parte** |
 
-**Unico residuo attivo:** produrre e consegnare lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM (prerequisito). CDU-17 in attesa di delucidazioni via mail.
+**Unico residuo attivo:** produrre e consegnare lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM (prerequisito). CDU-17 **rielaborato e confermato** dal committente (call 20/07/2026) — vedi [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17]].
 
 ---
 

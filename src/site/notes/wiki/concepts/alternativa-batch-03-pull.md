@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/alternativa-batch-03-pull/","title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"dg-note-properties":{"title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","aliases":["Alternativa BATCH-03 — PULL CDU-17 (centro stella)"],"type":"concept","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"created":"2026-05-14","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised"],"related":["[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/alternativa-batch-03-pull/","title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"dg-note-properties":{"title":"Alternativa BATCH-03 — PULL CDU-17 (centro stella)","aliases":["Alternativa BATCH-03 — PULL CDU-17 (centro stella)"],"type":"concept","tags":["batch-03","cdu-17","pull","centro-stella","allineamento","sia","openapi","tr34","proposta"],"created":"2026-05-14","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised"],"related":["[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[Sistemi Esterni Integrati]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
 ---
 
 
@@ -10,7 +10,19 @@
 **Quesito originale TR34 (cliente CSI/Regione):**
 > "No, allineamento massivo deve avvenire con un passaggio di dati all'interno dell'azienda, altrimenti ci carichiamo di un onere che non ci è dovuto. Vogliamo spingere verso un centro stella!!!!! Or export dei dati ma con interruzione del servizio online fino al caricamento."
 
-**Status:** PROPOSTA — attende feedback CSI Piemonte.
+**Status:** ✅ **CONFERMATO dal committente (call CSI 20/07/2026)** — CDU-17 rielaborato per intero come da mail cliente.
+
+> ✅ **Rielaborazione CDU-17 — call CSI 20/07/2026.** Il committente ha fornito il rifacimento completo del caso d'uso. Novità rispetto alla prima proposta:
+> - **Attore** = **operatore con profilo Back Office** sulla **web app Gestione Consensi** (accesso da **PUA**), non un "operatore CSI" generico. Scenario tipico: azienda con ≥1 endpoint già attivo (es. RIS) che ne attiva un altro (es. LIS) → serve allineamento.
+> - **Variante B (watermark / no-blocco) ELIMINATA.** Resta **solo la Variante A**: il blocco temporaneo delle acquisizioni (`IN_CORSO`) è **obbligatorio** per garantire uno snapshot coerente.
+> - **Nuovo passo 5:** a chiusura, il SIA **comunica alla webapp lo stato `COMPLETATO` + i dati dell'ultimo invio andato a buon fine**, tramite la **canalità PULL-02**.
+> - **PULL-02 (canale notifica) DECISO:** email **e/o** webhook, via **parametro di configurazione** (solo email / solo webhook / entrambi). Con il **webhook** il SIA **espone un servizio REST** il cui **contratto, firma e sicurezza sono forniti da CSI**.
+> - **PULL-01 DECISO** (blocco obbligatorio), **PULL-08 DECISO** (il SIA **può** chiamare i servizi REST).
+> - **Servizi endpoint CRUD** (inserimento/modifica/eliminazione endpoint) della web app **esposti anche alle aziende via API Manager (APIMBBONE)**; le operazioni della **web app NON passano dall'API Manager** (doppia esposizione).
+> - **Nuovo scenario di manutenzione endpoint** (senza inserimento di nuovo endpoint): stato **`IN_MANUTENZIONE`**, blocco acquisizione consensi + notifica webapp di blocco/ripresa (`COMPLETATO` + dati ultimo invio). Diagramma dedicato: [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]].
+> - Sicurezza allineata al modello 07/2026: token via **API Manager APIMBBONE**, `codice_ente` inoltrato dal Gateway; **`cons_t_client_ente` fuori scope V1.0** (cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]]).
+>
+> Diagrammi di sequenza aggiornati: [[CDU-17_diagramma-sequenza\|CDU-17 — Allineamento PULL]] · [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]].
 
 ---
 
@@ -19,11 +31,11 @@
 **Soluzione semplice e indolore:** sostituire **BATCH-03 push** con **CDU-17 PULL** — un nuovo endpoint REST paginato che il SIA chiama autonomamente quando viene registrato un nuovo endpoint. Sistema regionale = hub (centro stella), SIA = spoke che si tira giù i dati.
 
 - Zero push dal sistema regionale → zero onere infrastrutturale
-- Zero downtime del servizio online
-- Riusa interamente il modello di sicurezza già definito per [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]
+- Riusa interamente il modello di sicurezza già definito per [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]] (token via API Manager APIMBBONE; `codice_ente` dal Gateway)
 - Paginazione cursor-based → scala su qualunque volume
 - Idempotente: SIA può rieseguire pull senza side-effect
 - BATCH-03 eliminato dal SRS → modello dati semplificato (`cons_t_notifica` non viene popolata in massa)
+- **Blocco temporaneo delle acquisizioni durante il pull (Variante A, obbligatoria):** breve indisponibilità per il `sotto_tipo_consenso` in allineamento — accettabile perché gli allineamenti sono rari (onboarding nuovo endpoint)
 
 ---
 
@@ -121,6 +133,18 @@ Body: { "stato": "COMPLETATO" }
 
 SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.stato_allineamento` → `COMPLETATO` e sblocca CDU-03/CDU-09 se erano bloccati (vedi §5).
 
+### 3.5 Notifica esito alla webapp (passo 5, nuovo — call 20/07/2026)
+
+A chiusura, il SIA **comunica alla webapp Gestione Consensi** lo stato **`COMPLETATO`** e i **dati dell'ultimo invio andato a buon fine**, tramite la **stessa canalità di PULL-02** (email e/o webhook, configurabile). La webapp aggiorna lo stato visibile all'operatore Back Office.
+
+### 3.6 Servizi endpoint esposti alle aziende (via API Manager)
+
+I servizi di **inserimento / modifica / eliminazione endpoint** previsti dalla web app (famiglia CDU-14) sono **esposti anche alle aziende**, che li richiamano **passando dall'API Manager (APIMBBONE)**. Ciò consente ai Sistemi Informativi Aziendali di:
+- **allineare i consensi** (CDU-17, questo documento);
+- **bloccare l'acquisizione dei consensi durante la manutenzione** → scenario dedicato [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]] (stato `IN_MANUTENZIONE`).
+
+> ⚠️ **Doppia esposizione:** le operazioni effettuate **dalla web app** Gestione Consensi **NON** passano dall'API Manager (integrazione diretta). Solo le chiamate di **SIA/aziende** transitano dall'API Gateway APIMBBONE.
+
 ---
 
 ## 4. Sicurezza
@@ -128,9 +152,9 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
 **Identica a [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]**, nessuna modifica:
 
 - OAuth2 Client Credentials — token **emesso e validato dall'API Manager CSI (APIMBBONE)**, non da un Authorization Server a sé (aggiornamento 07/2026, cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4)
-- Tabella `cons_t_client_ente` lega `client_id` → `codice_ente`
-- Filter `EnteAuthorizationFilter` rigetta con 403 ogni mismatch
-- Repository query forza `WHERE codice_ente = :authorizedEnte`
+- Il **Gateway APIM inoltra al backend il `codice_ente`** (con il CF da Shibboleth): l'isolamento per ente si basa su tale valore. **`cons_t_client_ente` è fuori scope V1.0** (estensione futura per multi-ente) — cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §3/§7
+- Filter `EnteAuthorizationFilter` rigetta con 403 ogni mismatch (ente della request vs ente del Gateway)
+- Repository query forza `WHERE codice_ente = :authorizedEnte` (ente preso dall'header del Gateway)
 
 **Nuovo scope OAuth richiesto:**
 - `consensi:snapshot` — distinto da `consensi:read` per consentire concessione granulare
@@ -162,7 +186,7 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
                                ▼
 ┌───────────────────────────────────────────────────────────────────┐
 │  SIA chiama PATCH /endpoints/{id}/stato-allineamento              │
-│     stato=IN_CORSO  (acknowledge — opzionale ma raccomandato)     │
+│     stato=IN_CORSO  (obbligatorio → blocca acquisizioni)          │
 └──────────────────────────────┬────────────────────────────────────┘
                                │
                                ▼
@@ -180,6 +204,13 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
 │     stato=COMPLETATO                                              │
 │   → cons_r_asr_endpoint.stato_allineamento = COMPLETATO           │
 │   → CDU-03/09 sbloccano acquisizioni per quel sotto_tipo          │
+└──────────────────────────────┬────────────────────────────────────┘
+                               │
+                               ▼
+┌───────────────────────────────────────────────────────────────────┐
+│  Passo 5 (nuovo) — SIA notifica la webapp Gestione Consensi       │
+│   → stato COMPLETATO + dati ultimo invio andato a buon fine       │
+│   → canalità PULL-02 (email e/o webhook)                          │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
@@ -189,26 +220,23 @@ SIA conferma fine allineamento. Sistema regionale aggiorna `cons_r_asr_endpoint.
 
 Durante il pull, possono arrivare nuovi consensi via CDU-03/09. Due varianti progettuali:
 
-### Variante 6.A — Blocco acquisizioni (semplice, già nel SRS)
+### Variante 6.A — Blocco acquisizioni (UNICA, obbligatoria)
 
-- Mantiene comportamento attuale: CDU-03/CDU-09 bloccano nuove acquisizioni per quel `sotto_tipo_consenso` finché `stato_allineamento=IN_CORSO`
+- CDU-03/CDU-09 bloccano nuove acquisizioni per quel `sotto_tipo_consenso` finché `stato_allineamento=IN_CORSO`
 - Pro: zero ambiguità, snapshot è punto-nel-tempo perfetto
-- Contro: finestra di indisponibilità per cittadini (ma allineamenti sono rari, tipicamente onboarding nuova ASR)
-- **Raccomandata** come default
+- Contro: finestra di indisponibilità per cittadini (ma allineamenti sono rari, tipicamente onboarding nuovo endpoint)
 
-### Variante 6.B — Watermark + delta sync (no blocco)
+> ✅ **Deciso (call CSI 20/07/2026 — PULL-01):** il blocco è **obbligatorio**. La Variante 6.B (watermark/no-blocco) è stata **ELIMINATA**.
 
-- Snapshot include nel response header `X-Watermark-Cons-Id: 123456` (max `cons_id` al momento dello snapshot)
-- CDU-03/CDU-09 restano operativi
-- Dopo `COMPLETATO`, SIA chiama CDU-15 per ogni `cons_id > 123456` arrivato durante il pull, OPPURE attiva BATCH-01 ordinario che notificherà via SOAP i nuovi
-- Pro: zero downtime di acquisizione
-- Contro: SIA deve implementare logica delta, leggera complessità in più
+### ~~Variante 6.B — Watermark + delta sync (no blocco)~~ — ELIMINATA (20/07/2026)
 
-Decisione default: **Variante A**. Variante B disponibile se CSI/SIA preferisce no-block.
+> ❌ **Rimossa su indicazione del committente.** Non si prevede più la modalità senza blocco con `X-Watermark-Cons-Id` / delta-sync. Conservata solo come riferimento storico.
 
 ---
 
-## 7. Variante B cliente — Export file con downtime
+## 7. Variante export file con downtime — NON PERSEGUITA (storico)
+
+> ❌ **Non perseguita (call CSI 20/07/2026):** con il rifacimento CDU-17 il committente ha scelto la modalità **PULL paginata con blocco** (Variante A). L'opzione export-con-downtime (seconda preferenza del commento TR34 originale) **non viene realizzata**; conservata sotto solo come riferimento storico.
 
 Per completezza, opzione coerente con la seconda preferenza nel commento TR34 ("export dei dati ma con interruzione del servizio online"):
 
@@ -249,7 +277,7 @@ Raccomandazione: **CDU-17 PULL** come primaria. Export disponibile come fallback
 | Sicurezza | Da definire (X509 outbound) | Riusa OAuth2 CC + JWT esistente |
 | Retry/recovery | Custom in BATCH-03 + `cons_t_batch_errori` | Idempotente per costruzione |
 | Volume scalabile | Sì ma onere proporzionale | Sì, paginazione cursor |
-| Downtime | Sì (CDU-03/09 bloccati durante IN_CORSO) | Sì (variante A) o no (variante B watermark) |
+| Downtime | Sì (CDU-03/09 bloccati durante IN_CORSO) | Sì, breve (blocco obbligatorio durante IN_CORSO — Variante A) |
 | Modello dati | +1 tabella errori | Niente nuove tabelle |
 
 ---
@@ -270,15 +298,16 @@ Raccomandazione: **CDU-17 PULL** come primaria. Export disponibile come fallback
 
 ## 10. Domande aperte CSI
 
-| # | Domanda | Blocco |
+| # | Domanda | Esito (call CSI 20/07/2026) |
 |---|---|---|
-| Q1 | Variante 6.A (blocco acquisizioni) o 6.B (watermark) preferita? | ⚠️ Sprint 0 — impatta SRS §6.17 e CDU-03/09 |
-| Q2 | Canale notifica out-of-band al SIA: email solo, o anche webhook configurabile per ASR? | ⚠️ Sprint 0 |
-| Q3 | Scope OAuth `consensi:snapshot` accettato? Gestione lifecycle (attivazione → disattivazione post-allineamento)? | Sprint 1 |
-| Q4 | `page_size` massimo accettabile? Tunable per ASR via `cons_t_client_ente`? | Sprint 2 |
-| Q5 | Variante export-with-downtime da formalizzare come opzione retrocompatibile? | Sprint 2 |
-| Q6 | Mantenere o rimuovere BATCH-03 dal SRS? (eliminazione totale vs. deprecation marker) | Sprint 1 |
-| Q7 | Conferma completamento via PATCH idempotente — accettabile? Alternativa: auto-detect via timeout? | Sprint 2 |
+| Q1 | ~~Variante 6.A (blocco) o 6.B (watermark)?~~ | ✅ **Variante A — blocco obbligatorio.** Variante B eliminata |
+| Q2 | ~~Canale notifica out-of-band: email o webhook?~~ | ✅ **Entrambi**, via parametro di configurazione (solo email / solo webhook / entrambi). Webhook → SIA espone REST (contratto fornito da CSI) |
+| Q3 | Scope OAuth `consensi:snapshot` + lifecycle | Delegato ad APIMBBONE (scope gestiti dall'API Manager). Resta lo swagger da produrre |
+| Q4 | `page_size` massimo + tarabilità per ASR | ⚪ Da precisare (non bloccante) |
+| Q5 | ~~Variante export-with-downtime~~ | ✅ **Non perseguita** — si adotta il PULL con blocco |
+| Q6 | ~~Mantenere o rimuovere BATCH-03?~~ | ✅ **Rimosso** dal SRS (sostituito da §6.17 CDU-17) |
+| Q7 | Conferma completamento via PATCH idempotente | PATCH idempotente confermato come modalità |
+| Q8 | ~~SIA può fare chiamate REST attive? (PULL-08)~~ | ✅ **Sì** — i SIA/aziende chiamano i servizi via API Manager |
 
 ---
 
@@ -295,22 +324,25 @@ Raccomandazione: **CDU-17 PULL** come primaria. Export disponibile come fallback
 > **Motivazione architetturale:** Modello hub-and-spoke ("centro stella") richiesto dal committente. Il sistema regionale espone il dato; il SIA, in qualità di consumatore, è responsabile dell'allineamento. Questo elimina l'onere infrastrutturale di push massivo dal sistema centrale e mantiene coerenza con il paradigma REST già adottato per CDU-15 e CDU-16.
 >
 > **Precondizioni:**
-> - Endpoint registrato via CDU-14 con `stato_allineamento = DA_ALLINEARE`
-> - SIA autenticato con scope OAuth `consensi:snapshot`
-> - Notifica out-of-band ricevuta dal referente tecnico SIA
+> - Un operatore con **profilo Back Office** (web app Gestione Consensi, accesso da PUA) ha registrato il nuovo endpoint via CDU-14 con `stato_allineamento = DA_ALLINEARE` — operazione **diretta, senza API Manager**
+> - SIA autenticato tramite **API Manager APIMBBONE** con scope OAuth `consensi:snapshot`
+> - Notifica out-of-band ricevuta dal SIA via **email e/o webhook** (PULL-02, configurabile)
 >
 > **Scenario principale:**
 > 1. SIA chiama `PATCH /api/v1/endpoints/{endp_id}/stato-allineamento` con `stato=IN_CORSO`
-> 2. Sistema imposta `cons_r_asr_endpoint.stato_allineamento = IN_CORSO`, blocca CDU-03/CDU-09 per quel `sotto_tipo_consenso`
+> 2. Sistema imposta `cons_r_asr_endpoint.stato_allineamento = IN_CORSO` e **blocca (obbligatorio)** CDU-03/CDU-09 per quel `sotto_tipo_consenso` — snapshot coerente
 > 3. SIA chiama in loop `GET /api/v1/consensi/snapshot?codice_ente={ente}&codice_consenso={cod}&cursor={c}&page_size={n}`
-> 4. Sistema risponde con pagina di consensi attivi + `next_cursor` opaco (base64 di `cons_id` ultimo elemento)
+> 4. Sistema risponde con pagina di consensi attivi + `next_cursor` opaco (base64 di `cons_id` ultimo elemento); a ogni chiamata verifica che il SIA legga solo i dati del proprio ente (`codice_ente` dal Gateway)
 > 5. Loop termina quando `has_more=false`
 > 6. SIA chiama `PATCH /api/v1/endpoints/{endp_id}/stato-allineamento` con `stato=COMPLETATO`
 > 7. Sistema imposta `stato_allineamento = COMPLETATO`, sblocca CDU-03/CDU-09
+> 8. **(nuovo)** Il SIA **comunica alla webapp** lo stato `COMPLETATO` e i **dati dell'ultimo invio andato a buon fine**, tramite la canalità PULL-02
 >
-> **Specifiche tecniche API:** vedi `openapi-cdu-17-v0.1.yaml` (in fase di redazione).
+> **Servizi endpoint esposti alle aziende:** i servizi di inserimento/modifica/eliminazione endpoint (CDU-14) sono esposti anche alle aziende **via API Manager**; le operazioni della web app restano dirette (senza API Manager). Scenario di manutenzione (stato `IN_MANUTENZIONE`): vedi §7.4 SRS.
 >
-> **Autenticazione:** Bearer Token JWT (OAuth2 Client Credentials), scope `consensi:snapshot`. Modello autorizzazione per ente identico a CDU-15/CDU-16 (vedi §6.15 "Modello di sicurezza").
+> **Specifiche tecniche API:** vedi swagger (OpenAPI) di CDU-17, da produrre.
+>
+> **Autenticazione:** token OAuth2 Client Credentials **emesso e validato dall'API Manager CSI (APIMBBONE)**, scope `consensi:snapshot`. Modello autorizzazione per ente identico a CDU-15/CDU-16 (`codice_ente` inoltrato dal Gateway; vedi §6.15/§6.16 "Modello di sicurezza").
 >
 > **Codici di risposta:** 200 OK, 400 (cursor invalido o parametri mancanti), 401 Unauthorized, 403 Forbidden (ente non autorizzato), 404 Not Found (endpoint non esistente), 409 Conflict (stato_allineamento già COMPLETATO), 429 Too Many Requests, 500 Internal Server Error.
 
@@ -337,6 +369,6 @@ Raccomandazione: **CDU-17 PULL** come primaria. Export disponibile come fallback
 
 | ADR | Decisione |
 |---|---|
-| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL (questa concept è la fonte autoritativa) — **proposed** |
+| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL (questa concept è la fonte autoritativa) — **confermato dal committente 20/07/2026**, Variante B eliminata |
 | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) | Pattern sicurezza riusato |
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5min (rimane attivo per notifiche puntuali) |

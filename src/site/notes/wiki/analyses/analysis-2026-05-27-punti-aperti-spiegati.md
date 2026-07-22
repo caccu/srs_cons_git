@@ -67,19 +67,27 @@ Versione "in parole povere" del [[wiki/analyses/analysis-2026-05-14-punti-aperti
 
 ---
 
-## 3. CDU-17 (lo "snapshot" PULL) — da concordare
+## 3. CDU-17 (lo "snapshot" PULL) — ✅ RIELABORATO E CONFERMATO (call 20/07/2026)
 
-### 🔴 I sistemi esterni possono chiamarci loro? (PULL-08)
-**Cosa significa:** nel nuovo modello è il sistema esterno (SIA) che viene a prendersi i dati. Bisogna verificare che tecnicamente possano farlo (firewall, ecc.). **Come si chiude:** CSI/ASR confermano la capacità.
+> Il committente ha fornito il **rifacimento completo** del CDU-17. Attore = **operatore Back Office** sulla web app (accesso da PUA). Diagrammi aggiornati: [[CDU-17_diagramma-sequenza\|CDU-17]] e [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]].
 
-### 🔴 Lo snapshot blocca o no le scritture? (PULL-01)
-**Cosa significa:** per fare una "foto" coerente dei consensi, o fermiamo un attimo le acquisizioni (semplice, micro-stop) oppure usiamo una marca temporale (zero stop, più complesso). **Come si chiude:** CSI sceglie la variante.
+### ✅ I sistemi esterni possono chiamarci loro? (PULL-08)
+**Sì.** I SIA/aziende chiamano i nostri servizi REST passando dall'**API Manager**. Sono esposti anche i servizi di gestione endpoint (inserimento/modifica/eliminazione).
 
-### 🔴 Come avvisiamo il sistema esterno? (PULL-02)
-**Cosa significa:** quando registriamo un nuovo endpoint, avvisiamo il SIA via email e/o webhook? **Come si chiude:** CSI indica il canale.
+### ✅ Lo snapshot blocca o no le scritture? (PULL-01)
+**Blocca — obbligatorio.** Durante l'allineamento le acquisizioni di quel tipo sono sospese (micro-stop) per avere una foto coerente. La variante "senza blocco" (watermark) è stata **eliminata**.
 
-### 🔴 Scrivere la specifica del CDU-17 (PULL-09)
-**Cosa significa:** va definita la specifica REST del servizio (parametri, risposta, errori). **Come si chiude:** la scriviamo insieme a CSI.
+### ✅ Come avvisiamo il sistema esterno? (PULL-02)
+**Email e/o webhook**, a scelta tramite un parametro di configurazione (solo email / solo webhook / entrambi). Se si usa il **webhook**, è il SIA a **esporre un servizio REST**; il contratto e la sicurezza di quel servizio **li fornisce CSI**.
+
+### 🆕 Il SIA ci dice com'è andata (passo 5)
+A fine allineamento il SIA **comunica alla nostra webapp** che ha finito (`COMPLETATO`) e **i dati dell'ultimo invio riuscito**, sullo stesso canale della notifica.
+
+### 🆕 Manutenzione di un endpoint (scenario a parte)
+Se un'azienda va in **manutenzione** (senza aggiungere endpoint), dichiara lo stato **IN_MANUTENZIONE**: blocchiamo l'acquisizione dei consensi e avvisiamo la webapp del blocco; alla ripresa lo stato torna `COMPLETATO` (con i dati dell'ultimo invio riuscito).
+
+### 🟠 Scrivere la specifica del CDU-17 (PULL-09) — resta da fare
+Va prodotto lo **swagger (OpenAPI)** del servizio (parametri, risposta, errori), ora comprensivo di passo 5, servizi endpoint per le aziende e scenario manutenzione. È l'unico vero residuo attivo.
 
 ---
 

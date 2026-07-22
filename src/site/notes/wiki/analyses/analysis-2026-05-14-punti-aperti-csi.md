@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-14-punti-aperti-csi/","title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","aliases":["Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato"],"type":"analysis","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"created":"2026-05-14","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|Checklist Avvio Progetto — Gestione Consensi]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[GASP Salute]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[Sistemi Esterni Integrati]]","[[wiki/sources/2026-05-05-mermaid-architettura\|Diagramma Architettura Sistema — Mermaid]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
+{"dg-publish":true,"permalink":"/wiki/analyses/analysis-2026-05-14-punti-aperti-csi/","title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"dg-note-properties":{"title":"Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato","aliases":["Punti Aperti da Chiedere a CSI Piemonte — Tracker Unificato"],"type":"analysis","tags":["tracker","punti-aperti","csi-piemonte","blocking","sprint-0","sprint-1","da-chiedere"],"created":"2026-05-14","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-02-domande-srs-csi-v02"],"related":["[[wiki/analyses/analysis-2026-05-06-checklist-avvio-progetto\|Checklist Avvio Progetto — Gestione Consensi]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Autorizzazione per Ente]]","[[alternativa-batch-03-pull|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]]","[[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|analysis-2026-05-06-openapi-cdu-15-16]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]]","[[GASP Salute]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[Sistemi Esterni Integrati]]","[[wiki/sources/2026-05-05-mermaid-architettura\|Diagramma Architettura Sistema — Mermaid]]","[[valutazione-qualita-srs-consensi|Valutazione Qualità SRS — Gestione Consensi]]"]}}
 ---
 
 
@@ -50,19 +50,19 @@ Tutte da [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15-16 — Modello Au
 
 ## 3. CDU-17 Snapshot Pull (TR34 → TR68) — sostituzione BATCH-03
 
-Tutte da [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17 (centro stella)]] §Domande aperte CSI.
+> ✅ **CDU-17 RIELABORATO E CONFERMATO dal committente (call CSI 20/07/2026).** Fonte autoritativa: [[wiki/concepts/alternativa-batch-03-pull\|Alternativa BATCH-03 — PULL CDU-17]] + diagrammi [[CDU-17_diagramma-sequenza\|CDU-17]] · [[Manutenzione-endpoint_diagramma-sequenza\|Manutenzione endpoint]]. La maggior parte dei punti è chiusa.
 
-| #     | Domanda                                                                                                    | Prio | Sprint   |
-|-------|------------------------------------------------------------------------------------------------------------|------|----------|
-| PULL-01 | Variante 6.A (blocco acquisizioni durante snapshot) o 6.B (watermark no-block) preferita?                | 🔴   | Sprint 0 |
-| PULL-02 | Canale notifica out-of-band al SIA: email solo o anche webhook configurabile per ASR?                    | 🔴   | Sprint 0 |
-| PULL-03 | Scope OAuth `consensi:snapshot` accettato? Lifecycle (attivazione → disattivazione post-allineamento)?   | 🟠   | Sprint 1 |
-| PULL-04 | `page_size` massimo accettabile? Tunable per ASR via `cons_t_client_ente`?                               | 🟡   | Sprint 2 |
-| PULL-05 | Variante export-with-downtime da formalizzare come opzione retrocompatibile (fallback)?                  | 🟡   | Sprint 2 |
-| PULL-06 | **BATCH-03: eliminazione totale dal SRS o deprecation marker?**                                          | 🟠   | Sprint 1 |
-| PULL-07 | Conferma completamento allineamento via PATCH idempotente accettabile? Alternativa: auto-detect timeout? | 🟡   | Sprint 2 |
-| PULL-08 | **SIA ha capacità tecnica di fare chiamate REST attive verso il sistema Gestione Consensi?** Nel modello PULL il ruolo di SIA si inverte: da destinatario passivo a caller. Verificare se l'infrastruttura SIA supporta chiamate outbound verso endpoint CSI/Exprivia (firewall, mTLS, scheduling interno SIA). | 🔴   | Sprint 0 |
-| PULL-09 | **Spec REST CDU-17 da scrivere end-to-end:** path, parametri (`codice_ente`, `from`, `page`), schema risposta, error codes (401/403 per ente non autorizzato, 429 throttling), SLA polling. Prerequisito per implementare `EnteAuthorizationFilter` su chiamata inbound e per estendere lo YAML OpenAPI CDU-15/16. Dipende da conferma PULL-08. | 🔴   | Sprint 0 → Sprint 1 |
+| #     | Domanda                                                                                                    | Esito (call 20/07/2026) |
+|-------|------------------------------------------------------------------------------------------------------------|------|
+| PULL-01 | ~~Variante blocco o watermark?~~ | ✅ **Blocco obbligatorio** (Variante A). Watermark (B) **eliminata** |
+| PULL-02 | ~~Canale notifica out-of-band~~ | ✅ **email e/o webhook** via parametro di configurazione. Con webhook **il SIA espone un REST** (contratto/firma/sicurezza forniti da CSI) |
+| PULL-03 | Scope OAuth `consensi:snapshot` + lifecycle | Delegato ad **APIMBBONE**; resta lo swagger |
+| PULL-04 | `page_size` massimo + tarabilità | ⚪ Da precisare (non bloccante) |
+| PULL-05 | ~~Variante export-with-downtime~~ | ✅ **Non perseguita** |
+| PULL-06 | ~~BATCH-03 eliminazione o marker?~~ | ✅ **Rimosso** dal SRS (§6.17) |
+| PULL-07 | Conferma via PATCH idempotente | ✅ Confermato idempotente |
+| PULL-08 | ~~SIA può fare chiamate REST attive?~~ | ✅ **Sì** — SIA/aziende via API Manager |
+| PULL-09 | **Swagger (OpenAPI) CDU-17** da scrivere end-to-end. Ora include: **passo 5** (notifica esito webapp), **servizi endpoint CRUD** esposti alle aziende, **scenario manutenzione** (`IN_MANUTENZIONE`). | 🟠 **Residuo attivo** — Sprint 0/1 |
 
 ---
 

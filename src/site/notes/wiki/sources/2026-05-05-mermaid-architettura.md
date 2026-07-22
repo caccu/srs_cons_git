@@ -28,7 +28,7 @@ graph TD
             EAF["EnteAuthorizationFilter\n(isolamento dati per ente)"]
             SGC["Servizio Gestione Consensi"]
             SC["Servizio Configurazione"]
-            SNAP["Snapshot Service\n(CDU-17 PULL — proposta)"]
+            SNAP["Snapshot Service\n(CDU-17 PULL — confermato 20/07)"]
         end
         subgraph DL["Data Layer"]
             PG[("PostgreSQL — DBaaS Nivola")]
@@ -83,7 +83,7 @@ graph TD
 - **SIA ASR** — relazione **1 azienda : n sistemi** (verbale 11/06/2026). Un'ASR può avere più sistemi SIA; se uno è in manutenzione, CSI interrompe l'invio verso tutti. Vedi [[wiki/concepts/batch-processes\|Processi Batch]] §Gestione Manutenzione ASR.
 - **Infrastruttura [[wiki/concepts/architettura-iaas\|Architettura IaaS]]:** ambiente IaaS Nivola (non ECaaS/Kubernetes) per tutti gli ambienti (verbale 11/06/2026).
 
-- **EnteAuthorizationFilter + Snapshot Service** — aggiunti al Backend Layer per recepire il modello di sicurezza CDU-15/16 e il CDU-17 PULL (proposta tecnica) del documento SRS §3.3/§6.17.
+- **EnteAuthorizationFilter + Snapshot Service** — aggiunti al Backend Layer per recepire il modello di sicurezza CDU-15/16 e il CDU-17 PULL (✅ confermato dal committente 20/07/2026) del documento SRS §3.3/§6.17.
 - **API Manager CSI** — nodo separato, **solo TO-BE per nuovi fruitori esterni** (verbale 11/06/2026); NON è sul percorso AS-IS Frontend→Backend.
 
 > ✅ **Aggiornamento 2026-06-18:** il nodo "API Gateway" sul percorso AS-IS (Apache→Backend) è stato **rimosso** per allineamento all'SRS §3.2 (integrazione diretta, nessun gateway per i fruitori AS-IS; Spring Security a livello applicativo). L'esposizione via **API Manager CSI** resta come canale TO-BE per i soli nuovi fruitori esterni. Rimosso anche il riferimento all'immagine ECaaS `httpd_csi · docker-base` (modello ECaaS superato → IaaS). Restano da definire con CSI i dettagli operativi IaaS (deploy/ingress/TLS).

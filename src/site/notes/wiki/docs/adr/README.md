@@ -24,7 +24,7 @@ Registry delle decisioni architetturali del progetto **Gestione Consensi Regione
 | [ADR-003](ADR-003-dbaas-nivola.md) | DBaaS Nivola esterno al namespace | accepted | 2026-03-02 | Infrastruttura |
 | [ADR-004](ADR-004-no-api-gateway.md) | No API Gateway — sicurezza applicativa via Spring Security | partially-superseded | 2026-03-02 | Sicurezza |
 | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) | Sicurezza CDU-15/16 — OAuth2 CC + JWT + autorizzazione per ente | accepted | 2026-05-14 | Sicurezza |
-| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL (centro stella) | **proposed** | 2026-05-14 | Batch / Integrazione |
+| [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL (centro stella) | **accepted** | 2026-07-20 | Batch / Integrazione |
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5 min con SKIP LOCKED | accepted | 2026-05-14 | Batch |
 | [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer unico (Cittadino + Operatore) | accepted | 2026-05-14 | UX / Architettura |
 | [ADR-009](ADR-009-eliminazione-sistemats.md) | Eliminazione SistemaTS dall'integrazione | accepted | 2026-05-14 | Integrazione |
@@ -48,16 +48,16 @@ Registry delle decisioni architetturali del progetto **Gestione Consensi Regione
 | Stack | 1 | 0 | 0 |
 | Infrastruttura | 1 | 0 | 1 |
 | Sicurezza | 1 | 0 | 1 |
-| Batch | 2 | 1 | 0 |
+| Batch | 3 | 0 | 0 |
 | Integrazione | 3 | 0 | 0 |
 | Modello dati | 2 | 0 | 0 |
 | UX / CDU | 4 | 0 | 0 |
 | API | 1 | 0 | 0 |
 | Notifica | 1 | 0 | 0 |
 | Canali | 1 | 0 | 0 |
-| **Totale** | **16** | **1** | **2** |
+| **Totale** | **17** | **0** | **2** |
 
-L'unico `proposed` (ADR-006 CDU-17 PULL) attende formale sign-off CSI Piemonte; decisione propagata internamente sulla wiki ma non ancora confermata cliente.
+ADR-006 (CDU-17 PULL) è stato **confermato dal committente nella call CSI del 20/07/2026** (rifacimento completo del caso d'uso) e portato a `accepted`. Non restano ADR in stato `proposed`.
 
 ---
 
@@ -102,7 +102,7 @@ Vedi tracker autoritativo: [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\
 
 ADR con open issues:
 - **ADR-005**: SEC-01÷06 (URL AS, JWT, onboarding SIA, TTL, scope, revoca)
-- **ADR-006**: PULL-01÷07 (variante race, canale notifica, scope, page_size, conferma, deprecation)
+- **ADR-006**: ✅ PULL-01 (blocco), PULL-02 (email+webhook), PULL-05/06/08 chiusi (call 20/07/2026); residui non bloccanti PULL-03/04/07 + swagger CDU-17
 - **ADR-007**: BAT-01 (WSDL SRV-01 vs SRV-03)
 - **ADR-010**: ID-01 (GASP Salute protocollo)
 - **ADR-013**: ~~GOV-03 (responsabile CSI migrazione)~~ ✅ chiuso 16/07/2026 (CSI Piemonte), TECH-01 (audit DDL PG9)

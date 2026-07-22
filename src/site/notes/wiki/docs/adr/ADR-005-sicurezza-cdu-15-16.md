@@ -84,7 +84,7 @@ Componenti aggiuntivi:
 - ~~SEC-05: Scope OAuth~~ → delegato ad APIMBBONE
 - ~~SEC-06: Revoca credenziali~~ → credenziali fornite da CSI, revoca a terza parte
 
-**Unico residuo attivo:** produrre lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM (CDU-17 in attesa di delucidazioni via mail).
+**Unico residuo attivo:** produrre lo **swagger (OpenAPI)** di CDU-15/16/17 per la sottoscrizione sull'APIM. CDU-17 **rielaborato e confermato** dal committente (call 20/07/2026) — vedi [[wiki/docs/adr/ADR-006-batch-03-pull-cdu-17\|ADR-006]].
 
 ## References
 
