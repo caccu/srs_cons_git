@@ -108,7 +108,9 @@ Vedi [[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]] per seman
 
 ### SQL canonico — determinazione nuova informativa (MF66R65)
 
-Per ogni informativa scaduta, BATCH-02 deve determinare la **nuova informativa corrente** (quella ancora valida) per il medesimo `sotto_tipo_consenso`:
+> ℹ️ **Nota (SC67 risolto).** Con la storicizzazione ancorata all'informativa scaduta (vedi ALG02), questa determinazione **non è più necessaria a BATCH-02**: serve al percorso di **ri-accettazione del cittadino** (CDU-04), che individua la nuova informativa corrente quando l'utente ri-esprime il consenso. Conservata qui come SQL canonico di riferimento.
+
+Determinazione della **nuova informativa corrente** (quella ancora valida) per il medesimo `sotto_tipo_consenso`:
 
 ```sql
 SELECT d_informativa_id AS nuova_d_informativa_id
@@ -130,23 +132,33 @@ WHERE d_informativa_id = :id_informativa_scaduta
   AND tipo_stato IN ('ATTIVO', 'NEGATO');
 ```
 
-### ALG02 — Aggiornamento storicizzato (SC67 aperto)
+### ALG02 — Aggiornamento storicizzato (SC67 risolto per via tecnica)
 
-> 🟠 **APERTO — SC67 (call CSI 20/07/2026: domanda da riformulare).** CSI **non ha compreso** la domanda posta in astratto. Va riproposta con uno scenario concreto che rende evidente la divergenza §6.13 vs §7.2:
+> ✅ **RISOLTO per via tecnica — SC67 (2026-07-23).** La divergenza §6.13 vs §7.2 si scioglie **ancorando la storicizzazione all'informativa che scade**, senza interpellare CSI (funzionamento lineare, nessun impatto a valle — vedi sotto). Non è una scelta arbitraria: allinea l'SQL §7.2 alla **prosa autoritativa §6.13**.
 >
-> **Scenario.** L'informativa **A** (`annulla_consensi = NO`) scade e viene sostituita dall'informativa corrente **B** (`annulla_consensi = SI`), stesso `sotto_tipo_consenso`. Un consenso in stato **ATTIVO** collegato ad A viene storicizzato da BATCH-02.
+> **Regola.** Alla scadenza dell'informativa **A**, per ogni consenso `ATTIVO`/`NEGATO` collegato ad A, BATCH-02:
+> - legge il flag `annulla_consensi` **dall'informativa scaduta A** (sorgente autoritativa = `cons_d_informativa` dell'informativa in scadenza) → nuovo stato `SCADUTO` (flag NO) o `ANNULLATO` (flag SI);
+> - **àncora il record terminale alla stessa informativa A** (`d_informativa_id = :id_informativa_scaduta`), non a una nuova informativa.
 >
-> **Domanda mirata:** il nuovo stato del consenso deve essere **SCADUTO** (leggendo `annulla_consensi` dall'informativa **scaduta A**, come da §6.13) oppure **ANNULLATO** (leggendo il flag dalla **nuova B**, come implicherebbe l'SQL §7.2)? E qual è la **sorgente autoritativa** del flag (quale tabella/campo) al momento della storicizzazione?
+> **Motivazione.** `annulla_consensi` descrive *cosa accade ai consensi alla scadenza di quella informativa* → è una proprietà dell'informativa **A** che scade. La determinazione della "nuova informativa corrente B" **non serve** a BATCH-02: B rileva solo quando il cittadino ri-esprime il consenso (CDU-04, accettazione nuova informativa), non alla scadenza.
 >
-> **Interpretazione tecnica proposta (da validare):** il flag descrive *cosa accade ai consensi alla scadenza di quella informativa* → sembra logico leggerlo dall'informativa **scaduta A** (§6.13). L'SQL §7.2 va allineato di conseguenza. La risposta CSI scioglie il nodo e uniforma il testo SRS.
+> **Nessun impatto verificato:**
+> - **CDU-17 snapshot** esporta **solo consensi attivi** (SRS §6.17); i record terminali `SCADUTO`/`ANNULLATO` non vi compaiono → l'informativa cui sono agganciati è invisibile al SIA.
+> - Notifica ASR su `ANNULLATO` (BATCH-01/SRV-04) invariata: guidata da `A.annulla_consensi = SI`.
+> - `SCADUTO` async (BAT-03) invariato.
+>
+> ⚠️ **Conseguenza semantica (nota, non blocco).** Nello scenario misto `A(NO) → B(SI)` la regola produce **SCADUTO + no-notifica** (letto da A), non `ANNULLATO`. È l'esito coerente con §6.13. Da segnalare a CSI come *scelta di design*, non come domanda aperta.
+>
+> **Residuo:** correggere l'SQL **SRS §7.2** (rimuovere l'aggancio alla nuova informativa nel path di scadenza) — vedi [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|tracker]] e deliverable SRS.
 
 Per ogni `cons_id` individuato:
 1. **Chiudere il record corrente:** `UPDATE cons_t_consenso SET data_fine = NOW(), data_modifica = NOW(), login_operazione = 'BATCH_SCADENZA_INF' WHERE cons_id = :id AND data_fine IS NULL;`
-2. **Inserire nuovo record storicizzato** con il nuovo stato (`SCADUTO` o `ANNULLATO`) puntando alla nuova informativa (`d_informativa_id = :nuova_d_informativa_id`).
+2. **Inserire nuovo record storicizzato** con il nuovo stato (`SCADUTO` o `ANNULLATO`) puntando alla **stessa informativa scaduta** (`d_informativa_id = :id_informativa_scaduta`).
 
 Note tecniche (SRS §BATCH-02):
 - `sotto_tipo_consenso` copiato direttamente dal record originale
-- `d_informativa_id` → nuova informativa, non vecchia
+- `d_informativa_id` → **informativa scaduta A** (invariata), non una nuova (SC67 risolto)
+- `annulla_consensi` letto da `cons_d_informativa` dell'**informativa scaduta A**
 - `endp_id = NULL` — consensi inseriti/aggiornati da batch non hanno endpoint origine
 - `gen_random_uuid()` (PostgreSQL 17 nativa) per UUID nuovo record
 
@@ -220,10 +232,11 @@ CDU-03 (rilascio) o CDU-04/05/10/11 (modifica)
   → al completamento di tutte le notifiche aziende (stato=COMPLETATO)
      → Notificatore di Deleghe → notifica cittadino/delegato
 
-Informativa scade
-  → BATCH-02 → SELECT nuova informativa corrente (MF66)
+Informativa A scade
+  → BATCH-02 → SELECT consensi ATTIVO/NEGATO legati ad A
+              → legge annulla_consensi da A (informativa scaduta)
               → UPDATE cons_t_consenso (chiude record)
-              → INSERT cons_t_consenso (SCADUTO o ANNULLATO, nuova informativa)
+              → INSERT cons_t_consenso (SCADUTO o ANNULLATO, informativa A invariata)
               → [se ANNULLATO] INSERT cons_t_notifica → BATCH-01 → SIA ASR
 
 Nuovo endpoint configurato (CDU-14 Back Office)
@@ -249,7 +262,7 @@ Nuovo endpoint configurato (CDU-14 Back Office)
 
 | ID | Origine | Argomento | Stato |
 |---|---|---|---|
-| SC67 | Revisione SRS v3 lavorazione | Sorgente `annulla_consensi` (informativa scaduta vs nuova) in storicizzazione batch | 🟠 Aperto — **domanda riformulata a scenario** (call 20/07/2026: CSI non aveva capito) |
+| SC67 | Revisione SRS v3 lavorazione | Sorgente `annulla_consensi` (informativa scaduta vs nuova) in storicizzazione batch | ✅ **Risolto per via tecnica (2026-07-23):** storicizzazione ancorata all'informativa **scaduta A** (flag da A, record su A); allinea §7.2 a §6.13; nessun impatto CDU-17. Residuo: correggere SQL SRS §7.2 |
 | BATCH-01 SRV-01 vs SRV-03 | Rischio interno | Ambiguità contratto WSDL outbound | ✅ Confermato (call 20/07/2026): SRV-03/SRV-04, "solo da svecchiare"; restano nomi campi |
 | BATCH-02 frequenza | SRS non specifica | Schedulazione precisa BATCH-02 | ⚪ Non vincolante (call 20/07/2026), da concordare in seguito |
 
