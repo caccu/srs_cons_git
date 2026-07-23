@@ -149,11 +149,48 @@ WHERE d_informativa_id = :id_informativa_scaduta
 >
 > ⚠️ **Conseguenza semantica (nota, non blocco).** Nello scenario misto `A(NO) → B(SI)` la regola produce **SCADUTO + no-notifica** (letto da A), non `ANNULLATO`. È l'esito coerente con §6.13. Da segnalare a CSI come *scelta di design*, non come domanda aperta.
 >
-> **Residuo:** correggere l'SQL **SRS §7.2** (rimuovere l'aggancio alla nuova informativa nel path di scadenza) — vedi [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|tracker]] e deliverable SRS.
+> **Allineamento SRS:** SQL §7.2 corretto (2026-07-23) su `.md` e `.docx` — JOIN su `c.d_informativa_id`, flag e `d_informativa_id` letti dall'informativa scaduta, riga STATO VARIAZIONI 1.4. Vedi [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|tracker]].
 
 Per ogni `cons_id` individuato:
-1. **Chiudere il record corrente:** `UPDATE cons_t_consenso SET data_fine = NOW(), data_modifica = NOW(), login_operazione = 'BATCH_SCADENZA_INF' WHERE cons_id = :id AND data_fine IS NULL;`
-2. **Inserire nuovo record storicizzato** con il nuovo stato (`SCADUTO` o `ANNULLATO`) puntando alla **stessa informativa scaduta** (`d_informativa_id = :id_informativa_scaduta`).
+
+**1. Chiudere il record corrente:**
+
+```sql
+UPDATE cons_t_consenso
+SET data_fine = NOW(), data_modifica = NOW(), login_operazione = 'BATCH_SCADENZA_INF'
+WHERE cons_id = :cons_id_da_chiudere AND data_fine IS NULL;
+```
+
+**2. Inserire il nuovo record storicizzato** (stato `SCADUTO`/`ANNULLATO`, ancorato all'informativa scaduta A):
+
+```sql
+INSERT INTO cons_t_consenso (
+  cf_cittadino, id_aura, nome, cognome, sotto_tipo_consenso, cod_asr,
+  d_informativa_id,        -- informativa scaduta A (invariata) — SC67 risolto
+  operatore_id, fonte_id, audit_id, tipo_stato, valore_consenso,
+  data_acquisizione, data_fine, login_operazione, uuid, cf_delegato,
+  endp_id, data_creazione, data_modifica, data_cancellazione
+)
+SELECT
+  c.cf_cittadino, c.id_aura, c.nome, c.cognome,
+  c.sotto_tipo_consenso,   -- copiato dal record originale (stessa FK)
+  c.cod_asr,
+  i.d_informativa_id,      -- informativa scaduta A (i = informativa in scadenza, join su c.d_informativa_id)
+  c.operatore_id, c.fonte_id, c.audit_id,
+  CASE WHEN i.annulla_consensi = TRUE   -- flag letto dall'informativa scaduta A (SC67 risolto)
+       THEN 'ANNULLATO' ELSE 'SCADUTO' END AS tipo_stato,
+  c.valore_consenso,
+  NOW()  AS data_acquisizione,
+  NULL   AS data_fine,
+  'BATCH-02' AS login_operazione,
+  gen_random_uuid() AS uuid,
+  c.cf_delegato,
+  NULL   AS endp_id,       -- NULL: valorizzato solo per consensi ricevuti da SIA
+  NOW(), NOW(), NULL
+FROM cons_t_consenso c
+JOIN cons_d_informativa i ON i.d_informativa_id = c.d_informativa_id   -- A: informativa scaduta cui il consenso è collegato (SC67 risolto)
+WHERE c.cons_id = :cons_id_da_chiudere;
+```
 
 Note tecniche (SRS §BATCH-02):
 - `sotto_tipo_consenso` copiato direttamente dal record originale
@@ -262,7 +299,7 @@ Nuovo endpoint configurato (CDU-14 Back Office)
 
 | ID | Origine | Argomento | Stato |
 |---|---|---|---|
-| SC67 | Revisione SRS v3 lavorazione | Sorgente `annulla_consensi` (informativa scaduta vs nuova) in storicizzazione batch | ✅ **Risolto per via tecnica (2026-07-23):** storicizzazione ancorata all'informativa **scaduta A** (flag da A, record su A); allinea §7.2 a §6.13; nessun impatto CDU-17. Residuo: correggere SQL SRS §7.2 |
+| SC67 | Revisione SRS v3 lavorazione | Sorgente `annulla_consensi` (informativa scaduta vs nuova) in storicizzazione batch | ✅ **Risolto per via tecnica (2026-07-23):** storicizzazione ancorata all'informativa **scaduta A** (flag da A, record su A); allinea §7.2 a §6.13; nessun impatto CDU-17. SQL SRS §7.2 corretto (2026-07-23, `.md`+`.docx`, riga variazioni 1.4) |
 | BATCH-01 SRV-01 vs SRV-03 | Rischio interno | Ambiguità contratto WSDL outbound | ✅ Confermato (call 20/07/2026): SRV-03/SRV-04, "solo da svecchiare"; restano nomi campi |
 | BATCH-02 frequenza | SRS non specifica | Schedulazione precisa BATCH-02 | ⚪ Non vincolante (call 20/07/2026), da concordare in seguito |
 

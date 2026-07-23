@@ -71,7 +71,7 @@ Storicizzazione segue [[wiki/docs/adr/ADR-015-storicizzazione-immutabile\|ADR-01
 
 > **Aggiornamento call CSI 20/07/2026.**
 
-- **SC67 (BAT-02)** — ✅ **risolto per via tecnica (2026-07-23):** il flag `annulla_consensi` si legge dall'informativa **scaduta A** e il record terminale resta ancorato ad A. Allinea l'SQL §7.2 alla prosa autoritativa §6.13; nessun impatto su CDU-17 (snapshot esporta solo consensi attivi). Residuo: correggere l'SQL SRS §7.2. Vedi [[wiki/concepts/batch-processes\|Processi Batch]] §ALG02.
+- **SC67 (BAT-02)** — ✅ **risolto per via tecnica (2026-07-23):** il flag `annulla_consensi` si legge dall'informativa **scaduta A** e il record terminale resta ancorato ad A. Allinea l'SQL §7.2 alla prosa autoritativa §6.13; nessun impatto su CDU-17 (snapshot esporta solo consensi attivi). SQL SRS §7.2 corretto (2026-07-23, `.md`+`.docx`, riga variazioni 1.4). Vedi [[wiki/concepts/batch-processes\|Processi Batch]] §ALG02.
 - **BAT-03** — 🟠 aperto: CSI considera lo Stato SCADUTO "componente da gestire" → **call dedicata pending** per la gestione asincrona e la comunicazione alle ASR.
 - **Frequenza BATCH-02** — ⚪ non vincolante (call 20/07/2026), da concordare in seguito.
 
