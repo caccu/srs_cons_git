@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-009-eliminazione-sistemats/","title":"Eliminazione SistemaTS dall'integrazione (no fallback ricerca assistito)","tags":["aura","sistemats","integrazione","cdu-07","mf53","mf55"],"dg-note-properties":{"adr":9,"title":"Eliminazione SistemaTS dall'integrazione (no fallback ricerca assistito)","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["aura","sistemats","integrazione","cdu-07","mf53","mf55"],"related_wiki":["[[Sistemi Esterni Integrati\|Sistemi Esterni Integrati]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF53R52, MF55R54"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-009-eliminazione-sistemats/","title":"Eliminazione SistemaTS dall'integrazione (no fallback ricerca assistito)","tags":["aura","sistemats","integrazione","cdu-07","mf53","mf55"],"dg-note-properties":{"adr":9,"title":"Eliminazione SistemaTS dall'integrazione (no fallback ricerca assistito)","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["aura","sistemats","integrazione","cdu-07","mf53","mf55"],"related_wiki":["[[Sistemi Esterni Integrati]]","[[Gestione Consensi - Applicativo]]","[[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF53R52, MF55R54"]}}
 ---
 
 
@@ -58,7 +58,7 @@ Conseguenza documentale (MF55R54):
 
 ## References
 
-- [[Sistemi Esterni Integrati\|Sistemi Esterni Integrati]] §AURA
+- [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §AURA
 - [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] tema E (MF53R52, MF55R54)
 - [[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE]] (stack integrazione semplificato)
 - Correlato: [[wiki/docs/adr/ADR-010-cdu-01-split\|ADR-010-cdu-01-split]] split CDU-01 (operatore lato CDU-07/08 coinvolge AURA)
