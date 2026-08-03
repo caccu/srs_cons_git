@@ -26,7 +26,7 @@
 
 ---
 
-## Uso nel progetto [[Gestione Consensi - Applicativo\|Gestione Consensi]]
+## Uso nel progetto [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]]
 
 UNP è uno dei [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] consumati dal backend Spring Boot:
 
