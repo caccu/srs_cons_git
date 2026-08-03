@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-010-cdu-01-split/","title":"Split CDU-01 in CDU-01a Operatore e CDU-01b Cittadino","tags":["cdu-01","autenticazione","profili","mf16","mf18","gasp-salute","pua"],"dg-note-properties":{"adr":10,"title":"Split CDU-01 in CDU-01a Operatore e CDU-01b Cittadino","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["cdu-01","autenticazione","profili","mf16","mf18","gasp-salute","pua"],"related_wiki":["[[Gestione Consensi - Applicativo\|Gestione Consensi - Applicativo]]","[[GASP Salute\|GASP Salute]]","[[Sistemi Esterni Integrati]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF16R15, MF18R17"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-010-cdu-01-split/","title":"Split CDU-01 in CDU-01a Operatore e CDU-01b Cittadino","tags":["cdu-01","autenticazione","profili","mf16","mf18","gasp-salute","pua"],"dg-note-properties":{"adr":10,"title":"Split CDU-01 in CDU-01a Operatore e CDU-01b Cittadino","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["cdu-01","autenticazione","profili","mf16","mf18","gasp-salute","pua"],"related_wiki":["[[Gestione Consensi - Applicativo]]","[[GASP Salute]]","[[Sistemi Esterni Integrati]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF16R15, MF18R17"]}}
 ---
 
 
@@ -13,7 +13,7 @@
 
 CDU-01 originale (bozza v2) era un caso d'uso unico "Autenticazione" con scenario misto per cittadino e operatore. Limiti:
 
-- IdP, profilo applicativo, precondizioni e flow sono diversi fra cittadino (SPID/CIE via [[GASP Salute\|GASP Salute]]) e operatore (PUA via RUPAR/IRIDE)
+- IdP, profilo applicativo, precondizioni e flow sono diversi fra cittadino (SPID/CIE via [[wiki/concepts/gasp-salute\|GASP Salute]]) e operatore (PUA via RUPAR/IRIDE)
 - La selezione del profilo applicativo Configuratore esiste **solo lato operatore** — cittadino NON è profilo Configuratore (MF7R5)
 - Webapp distinte richiedono CDU distinti per leggibilità del SRS e dei test
 - Precondizioni miscelate in un solo CDU rendono ambigue le validazioni
@@ -61,12 +61,12 @@ Precondizioni separate per scenario.
 
 ## Open issues
 
-Dipende da [[GASP Salute\|GASP Salute]] (rischio critico aperto):
+Dipende da [[wiki/concepts/gasp-salute\|GASP Salute]] (rischio critico aperto):
 - ID-01: protocollo OIDC vs SAML2 → CDU-01b bloccato finché non definito (vedi [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §1)
 
 ## References
 
-- [[Gestione Consensi - Applicativo\|Gestione Consensi - Applicativo]] §CDU-01 split
-- [[GASP Salute\|GASP Salute]]
+- [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]] §CDU-01 split
+- [[wiki/concepts/gasp-salute\|GASP Salute]]
 - [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF16R15, MF18R17, MF7R5
 - Correlato: [[wiki/docs/adr/ADR-009-eliminazione-sistemats\|ADR-009-eliminazione-sistemats]] no SistemaTS (CDU-07 a valle CDU-01a), [[wiki/docs/adr/ADR-011-merge-cdu-04-05-cittadino\|ADR-011-merge-cdu-04-05-cittadino]] merge CDU-04/05 (coerenza UX cittadino)
