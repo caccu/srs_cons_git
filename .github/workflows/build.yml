@@ -43,7 +43,7 @@ jobs:
     needs: build
     concurrency:
       group: pages-deploy
-      cancel-in-progress: false
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
