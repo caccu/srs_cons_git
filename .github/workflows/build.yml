@@ -41,6 +41,9 @@ jobs:
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: build
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
