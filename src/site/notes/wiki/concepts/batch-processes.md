@@ -197,7 +197,7 @@ Note tecniche (SRS §BATCH-02):
 - `d_informativa_id` → **informativa scaduta A** (invariata), non una nuova (SC67 risolto)
 - `annulla_consensi` letto da `cons_d_informativa` dell'**informativa scaduta A**
 - `endp_id = NULL` — consensi inseriti/aggiornati da batch non hanno endpoint origine
-- `gen_random_uuid()` (PostgreSQL 17 nativa) per UUID nuovo record
+- `gen_random_uuid()` (PostgreSQL 18 nativa, disponibile da PG13+) per UUID nuovo record
 
 ### ⚠️ Differenza semantica AS-IS vs TO-BE — stato SCADUTO
 
@@ -288,8 +288,8 @@ Nuovo endpoint configurato (CDU-14 Back Office)
 
 - Spring Boot 3: `@Scheduled` o Spring Batch per esecuzione periodica
 - BATCH-01: client SOAP Apache CXF o Spring-WS
-- BATCH-01 concorrenza: `SELECT FOR UPDATE SKIP LOCKED` (PostgreSQL 17 nativa) — più istanze pod sicure
-- BATCH-02: usa `gen_random_uuid()` PostgreSQL 17 per UUID nuovi record storicizzati
+- BATCH-01 concorrenza: `SELECT FOR UPDATE SKIP LOCKED` (PostgreSQL 18 nativa) — più istanze pod sicure
+- BATCH-02: usa `gen_random_uuid()` PostgreSQL 18 per UUID nuovi record storicizzati
 - Certificati X509 WS-Security: richiederli a [[wiki/entities/csi-piemonte\|CSI Piemonte]] in Sprint 0
 - `cons_t_batch_errori`: tabella TO-BE per tracciatura anomalie (non presente AS-IS)
 

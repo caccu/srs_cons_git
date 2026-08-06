@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-001-stack-tecnologico/","title":"Stack tecnologico applicativo (Spring Boot 3 + Java 17 + Angular 19 + PostgreSQL 17)","tags":["stack","spring-boot","java","angular","postgresql"],"dg-note-properties":{"adr":1,"title":"Stack tecnologico applicativo (Spring Boot 3 + Java 17 + Angular 19 + PostgreSQL 17)","status":"accepted","date":"2026-03-02","deciders":["CSI Piemonte","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["stack","spring-boot","java","angular","postgresql"],"related_wiki":["[[wiki/concepts/stack-tecnologico-applicativo\|Stack Tecnologico Applicativo]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[architettura-iaas|Architettura IaaS]]"],"sources":["[[wiki/sources/2026-03-02-domande-srs-csi-v02\|Domande SRS Consensi — Revisione CSI V02]] Q&A #2, #5, #10","[[2026-03-02-conspref-srs-v1-revised|CONSPREF-SRS-V1.0 revised bozza v2]] §3"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-001-stack-tecnologico/","title":"Stack tecnologico applicativo (Spring Boot 3 + Java 17 + Angular 19 + PostgreSQL 18)","tags":["stack","spring-boot","java","angular","postgresql"],"dg-note-properties":{"adr":1,"title":"Stack tecnologico applicativo (Spring Boot 3 + Java 17 + Angular 19 + PostgreSQL 18)","status":"accepted","date":"2026-03-02","updated":"2026-08-06","deciders":["CSI Piemonte","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["stack","spring-boot","java","angular","postgresql"],"related_wiki":["[[wiki/concepts/stack-tecnologico-applicativo\|Stack Tecnologico Applicativo]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[architettura-iaas|Architettura IaaS]]"],"sources":["[[wiki/sources/2026-03-02-domande-srs-csi-v02\|Domande SRS Consensi — Revisione CSI V02]] Q&A #2, #5, #10","[[2026-03-02-conspref-srs-v1-revised|CONSPREF-SRS-V1.0 revised bozza v2]] §3"]}}
 ---
 
 
@@ -8,6 +8,8 @@
 ## Status
 
 `accepted` — confermato da CSI in Q&A V02 e formalizzato in SRS bozza v2 §3.
+
+> 🔄 **Aggiornamento 06/08/2026 (call CSI):** versione database aggiornata **PostgreSQL 17 → 18** (CSI ha nel frattempo migrato il DBaaS). Resto dello stack invariato.
 
 ## Context
 
@@ -29,7 +31,7 @@ Lo stack TO-BE è:
 | Backend | Spring Boot | 3.4.10+ |
 | Linguaggio | Java | 17 LTS |
 | Sicurezza | Spring Security | 6.x |
-| Database | PostgreSQL | 17 (DBaaS Nivola) |
+| Database | PostgreSQL | 18 (DBaaS Nivola) — era 17, aggiornato 06/08/2026 |
 
 ## Consequences
 
@@ -37,10 +39,10 @@ Lo stack TO-BE è:
 - Conformità totale a Pile CSI CURRENT
 - Spring Boot 3 abilita Jakarta EE 10, Java 17 LTS, native image (futuro)
 - Angular 19 + QUASAR CSI library garantiscono riuso UI cross-applicativo sanità Piemonte
-- PostgreSQL 17 abilita features sfruttate dal TO-BE: `SELECT FOR UPDATE SKIP LOCKED`, `gen_random_uuid()` nativa, MERGE statement
+- PostgreSQL 18 abilita features sfruttate dal TO-BE (già disponibili da PG17): `SELECT FOR UPDATE SKIP LOCKED`, `gen_random_uuid()` nativa, MERGE statement
 
 ### Negative
-- Migrazione PG9 → PG17 obbligatoria con salto di 8 major release (vedi [[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013-migrazione-pg-dump-restore]])
+- Migrazione PG9 → PG18 obbligatoria con salto di 9 major release (vedi [[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013-migrazione-pg-dump-restore]])
 - Spring Boot 3 incompatible con Java 8/11 — niente backport possibile
 - QUASAR CSI library richiede accesso repo CSI (dipendenza esterna)
 
@@ -58,7 +60,7 @@ Lo stack TO-BE è:
 
 ## References
 
-- [[wiki/sources/2026-03-02-domande-srs-csi-v02\|Domande SRS Consensi — Revisione CSI V02]] — Q&A #2 (Angular), #5 (Spring Boot 3.4.10+), #10 (PostgreSQL 17 DBaaS)
+- [[wiki/sources/2026-03-02-domande-srs-csi-v02\|Domande SRS Consensi — Revisione CSI V02]] — Q&A #2 (Angular), #5 (Spring Boot 3.4.10+), #10 (PostgreSQL DBaaS, versione aggiornata a PG18 il 06/08/2026)
 - [[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]
 - [[wiki/concepts/stack-tecnologico-applicativo\|Stack Tecnologico Applicativo]]
 - Correlato: [[wiki/docs/adr/ADR-002-piattaforma-ecaas\|ADR-002-piattaforma-ecaas]] piattaforma ECaaS, [[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013-migrazione-pg-dump-restore]] migrazione PG

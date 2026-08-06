@@ -32,7 +32,7 @@ Vale per **tutte** le transizioni:
 - ATTIVO/NEGATO → SCADUTO/ANNULLATO (BATCH-02, vedi [[wiki/docs/adr/ADR-016-scaduto-async-batch-02\|ADR-016-scaduto-async-batch-02]])
 - SCADUTO/ANNULLATO → ATTIVO/NEGATO (riaccettazione informativa)
 
-Per UUID dei nuovi record storicizzati: `gen_random_uuid()` nativa PostgreSQL 17 ([[wiki/docs/adr/ADR-001-stack-tecnologico\|ADR-001-stack-tecnologico]]).
+Per UUID dei nuovi record storicizzati: `gen_random_uuid()` nativa PostgreSQL 18 (disponibile da PG13+, [[wiki/docs/adr/ADR-001-stack-tecnologico\|ADR-001-stack-tecnologico]]).
 
 ## Consequences
 
@@ -68,4 +68,4 @@ Per UUID dei nuovi record storicizzati: `gen_random_uuid()` nativa PostgreSQL 17
 - [[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]] §Regola fondamentale — No sovrascrittura
 - [[wiki/sources/2026-03-02-conspref-srs-v1-revised\|CONSPREF-SRS-V1.0 revised bozza v2]] §5 (macchina a stati), §8.3 (modello dati)
 - [[wiki/analyses/analysis-gap-as-is-to-be\|Analisi Gap AS-IS → TO-BE]] §Storicizzazione — attivazione feature
-- Correlato: [[wiki/docs/adr/ADR-016-scaduto-async-batch-02\|ADR-016-scaduto-async-batch-02]] SCADUTO via BATCH-02 (anch'esso storicizzato), [[wiki/docs/adr/ADR-001-stack-tecnologico\|ADR-001-stack-tecnologico]] stack (PG17 `gen_random_uuid` nativa)
+- Correlato: [[wiki/docs/adr/ADR-016-scaduto-async-batch-02\|ADR-016-scaduto-async-batch-02]] SCADUTO via BATCH-02 (anch'esso storicizzato), [[wiki/docs/adr/ADR-001-stack-tecnologico\|ADR-001-stack-tecnologico]] stack (PG18 `gen_random_uuid` nativa)

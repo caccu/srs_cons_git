@@ -9,6 +9,8 @@
 
 **Fonti:** SRS V1.0 bozza v2, Q&A CSI V02, appunti, pianificazione, spec WebService v03, ACC-DEL-CDU-01.
 
+> ⚠️ **Superato in parte (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** il progetto sviluppa **solo la Webapp Operatore**. I punti sotto su GASP Salute e CDU-01 Cittadino restano come registro storico ma non sono più bloccanti/necessari per questo progetto.
+
 ---
 
 ## SEZIONE A — Già confermato ✅
@@ -91,7 +93,7 @@ Punti validati dalla Q&A CSI V02 o esplicitamente documentati nell'SRS e negli a
 | B6  | ~~**WSDL Gestione Deleghe**~~ ✅ **CHIUSO (call 20/07/2026):** già integrato, nulla da fare        | — | ✅ |
 | B7  | ~~**Credenziali IRIS** per AURA (DEV)~~ ✅ **CHIUSO (call 20/07/2026):** incluse nei file di properties | — | ✅ |
 | B8  | **Accesso repo QUASAR CSI** (componenti UI)                                                     | Frontend Sprint 2+ senza componenti ufficiali | Sprint 1 |
-| B9  | **Registrazione app PUA** — 2 profili (Operatore, Amministratore)                               | Test autenticazione operatori impossibile     | Sprint 2 |
+| B9  | **Registrazione app PUA** — **1 profilo Operatore** (unico, corretto call CSI 06/08/2026 — era erroneamente "2 profili")               | Test autenticazione operatori impossibile     | Sprint 2 |
 
 ### 🟡 MODERATO — Necessario prima UAT
 

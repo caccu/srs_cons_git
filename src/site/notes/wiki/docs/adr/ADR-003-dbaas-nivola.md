@@ -20,7 +20,7 @@ Decisione su dove erogare PostgreSQL: dentro il pod K8s del namespace applicativ
 
 ## Decision
 
-PostgreSQL 17 viene erogato da **DBaaS Nivola** (servizio gestito CSI), esterno all'infrastruttura IaaS Nivola dell'applicativo.
+PostgreSQL 18 (era 17, aggiornato 06/08/2026) viene erogato da **DBaaS Nivola** (servizio gestito CSI), esterno all'infrastruttura IaaS Nivola dell'applicativo.
 
 - Provisioning via scheda formale a Nivola (alta latenza)
 - Backup, patching, HA gestiti da Nivola
@@ -41,7 +41,7 @@ PostgreSQL 17 viene erogato da **DBaaS Nivola** (servizio gestito CSI), esterno 
 - HikariCP pool size limitato dal max connessioni concesse da Nivola
 
 ### Neutral
-- Migrazione PG9→PG17 deve passare per dump/restore (vedi [[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013-migrazione-pg-dump-restore]]) — niente accesso filesystem diretto
+- Migrazione PG9→PG18 deve passare per dump/restore (vedi [[wiki/docs/adr/ADR-013-migrazione-pg-dump-restore\|ADR-013-migrazione-pg-dump-restore]]) — niente accesso filesystem diretto
 
 ## Alternatives considered
 

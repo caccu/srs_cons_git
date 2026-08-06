@@ -7,7 +7,9 @@
 
 **Origine:** risposte MF a revisione SRS v3 — commenti MB29, MB27, MB34, MB36, MB38, MB40, MB42, MB56 (vedi [[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|analysis-2026-05-14-risposte-mf-srs-v3]] tema C e tema F).
 
-Pattern architetturale unico per il rendering delle pagine di consenso lato **Cittadino** (CDU-02, CDU-03, CDU-04) e **Operatore** (CDU-09, CDU-10, CDU-11). Vincolo: nessuna divergenza di struttura fra le due interfacce.
+> 🔴 **Perimetro progetto (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** questo progetto sviluppa **solo la Webapp Operatore**. Il pattern SSoT sotto descritto nasce per un riuso Cittadino+Operatore, ma in questo progetto **si applica solo lato Operatore** (§4). Le sezioni su CDU-02/03/04 cittadino (§3) restano come contesto storico — la Webapp Cittadino non è un deliverable di questo progetto.
+
+Pattern architetturale per il rendering delle pagine di consenso lato **Operatore** (CDU-09, CDU-10, CDU-11 — ✅ in scope). Nato come pattern unico condiviso anche con **Cittadino** (CDU-02, CDU-03, CDU-04 — ❌ fuori scope di sviluppo, vedi banner sopra). Vincolo originario: nessuna divergenza di struttura fra le due interfacce — resta valido come principio, ma solo la Webapp Operatore è costruita da questo progetto.
 
 ---
 
@@ -15,7 +17,7 @@ Pattern architetturale unico per il rendering delle pagine di consenso lato **Ci
 
 **Single Source of Truth (SSoT):** la stessa logica di rendering della pagina cittadino viene riusata lato operatore. Non sono ammesse divergenze nella struttura dei campi tra interfaccia Cittadino e interfaccia Operatore per lo stesso `sotto_tipo_consenso`.
 
-**Conseguenza implementativa:** motore di rendering **"Form Renderer dinamico"** unico, riusato da entrambe le web app (Cittadino + Operatore/PUA). Da riflettere nel SRS §3.3 Componenti software come componente identificato.
+**Conseguenza implementativa:** motore di rendering **"Form Renderer dinamico"**, in questo progetto usato dalla **sola** Webapp Operatore (vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). Se la Webapp Cittadino esistente riuserà lo stesso componente non è verifica/garanzia di questo progetto. Da riflettere nel SRS §3.3 Componenti software come componente identificato.
 
 ---
 
@@ -25,13 +27,13 @@ La pagina di consenso si compone **dinamicamente** sulla base della configurazio
 
 ### 2.1 Cosa è dinamico
 
-| Elemento UI | Sorgente DB | Note |
-|---|---|---|
-| Campi visualizzati | `cons_d_sotto_tipo_cons` + tabelle correlate | Letti per `sotto_tipo_consenso` |
-| Valori ammessi per `valore_consenso` | `cons_d_sotto_tipo_cons` / tabelle valori | Non solo SI/NO — possono essere multipli |
-| Domande/flag opzionali | Tabelle configurazione | Mostrate solo se previste |
-| Flag "campo richiesto" | Config tipo consenso | Vincolo validazione |
-| Layout informativa | Config aziendale vs regionale | Vedi §2.3 |
+| Elemento UI                          | Sorgente DB                                  | Note                                     |
+| ------------------------------------ | -------------------------------------------- | ---------------------------------------- |
+| Campi visualizzati                   | `cons_d_sotto_tipo_cons` + tabelle correlate | Letti per `sotto_tipo_consenso`          |
+| Valori ammessi per `valore_consenso` | `cons_d_sotto_tipo_cons` / tabelle valori    | Non solo SI/NO — possono essere multipli |
+| Domande/flag opzionali               | Tabelle configurazione                       | Mostrate solo se previste                |
+| Flag "campo richiesto"               | Config tipo consenso                         | Vincolo validazione                      |
+| Layout informativa                   | Config aziendale vs regionale                | Vedi §2.3                                |
 
 ### 2.2 Lista consensi mostrati (CDU-02 MF26)
 
@@ -52,7 +54,9 @@ Implementazione: dropdown o tab per azienda; alla selezione, fetch dell'informat
 
 ---
 
-## 3. Pulsante unico "Salva" lato cittadino (MF37R36)
+## 3. Pulsante unico "Salva" lato cittadino (MF37R36) ❌ OUT scope
+
+> 🔴 **Fuori dal perimetro di sviluppo** (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]) — decisione [[wiki/docs/adr/ADR-011-merge-cdu-04-05-cittadino\|ADR-011]] superseded. Sezione mantenuta come contesto storico.
 
 > Web app cittadino: pulsante unico **«Salva»**. Operazioni tecniche distinte (rilascio CDU-03 vs modifica CDU-04) gestite internamente, non esposte UI.
 
@@ -70,9 +74,11 @@ Layout dinamico **identico** al lato cittadino. Le sole differenze riguardano i 
 
 | Campo | Lato Cittadino | Lato Operatore |
 |---|---|---|
-| `fonte_id` | derivato da contesto webapp citt. (es. `WEB_CITT`, `LIS`) | `'PASS'` |
+| `fonte_id` | derivato da contesto webapp citt. (es. `WEB_CITT`) | `'PASS'` |
 | `login_operazione` | CF cittadino autenticato | login operatore PUA |
 | `ruoloop_id` | NULL | ID ruolo operatore PUA |
+
+> ⚠️ **Nota (ADR-020, 06/08/2026):** LIS **non** passa dal Form Renderer né dai canali Cittadino/Operatore — è un'integrazione BE esistente nel sorgente AS-IS ([[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §LIS), da verificare e migrare al nuovo stack. Un eventuale `fonte_id='LIS'` è un valore AS-IS da preservare in migrazione, non un contesto webapp del Form Renderer SSoT.
 
 I CDU operatore coinvolti:
 - **CDU-09** Rilascio consenso per conto dell'assistito
@@ -134,14 +140,16 @@ Il backend (Spring Boot 3) espone l'endpoint, il Form Renderer Angular lo consum
 
 ## 7. Gap SRS da chiudere
 
-| # | Sezione SRS | Modifica |
-|---|---|---|
-| G1 | §6.2 CDU-02 | Riscrittura punto "tipi visibili" come da MF26R25 (regionale=1, aziendale=N per azienda, tutti i tipi mostrati) |
-| G2 | §6.3 CDU-03 | Pulsante unico Salva (MF37) — niente UI rilascio vs modifica |
-| G3 | §6.4 CDU-04 | Stesse regole composizione di §6.2 — riferimento esplicito |
-| G4 | §6.5 CDU-05 | Lato cittadino: inglobato in CDU-04. Lato operatore: caso d'uso separato resta |
-| G5 | §6.9, §6.10, §6.11 | Aggiungere paragrafo "Composizione dinamica pagina operatore" identico per ogni CDU — rimanda a §6.2 e §6.4 |
-| G6 | §3.3 Componenti software | Aggiungere "Form Renderer dinamico" come componente shared fra le 2 webapp |
+> ⚠️ Nessuna modifica SRS in questa fase (in attesa di conferma utente). Colonna Scope aggiunta 06/08/2026 per riflettere [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]].
+
+| # | Sezione SRS | Modifica | Scope |
+|---|---|---|---|
+| G1 | §6.2 CDU-02 | Riscrittura punto "tipi visibili" come da MF26R25 (regionale=1, aziendale=N per azienda, tutti i tipi mostrati) | ❌ OUT (Cittadino) |
+| G2 | §6.3 CDU-03 | Pulsante unico Salva (MF37) — niente UI rilascio vs modifica | ❌ OUT (Cittadino) |
+| G3 | §6.4 CDU-04 | Stesse regole composizione di §6.2 — riferimento esplicito | ❌ OUT (Cittadino) |
+| G4 | §6.5 CDU-05 | Lato cittadino: inglobato in CDU-04 (fuori scope). Lato operatore: caso d'uso separato resta | ✅ IN (solo parte Operatore) |
+| G5 | §6.9, §6.10, §6.11 | Aggiungere paragrafo "Composizione dinamica pagina operatore" per ogni CDU — rimanda alle regole di composizione (non più a §6.2/§6.4 cittadino, fuori scope) | ✅ IN |
+| G6 | §3.3 Componenti software | Aggiungere "Form Renderer dinamico" come componente — in questo progetto usato dalla sola Webapp Operatore | ✅ IN |
 
 ---
 
@@ -158,5 +166,6 @@ Il backend (Spring Boot 3) espone l'endpoint, il Form Renderer Angular lo consum
 
 | ADR | Decisione |
 |---|---|
-| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer unico (questa concept è la fonte autoritativa) |
-| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (pulsante unico Salva) |
+| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer unico (questa concept è la fonte autoritativa) — nota scope: solo Webapp Operatore |
+| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (pulsante unico Salva) — **superseded** da ADR-021 |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore |

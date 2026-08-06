@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-019-cdu-06-pdf-scope-ridotto/","title":"CDU-06 PDF — scope ridotto a sola informativa accettata, no firma, no valore consenso","tags":["cdu-06","pdf","informativa","mf47","scope","ux-cittadino"],"dg-note-properties":{"adr":19,"title":"CDU-06 PDF — scope ridotto a sola informativa accettata, no firma, no valore consenso","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["cdu-06","pdf","informativa","mf47","scope","ux-cittadino"],"related_wiki":["[[Gestione Consensi - Applicativo]]","[[wiki/concepts/informativa\|Informativa Consenso]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF47R46, MF49R48, MF51R50"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-019-cdu-06-pdf-scope-ridotto/","title":"CDU-06 PDF — scope ridotto a sola informativa accettata, no firma, no valore consenso","tags":["cdu-06","pdf","informativa","mf47","scope","ux-cittadino"],"dg-note-properties":{"adr":19,"title":"CDU-06 PDF — scope ridotto a sola informativa accettata, no firma, no valore consenso","status":"superseded","date":"2026-05-14","updated":"2026-08-06","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[21],"tags":["cdu-06","pdf","informativa","mf47","scope","ux-cittadino"],"related_wiki":["[[Gestione Consensi - Applicativo]]","[[wiki/concepts/informativa\|Informativa Consenso]]","[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF47R46, MF49R48, MF51R50"]}}
 ---
 
 
@@ -7,7 +7,9 @@
 
 ## Status
 
-`accepted` — decisione MF47R46 sulla revisione SRS v3. Struttura PDF ulteriore marcata `[PROPOSTA]` (MF49R48, MF51R50).
+`superseded by [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]` — decisione originaria MF47R46 sulla revisione SRS v3.
+
+> ⚠️ **Superata (call CSI 06/08/2026):** CDU-06 è un caso d'uso esclusivamente cittadino, e la Webapp Cittadino è **fuori dal perimetro di sviluppo** di questo progetto (vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). Questa decisione resta come registro storico ma non guida più lo sviluppo.
 
 ## Context
 

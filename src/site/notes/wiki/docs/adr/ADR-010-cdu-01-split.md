@@ -9,6 +9,10 @@
 
 `accepted` — decisione MF16R15 + MF18R17 sulla revisione SRS v3.
 
+> 🔄 **Nota di scope (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** la distinzione tecnica CDU-01a/01b resta corretta, ma **solo CDU-01a (Operatore) è in scope di sviluppo** di questo progetto. CDU-01b (Cittadino) descrive un accesso che esiste ma non è un deliverable di questo progetto.
+>
+> 🔄 **Correzione profilo (call CSI 06/08/2026):** **un solo profilo Operatore**, non selezione multipla — corregge il punto "Selezione profilo applicativo Configuratore visibile (es. Operatore Sanitario, Operatore Back Office)" in Decision sotto. Nessun nuovo profilo da creare in PUA/Configuratore.
+
 ## Context
 
 CDU-01 originale (bozza v2) era un caso d'uso unico "Autenticazione" con scenario misto per cittadino e operatore. Limiti:
@@ -24,11 +28,11 @@ CDU-01 viene diviso in due sotto-scenari espliciti:
 
 **CDU-01a — Accesso Operatore**
 - Accesso: RUPAR / IRIDE / SPID via PUA
-- Selezione profilo applicativo Configuratore visibile (es. Operatore Sanitario, Operatore Back Office)
+- ~~Selezione profilo applicativo Configuratore visibile (es. Operatore Sanitario, Operatore Back Office)~~ ⚠️ **corretto 06/08/2026:** un solo profilo Operatore, nessuna selezione multipla
 - Precondizioni: operatore censito in Configuratore Regionale
-- CDU coinvolti a valle: CDU-07÷CDU-14
+- CDU coinvolti a valle: CDU-05, CDU-07÷CDU-14
 
-**CDU-01b — Accesso Cittadino**
+**CDU-01b — Accesso Cittadino** ⚠️ *fuori scope di sviluppo — vedi nota sopra*
 - Accesso: SPID / CIE su **webapp separata** (dedicata cittadino)
 - Nessuna profilazione iniziale Configuratore (cittadino non è profilo applicativo Configuratore — MF7R5)
 - Precondizioni: cittadino con identità digitale attiva

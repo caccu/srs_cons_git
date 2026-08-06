@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/stack-tecnologico-applicativo/","title":"Stack Tecnologico Applicativo","tags":["stack","tecnologia","spring-boot","angular","postgresql","java"],"dg-note-properties":{"title":"Stack Tecnologico Applicativo","aliases":["Stack Tecnologico Applicativo","Stack Tecnologico","Stack Applicativo"],"type":"concept","tags":["stack","tecnologia","spring-boot","angular","postgresql","java"],"created":"2026-05-15","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-12-pile-tecnologiche-csi","2026-03-02-domande-srs-csi-v02"],"related":["[[Architettura IaaS]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[wiki/concepts/migrazione-postgres-9-17\|Migrazione PostgreSQL 9 → 17]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/stack-tecnologico-applicativo/","title":"Stack Tecnologico Applicativo","tags":["stack","tecnologia","spring-boot","angular","postgresql","java"],"dg-note-properties":{"title":"Stack Tecnologico Applicativo","aliases":["Stack Tecnologico Applicativo","Stack Tecnologico","Stack Applicativo"],"type":"concept","tags":["stack","tecnologia","spring-boot","angular","postgresql","java"],"created":"2026-05-15","updated":"2026-07-16","sources":["2026-03-02-conspref-srs-v1-revised","2026-03-12-pile-tecnologiche-csi","2026-03-02-domande-srs-csi-v02"],"related":["[[Architettura IaaS]]","[[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piemonte]]","[[Gestione Consensi - Applicativo]]","[[migrazione-postgres-9-17|Migrazione PostgreSQL 9 → 17]]","[[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]]"]}}
 ---
 
 
@@ -19,7 +19,7 @@ Stack TO-BE del progetto [[wiki/concepts/gestione-consensi-applicativo\|Gestione
 | Backend | Spring Boot | 3.4.10+ | CURRENT |
 | Linguaggio | Java | 17 LTS | CURRENT |
 | Sicurezza | Spring Security | 6.x (Spring Boot 3 default) | CURRENT |
-| Database | PostgreSQL | 17 (DBaaS Nivola) | CURRENT |
+| Database | PostgreSQL | 18 (DBaaS Nivola) — era 17, aggiornato 06/08/2026 | CURRENT |
 | Infrastruttura | [[wiki/concepts/architettura-iaas\|IaaS Nivola]] — provisioning CSI (07/2026: in questa fase solo **DEV** e **pre-prod**, PROD in fase successiva) | Nivola | CURRENT (verbale 11/06/2026, email CSI 07/2026) |
 
 ---
@@ -30,7 +30,7 @@ Stack TO-BE del progetto [[wiki/concepts/gestione-consensi-applicativo\|Gestione
 - Componenti UI: componenti **QUASAR** forniti da CSI (stack SPA Angular2/SpringBoot/RESTEasy v2.1.0 — `v2.1.0` è la versione del pacchetto stack, non della libreria QUASAR). Accesso repository QUASAR da concordare con referente CSI prima avvio sviluppo UI.
 - Pattern di rendering form: **Form Renderer dinamico** che consuma metadata backend (vedi [[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso]])
 - Build: `ng build --configuration=production`, copia in `dist/` → immagine Docker
-- Routing: client-side, integrazione con autenticazione [[wiki/concepts/gasp-salute\|GASP Salute]] tramite redirect SPID/CIE
+- Routing: client-side. ~~Integrazione con autenticazione [[wiki/concepts/gasp-salute\|GASP Salute]] tramite redirect SPID/CIE~~ ❌ fuori scope (ADR-021, 06/08/2026) — riguarda solo Webapp Cittadino. Webapp Operatore: routing verso autenticazione PUA/RUPAR/IRIDE.
 
 ---
 
@@ -39,7 +39,7 @@ Stack TO-BE del progetto [[wiki/concepts/gestione-consensi-applicativo\|Gestione
 - **Java 17 LTS** (richiesto da Spring Boot 3)
 - **Spring Boot 3.4.10+** (range 3.4.10 ÷ 3.4.x come da Q&A CSI #5)
 - **Spring Security**: gestione autenticazione/autorizzazione **applicativa** (no API Gateway esterno — vedi [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]])
-- Persistenza: Spring Data JPA + driver PostgreSQL ufficiale (configurazione scram-sha-256 post-[[wiki/concepts/migrazione-postgres-9-17\|migrazione PG17]])
+- Persistenza: Spring Data JPA + driver PostgreSQL ufficiale (configurazione scram-sha-256 post-[[wiki/concepts/migrazione-postgres-9-17\|migrazione PG18]])
 - Client SOAP: **Apache CXF** o **Spring-WS** (entrambi compatibili Spring Boot 3) per integrazione [[wiki/concepts/sistemi-esterni-integrati\|AURA, Gestione Deleghe, SIA-ASR]]
 - Client REST: WebClient / RestTemplate per [[wiki/entities/notificatore-unp\|Notificatore UNP]]
 - Scheduling: `@Scheduled` o Spring Batch per [[wiki/concepts/batch-processes\|processi batch]]
@@ -51,12 +51,14 @@ Stack TO-BE del progetto [[wiki/concepts/gestione-consensi-applicativo\|Gestione
 
 ---
 
-## Database — PostgreSQL 17
+## Database — PostgreSQL 18
+
+> 🔄 Versione target aggiornata da PG17 a **PG18** (call CSI 06/08/2026).
 
 - **DBaaS Nivola** ([[wiki/entities/csi-piemonte\|CSI Piemonte]]) — non PG nel pod Kubernetes
 - Credenziali: gestite lato infrastruttura **IaaS CSI** (no K8s Secret — ambiente non Kubernetes)
 - Funzionalità sfruttate: `SELECT FOR UPDATE SKIP LOCKED`, `gen_random_uuid()` nativa, MERGE
-- Migrazione da PG9: vedi [[wiki/concepts/migrazione-postgres-9-17\|Migrazione PostgreSQL 9 → 17]] e [[wiki/analyses/conspref-dmp-tracker\|CONSPREF-DMP — Tracker Piano Migrazione Dati]]
+- Migrazione da PG9: vedi [[wiki/concepts/migrazione-postgres-9-17\|Migrazione PostgreSQL 9 → 18]] e [[wiki/analyses/conspref-dmp-tracker\|CONSPREF-DMP — Tracker Piano Migrazione Dati]]
 
 ---
 
@@ -104,6 +106,6 @@ Vedi [[wiki/sources/2026-03-12-pile-tecnologiche-csi\|Pile Tecnologiche CSI Piem
 
 | ADR | Decisione |
 |---|---|
-| [ADR-001](ADR-001-stack-tecnologico.md) | Stack tecnologico (Spring Boot 3 + Java 17 + Angular 19 + PG17) |
+| [ADR-001](ADR-001-stack-tecnologico.md) | Stack tecnologico (Spring Boot 3 + Java 17 + Angular 19 + PG18) |
 | [ADR-002](ADR-002-piattaforma-ecaas.md) | Piattaforma ECaaS Kubernetes Nivola + vincoli |
 | [ADR-014](ADR-014-apache-cxf-soap-client.md) | Apache CXF come client SOAP |

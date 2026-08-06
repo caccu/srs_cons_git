@@ -105,14 +105,14 @@ Va prodotto lo **swagger (OpenAPI)** del servizio (parametri, risposta, errori),
 ### ✅ Chi crea le credenziali dei nuovi sistemi (SEC-03) — DELEGATO
 **Cosa significa:** ogni sistema esterno ha un suo `client_id`; va deciso chi lo crea. **Stato (call 20/07/2026):** lo gestisce l'**API Manager**; è un **evento raro**, eventualmente integrabile in seguito con una **CR**. Nessuna tabella di mappatura lato prodotto in V1.0.
 
-### 🟠 Cos'è "LIS" e come si integra (INT-03)
-**Cosa significa:** "LIS" compare come terzo canale di acquisizione ma non è chiaro l'acronimo né come funziona. **Come si chiude:** CSI scioglie l'acronimo e dà le specifiche.
+### ✅ Cos'è "LIS" e come si integra (INT-03) — CHIUSO
+**Cosa significava:** "LIS" sembrava un terzo canale di acquisizione ma non era chiaro l'acronimo né come funzionasse. **Come si è chiuso (call 06/08/2026):** CSI ha chiarito che **non esiste un terzo canale**. LIS (e sistemi analoghi come RIS) acquisiscono i consensi tramite un'**integrazione già presente nel codice esistente** — non va costruito nulla di nuovo lato canale, va solo **verificata e portata sul nuovo stack**.
 
 ### 🟠 Accesso ai componenti grafici QUASAR (INT-04)
 **Cosa significa:** QUASAR è la libreria UI di riferimento del CSI. **Come si chiude:** CSI dà accesso al repository.
 
-### 🟠 Registrazione dei profili su PUA (ID-02)
-**Cosa significa:** l'app di Back Office va registrata sul Configuratore con i due profili operatore. **Come si chiude:** CSI esegue la registrazione.
+### 🟠 Registrazione del profilo su PUA (ID-02)
+**Cosa significa:** l'app va registrata sul Configuratore con **un solo profilo Operatore** (corretto 06/08/2026 — non due). **Come si chiude:** CSI esegue la registrazione.
 
 ---
 

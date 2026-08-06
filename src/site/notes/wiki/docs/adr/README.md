@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/readme/","title":"Architecture Decision Records — Gestione Consensi","dg-note-properties":{"title":"Architecture Decision Records — Gestione Consensi","type":"index","created":"2026-05-19","updated":"2026-05-19"}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/readme/","title":"Architecture Decision Records — Gestione Consensi","dg-note-properties":{"title":"Architecture Decision Records — Gestione Consensi","type":"index","created":"2026-05-19","updated":"2026-08-06"}}
 ---
 
 
@@ -19,25 +19,27 @@ Registry delle decisioni architetturali del progetto **Gestione Consensi Regione
 
 | # | Titolo | Status | Data | Tema |
 |---|---|---|---|---|
-| [ADR-001](ADR-001-stack-tecnologico.md) | Stack tecnologico (Spring Boot 3 + Java 17 + Angular 19 + PG17) | accepted | 2026-03-02 | Stack |
+| [ADR-001](ADR-001-stack-tecnologico.md) | Stack tecnologico (Spring Boot 3 + Java 17 + Angular 19 + PG18) | accepted | 2026-03-02 | Stack |
 | [ADR-002](ADR-002-piattaforma-ecaas.md) | Piattaforma ECaaS Kubernetes Nivola + vincoli | superseded | 2026-03-02 | Infrastruttura |
 | [ADR-003](ADR-003-dbaas-nivola.md) | DBaaS Nivola esterno al namespace | accepted | 2026-03-02 | Infrastruttura |
 | [ADR-004](ADR-004-no-api-gateway.md) | No API Gateway — sicurezza applicativa via Spring Security | partially-superseded | 2026-03-02 | Sicurezza |
 | [ADR-005](ADR-005-sicurezza-cdu-15-16.md) | Sicurezza CDU-15/16 — OAuth2 CC + JWT + autorizzazione per ente | accepted | 2026-05-14 | Sicurezza |
 | [ADR-006](ADR-006-batch-03-pull-cdu-17.md) | Sostituzione BATCH-03 push → CDU-17 PULL (centro stella) | **accepted** | 2026-07-20 | Batch / Integrazione |
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5 min con SKIP LOCKED | accepted | 2026-05-14 | Batch |
-| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer unico (Cittadino + Operatore) | accepted | 2026-05-14 | UX / Architettura |
+| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer unico (Cittadino + Operatore) — nota scope: solo Op | accepted | 2026-05-14 | UX / Architettura |
 | [ADR-009](ADR-009-eliminazione-sistemats.md) | Eliminazione SistemaTS dall'integrazione | accepted | 2026-05-14 | Integrazione |
-| [ADR-010](ADR-010-cdu-01-split.md) | Split CDU-01 in CDU-01a Operatore + CDU-01b Cittadino | accepted | 2026-05-14 | CDU |
-| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/CDU-05 lato Cittadino — pulsante unico | accepted | 2026-05-14 | UX / CDU |
+| [ADR-010](ADR-010-cdu-01-split.md) | Split CDU-01 in CDU-01a Operatore + CDU-01b Cittadino — nota scope: solo 01a | accepted | 2026-05-14 | CDU |
+| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/CDU-05 lato Cittadino — pulsante unico | superseded | 2026-05-14 | UX / CDU |
 | [ADR-012](ADR-012-notificatore-deleghe-post-completato.md) | Notifica via Notificatore di Deleghe (non UNP), post-COMPLETATO | accepted | 2026-05-14 | Notifica |
-| [ADR-013](ADR-013-migrazione-pg-dump-restore.md) | Migrazione PG9 → PG17 via dump/restore | accepted | 2026-03-02 | Database / Migrazione |
+| [ADR-013](ADR-013-migrazione-pg-dump-restore.md) | Migrazione PG9 → PG18 via dump/restore | accepted | 2026-03-02 | Database / Migrazione |
 | [ADR-014](ADR-014-apache-cxf-soap-client.md) | Apache CXF come client SOAP | accepted | 2026-03-02 | Integrazione |
 | [ADR-015](ADR-015-storicizzazione-immutabile.md) | Storicizzazione immutabile (no sovrascrittura) | accepted | 2026-03-02 | Modello dati |
 | [ADR-016](ADR-016-scaduto-async-batch-02.md) | Stato SCADUTO async via BATCH-02 | accepted | 2026-03-02 | Batch / Semantica |
-| [ADR-017](ADR-017-lis-terzo-canale.md) | LIS terzo canale acquisizione consenso | accepted | 2026-05-14 | Canali |
+| [ADR-017](ADR-017-lis-terzo-canale.md) | LIS terzo canale acquisizione consenso | superseded | 2026-05-14 | Canali |
 | [ADR-018](ADR-018-rfc-7807-error-response.md) | RFC 7807 error response | accepted | 2026-03-02 | API |
-| [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) | CDU-06 PDF — scope ridotto, no firma | accepted | 2026-05-14 | CDU |
+| [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) | CDU-06 PDF — scope ridotto, no firma | superseded | 2026-05-14 | CDU |
+| [ADR-020](ADR-020-lis-integrazione-be-esistente.md) | LIS/RIS — integrazione BE esistente, non terzo canale | accepted | 2026-08-06 | Integrazione |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto ridotto a Webapp Operatore | accepted | 2026-08-06 | Perimetro |
 
 ---
 
@@ -49,15 +51,16 @@ Registry delle decisioni architetturali del progetto **Gestione Consensi Regione
 | Infrastruttura | 1 | 0 | 1 |
 | Sicurezza | 1 | 0 | 1 |
 | Batch | 3 | 0 | 0 |
-| Integrazione | 3 | 0 | 0 |
+| Integrazione | 4 | 0 | 0 |
 | Modello dati | 2 | 0 | 0 |
-| UX / CDU | 4 | 0 | 0 |
+| UX / CDU | 2 | 0 | 2 |
 | API | 1 | 0 | 0 |
 | Notifica | 1 | 0 | 0 |
-| Canali | 1 | 0 | 0 |
-| **Totale** | **17** | **0** | **2** |
+| Canali | 0 | 0 | 1 |
+| Perimetro | 1 | 0 | 0 |
+| **Totale** | **16** | **0** | **5** |
 
-ADR-006 (CDU-17 PULL) è stato **confermato dal committente nella call CSI del 20/07/2026** (rifacimento completo del caso d'uso) e portato a `accepted`. Non restano ADR in stato `proposed`.
+ADR-006 (CDU-17 PULL) è stato **confermato dal committente nella call CSI del 20/07/2026** (rifacimento completo del caso d'uso) e portato a `accepted`. ADR-017 (LIS terzo canale) è stato **superato dalla call CSI del 06/08/2026** → [ADR-020](ADR-020-lis-integrazione-be-esistente.md). ADR-011 e ADR-019 (funzionalità cittadino) sono stati **superati dalla call CSI del 06/08/2026** → [ADR-021](ADR-021-perimetro-solo-operatore.md) (perimetro ridotto a Webapp Operatore). Non restano ADR in stato `proposed`.
 
 ---
 
@@ -67,17 +70,23 @@ ADR-006 (CDU-17 PULL) è stato **confermato dal committente nella call CSI del 2
 ADR-001 stack
   ├── ADR-002 ECaaS
   │     └── ADR-003 DBaaS Nivola
-  │           └── ADR-013 migrazione PG9 → PG17
+  │           └── ADR-013 migrazione PG9 → PG18
   ├── ADR-014 Apache CXF
-  └── ADR-007 BATCH-01 5min (SKIP LOCKED nativo PG17)
+  └── ADR-007 BATCH-01 5min (SKIP LOCKED nativo PG18)
 
 ADR-004 no API GW
   └── ADR-005 sicurezza CDU-15/16
         └── ADR-006 CDU-17 PULL (riusa pattern)
 
-ADR-008 SSoT Form Renderer
-  ├── ADR-011 merge CDU-04/05 cittadino (pulsante unico)
-  └── ADR-017 LIS (riusa renderer)
+ADR-008 SSoT Form Renderer (nota scope: solo Operatore)
+  └── ADR-011 merge CDU-04/05 cittadino (pulsante unico) — superseded
+
+ADR-017 LIS terzo canale (superseded)
+  └── ADR-020 LIS/RIS integrazione BE esistente (non riusa Form Renderer)
+
+ADR-021 perimetro solo Operatore
+  ├── supersede ADR-011 (merge CDU-04/05 cittadino)
+  └── supersede ADR-019 (CDU-06 PDF cittadino)
 
 ADR-015 storicizzazione immutabile
   └── ADR-016 SCADUTO async via BATCH-02 (storicizzato)
@@ -85,13 +94,13 @@ ADR-015 storicizzazione immutabile
 ADR-018 RFC 7807
   └── ADR-005 + ADR-006 (errori applicativi)
 
-ADR-010 split CDU-01
+ADR-010 split CDU-01 (nota scope: solo 01a Operatore)
   └── ADR-009 no SistemaTS (CDU-07 a valle CDU-01a)
 
 ADR-012 Notificatore Deleghe post-COMPLETATO
   └── ADR-007 BATCH-01 (precondizione COMPLETATO)
 
-ADR-019 CDU-06 PDF scope ridotto (standalone, allineato con UX cittadino)
+ADR-019 CDU-06 PDF scope ridotto (standalone, allineato con UX cittadino) — superseded
 ```
 
 ---
@@ -104,11 +113,13 @@ ADR con open issues:
 - **ADR-005**: SEC-01÷06 (URL AS, JWT, onboarding SIA, TTL, scope, revoca)
 - **ADR-006**: ✅ PULL-01 (blocco), PULL-02 (email+webhook), PULL-05/06/08 chiusi (call 20/07/2026); residui non bloccanti PULL-03/04/07 + swagger CDU-17
 - **ADR-007**: BAT-01 (WSDL SRV-01 vs SRV-03)
-- **ADR-010**: ID-01 (GASP Salute protocollo)
-- **ADR-013**: ~~GOV-03 (responsabile CSI migrazione)~~ ✅ chiuso 16/07/2026 (CSI Piemonte), TECH-01 (audit DDL PG9)
+- **ADR-010**: ~~ID-01 (GASP Salute protocollo)~~ non più bloccante — CDU-01b fuori scope (ADR-021, 06/08/2026)
+- **ADR-013**: ~~GOV-03 (responsabile CSI migrazione)~~ ✅ chiuso 16/07/2026 (CSI Piemonte), TECH-01 (audit DDL PG9, target ora PG18)
 - **ADR-016**: SC67 (logica INSERT storicizzazione BATCH-02), BAT-03 (comunicazione ASR cambio semantica)
-- **ADR-017**: INT-03 (acronimo LIS + spec integrazione)
-- **ADR-019**: GOV-02 (validazione `[PROPOSTA]` struttura PDF)
+- **ADR-017**: ~~INT-03 (acronimo LIS + spec integrazione)~~ ✅ chiuso 06/08/2026 (superseded by ADR-020)
+- **ADR-019**: ~~GOV-02 (validazione `[PROPOSTA]` struttura PDF)~~ non più bloccante — CDU-06 fuori scope (ADR-021, 06/08/2026)
+- **ADR-020**: individuare integrazione LIS/RIS nel sorgente AS-IS (dipende da INT-04 accesso repo, TECH-01 audit)
+- **ADR-021**: correggere SRS §1/§2/§3 e catalogo CDU per riflettere il perimetro (solo dopo conferma utente); verificare compatibilità dati/API con Webapp Cittadino esistente
 
 ---
 

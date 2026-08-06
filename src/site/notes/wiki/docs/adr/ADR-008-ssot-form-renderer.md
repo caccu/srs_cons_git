@@ -9,6 +9,8 @@
 
 `accepted` — vincolo architetturale dichiarato in MF57R56 sulla revisione SRS v3.
 
+> 🔄 **Nota di scope (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** il pattern Form Renderer resta valido, ma in questo progetto si applica **solo alla Webapp Operatore** — la Webapp Cittadino non è un deliverable di questo progetto. La motivazione originaria "riuso Citt+Op" non è più applicabile in pratica: non è compito di questo progetto verificare o garantire che la Webapp Cittadino esistente usi lo stesso renderer.
+
 ## Context
 
 Il SRS prevede due webapp:
@@ -36,7 +38,7 @@ Differenze ammesse fra Cittadino e Operatore — **solo metadati di tracciatura 
 
 | Campo | Cittadino | Operatore |
 |---|---|---|
-| `fonte_id` | da contesto webapp (es. `WEB_CITT`, `LIS`) | `'PASS'` |
+| `fonte_id` | da contesto webapp (es. `WEB_CITT`) | `'PASS'` |
 | `login_operazione` | CF cittadino autenticato | login operatore PUA |
 | `ruoloop_id` | NULL | ID ruolo operatore PUA |
 
@@ -48,7 +50,7 @@ Configurazione completamente DB-driven (`cons_d_sotto_tipo_cons` + tabelle corre
 - Coerenza UX cittadino/operatore garantita per costruzione
 - Singolo punto di evoluzione per ogni nuovo `sotto_tipo_consenso`
 - Riduzione superficie test (un solo renderer da testare per regola)
-- Architettura aperta a nuovi canali (es. mobile, kiosk LIS — vedi [[wiki/docs/adr/ADR-017-lis-terzo-canale\|ADR-017-lis-terzo-canale]])
+- Architettura aperta a nuovi canali (es. mobile) — ⚠️ LIS **non** rientra in questo caso: acquisisce via integrazione BE esistente, non tramite il Form Renderer (vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]], supersede [[wiki/docs/adr/ADR-017-lis-terzo-canale\|ADR-017]])
 
 ### Negative
 - Vincola le 2 webapp ad usare la stessa stack frontend (Angular + componente shared)

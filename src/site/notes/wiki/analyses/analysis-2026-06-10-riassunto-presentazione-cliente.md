@@ -6,6 +6,8 @@
 # Riassunto Esecutivo — Progetto Gestione Consensi
 
 **Documento di sintesi per presentazione al cliente** — preparato il 10/06/2026.
+
+> ⚠️ **Superato in parte (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** il progetto sviluppa **solo la Webapp Operatore**. I riferimenti sotto a Webapp Cittadino, CDU-01b/02/03/04/06 e GASP Salute (SPID/CIE diretto) restano come registro storico della presentazione del 10/06 ma non sono più deliverable di questo progetto.
 Sintetizza l'intera base di conoscenza del progetto: contesto, funzionalità, architettura, decisioni prese, pianificazione e punti ancora aperti.
 
 > ✅ **Aggiornamenti successivi (non riflessi nel corpo di questo snapshot 10/06):** **CDU-17 rielaborato e confermato** dal committente (call 20/07/2026: Variante B eliminata, passo 5, endpoint CRUD via API Manager, scenario manutenzione `IN_MANUTENZIONE`; ADR-006 → `accepted`). Sicurezza API aggiornata a 07/2026: token via **API Manager APIMBBONE**, `codice_ente` inoltrato dal Gateway, **`cons_t_client_ente` fuori scope V1.0**. Fonti correnti: [[wiki/concepts/alternativa-batch-03-pull\|CDU-17 PULL]] · [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] · [[CDU-17_diagramma-sequenza\|diagramma CDU-17]].
@@ -37,11 +39,11 @@ Regola chiave: il consenso regionale si esprime **una volta sola** e vale per tu
 
 ### Chi lo usa e come
 
-Il consenso si può esprimere attraverso **tre canali**:
+Il consenso si può esprimere attraverso ~~**tre canali**~~ **due canali** (vedi nota al punto 3, superato 06/08/2026):
 
 1. **Webapp Cittadino** — il cittadino accede con SPID/CIE e gestisce i propri consensi (o quelli di un suo delegante, tramite il pulsante "Deleghe")
 2. **Webapp Operatore** — l'operatore sanitario o amministrativo opera per conto dell'assistito, accedendo tramite PUA con credenziali RUPAR/IRIDE
-3. **LIS** — acquisizione presso il laboratorio (canale di front-office)
+3. ~~**LIS** — acquisizione presso il laboratorio (canale di front-office)~~ ⚠️ **Superato (call CSI 06/08/2026):** non è un terzo canale — LIS acquisisce tramite integrazione BE già esistente nel sorgente AS-IS, da verificare e migrare. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]].
 
 A questi si aggiungono il **Back Office** (configurazione dei tipi di consenso, delle informative e degli enti) e le **API per i sistemi informativi aziendali (SIA)** delle ASR, che interrogano lo stato dei consensi in modalità applicativa (machine-to-machine).
 

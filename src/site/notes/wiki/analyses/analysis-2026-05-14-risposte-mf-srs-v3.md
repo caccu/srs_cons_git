@@ -14,13 +14,15 @@ Le risposte MF nel PDF sono **decisioni autoritative** del responsabile tecnico 
 
 > **Nota numerazione:** la v3_lavorazione rinumera i commenti rispetto alla v3. Mapping principali: TR30 → TR58 (sicurezza CDU-15/16), TR34 → TR68 (alternativa BATCH-03). Wiki riporta entrambi gli ID.
 
+> ⚠️ **Superato in parte (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** il progetto sviluppa **solo la Webapp Operatore**. Le decisioni sotto su CDU-01b, CDU-02, CDU-03, CDU-04 (lato Cittadino), CDU-06 e GASP Salute restano come registro storico ma non sono più deliverable di questo progetto (temi A/C/D, righe MF16R15, MF26R25, MF39R38, MF45R44 parte cittadino, MF47R46, MF49R48, MF51R50).
+
 ---
 
 ## Tabella maestra — 30 risposte MF
 
 | ID MF        | Tema                        | Decisione (sintesi)                                                                                                                                                                                                         | Pagina wiki                                                                                                                  | Stato           |
 | ------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| MF3R1, MF4R1 | A — Canali acquisizione     | Cittadino può esprimere consenso anche presso **LIS** (oltre webapp citt + operatore). Aggiungere didascalia diagramma                                                                                                      | [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]], [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] | ✅               |
+| MF3R1, MF4R1 | A — Canali acquisizione     | Cittadino può esprimere consenso anche presso **LIS** (oltre webapp citt + operatore). Aggiungere didascalia diagramma ⚠️ **Rivisto 06/08/2026:** LIS non è un terzo canale UI ma un'integrazione BE esistente — vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]]                                                                                                    | [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]], [[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] | ⚠️ superato               |
 | MF7R5        | A — Profili                 | Cittadino NON è profilo applicativo del Configuratore. Accede webapp dedicata SPID/CIE. Profilo logico interno solo per «sé stesso» vs «delegante»                                                                          | [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]]                                                           | ✅               |
 | MF9R8        | A — UI termini              | Sostituire "Accettato/Negato" con **"acconsento/nego"** in tutta la nota tecnica 5.2. Mantenere mapping tecnico ATTIVO/NEGATO invariato                                                                                     | [[wiki/concepts/ciclo-vita-consenso\|ciclo-vita-consenso]]                                                                                                      | ✅               |
 | MF11R10      | B — Stati                   | Aggiungere transizione **ATTIVO → NEGATO** (via webapp citt o operatore) senza richiedere nuova informativa                                                                                                                 | [[wiki/concepts/ciclo-vita-consenso\|ciclo-vita-consenso]]                                                                                                      | ✅               |
@@ -70,6 +72,8 @@ Le risposte MF nel PDF sono **decisioni autoritative** del responsabile tecnico 
 **Decisioni chiave:**
 
 1. **LIS come canale aggiuntivo (MF3, MF4)** — Il cittadino può esprimere consenso anche presso il LIS (Laboratorio Informazioni Sanitarie? — da chiarire acronimo) oltre alla webapp cittadino e alla via operatore. Implicazione: SRS §1/§2 diagramma di contesto deve riflettere 3 canali di acquisizione, non 2.
+
+> ⚠️ **Superato (call CSI 06/08/2026, chiude INT-03):** non esiste un terzo canale di acquisizione. LIS acquisisce tramite integrazione BE già presente nel codice sorgente AS-IS, da verificare e migrare — non un nuovo canale UI. SRS §1/§2 resta a **2 canali**. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]] (supersede [[wiki/docs/adr/ADR-017-lis-terzo-canale\|ADR-017]]).
 
 2. **Cittadino NON profilo Configuratore (MF7)** — Webapp dedicata SPID/CIE, distinta da PUA/Configuratore. Il "profilo" cittadino è una **distinzione logica interna** (per discriminare se l'utente sta agendo per sé o per un delegante via pulsante Deleghe), non un profilo applicativo registrato nel Configuratore Regionale.
 
@@ -191,12 +195,12 @@ Le risposte MF hanno generato decisioni architetturali formalizzate come ADR. Ma
 
 | Tema MF | ADR generati |
 |---|---|
-| A — Canali (MF3/MF4) | [ADR-017](ADR-017-lis-terzo-canale.md) LIS terzo canale |
+| A — Canali (MF3/MF4) | [ADR-017](ADR-017-lis-terzo-canale.md) LIS terzo canale — ⚠️ superato da [ADR-020](ADR-020-lis-integrazione-be-esistente.md) (06/08/2026) |
 | A — CDU-01 split (MF16/MF18) | [ADR-010](ADR-010-cdu-01-split.md) Split CDU-01 |
 | B — Stati (MF11/MF14) | [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) transizioni dirette in merge CDU-04/05 |
 | C — Composizione dinamica (MF26/28/30/35/37/39/41/43) | [ADR-008](ADR-008-ssot-form-renderer.md) SSoT Form Renderer |
-| C — Merge CDU-04/05 cittadino (MF45) | [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) |
-| D — CDU-06 PDF (MF47/49/51) | [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) CDU-06 scope ridotto |
+| C — Merge CDU-04/05 cittadino (MF45) | [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) — ⚠️ superato da [ADR-021](ADR-021-perimetro-solo-operatore.md) (06/08/2026) |
+| D — CDU-06 PDF (MF47/49/51) | [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) CDU-06 scope ridotto — ⚠️ superato da [ADR-021](ADR-021-perimetro-solo-operatore.md) (06/08/2026) |
 | E — No SistemaTS (MF53/55) | [ADR-009](ADR-009-eliminazione-sistemats.md) Eliminazione SistemaTS |
 | F — SSoT operatore (MF57) | [ADR-008](ADR-008-ssot-form-renderer.md) |
 | G — Notificatore Deleghe (MF33) | [ADR-012](ADR-012-notificatore-deleghe-post-completato.md) |

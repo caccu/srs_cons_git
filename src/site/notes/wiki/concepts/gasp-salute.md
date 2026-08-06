@@ -7,11 +7,13 @@
 
 Identity Provider (IdP) federato gestito da [[wiki/entities/csi-piemonte\|CSI Piemonte]]. Fornisce autenticazione SSO per cittadini sulla piattaforma Sanità Elettronica Regione Piemonte tramite SPID e CIE.
 
+> 🔴 **Fuori dal perimetro di sviluppo (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** GASP Salute serviva esclusivamente l'accesso diretto del cittadino (CDU-01b e a valle). Questo progetto sviluppa **solo la Webapp Operatore** (autenticazione PUA/RUPAR/IRIDE) — nessuna integrazione GASP Salute è da progettare in questo progetto. Pagina mantenuta come contesto storico e come riferimento se il perimetro dovesse cambiare in futuro.
+
 ---
 
-## Ruolo nel progetto
+## Ruolo nel progetto (storico — pre-ADR-021)
 
-Tutti i CDU Cittadino (CDU-01 ÷ CDU-06) in [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]] dipendono da GASP Salute per l'autenticazione. Nessuna autenticazione diretta nell'applicativo — tutto delegato a GASP. Blocco di CDU-01 equivale a blocco dell'intera area Cittadino.
+Tutti i CDU Cittadino (CDU-01 ÷ CDU-06) in [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]] dipendono da GASP Salute per l'autenticazione. Nessuna autenticazione diretta nell'applicativo — tutto delegato a GASP. Blocco di CDU-01 equivale a blocco dell'intera area Cittadino. **Questi CDU sono fuori scope di sviluppo dal 06/08/2026 — vedi banner sopra.**
 
 ---
 
@@ -74,7 +76,7 @@ File fornito da CSI: `preprod_metadata_tst-consprefbo-spid.isan.csi.it_gasprp_sa
 | Sistema             | Profilo                            | IdP                                                  |
 | ------------------- | ---------------------------------- | ---------------------------------------------------- |
 | GASP Salute         | Cittadino (SPID/CIE)               | Esterno a [[wiki/concepts/architettura-iaas\|Architettura IaaS]] |
-| PUA / RUPAR / IRIDE | Operatore Sanitario/Amministrativo | Gestito da [[wiki/entities/csi-piemonte\|CSI Piemonte]]            |
+| PUA / RUPAR / IRIDE | Operatore (profilo unico, call CSI 06/08/2026) | Gestito da [[wiki/entities/csi-piemonte\|CSI Piemonte]]            |
 | OAuth2 `client_credentials` | SIA Aziendale (CDU-15/16/17) | **API Manager CSI (APIMBBONE)** — Key Manager (cfr. [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4) |
 
 > ✅ **Propagazione identità confermata (call CSI 20/07/2026).** Per le chiamate SIA CDU-15/16/17, il Gateway APIMBBONE inoltra al backend, in header/claim, il **Codice Fiscale recuperato da Shibboleth/GASP** e il **`codice_ente`** del fruitore. È il ponte tra l'autenticazione GASP (che produce il CF) e l'isolamento per ente lato backend: il backend non rifà la validazione del token. Dettaglio in [[wiki/concepts/sicurezza-cdu-15-16\|Sicurezza CDU-15/16]] §1.4/§7.
@@ -86,3 +88,4 @@ File fornito da CSI: `preprod_metadata_tst-consprefbo-spid.isan.csi.it_gasprp_sa
 | ADR | Decisione |
 |---|---|
 | [ADR-010](ADR-010-cdu-01-split.md) | Split CDU-01 in CDU-01a Operatore + CDU-01b Cittadino (CDU-01b dipende da GASP) |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore — GASP fuori scope |

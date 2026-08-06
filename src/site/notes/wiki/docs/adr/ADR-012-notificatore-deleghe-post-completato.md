@@ -62,8 +62,8 @@ Documentazione obbligatoria:
 
 ## Open issues
 
-- INT-05: distinzione formalizzata in SRS — Notificatore di Deleghe ≠ Notificatore UNP (tracker [[wiki/analyses/analysis-2026-05-14-punti-aperti-csi\|Punti Aperti CSI]] §6)
-- Approvvigionamento spec/API Notificatore di Deleghe da CSI
+- ~~INT-05: distinzione formalizzata in SRS — Notificatore di Deleghe ≠ Notificatore UNP~~ ✅ recepito
+- ~~Approvvigionamento spec/API Notificatore di Deleghe da CSI~~ ✅ **chiuso (call CSI 06/08/2026):** componente AS-IS legacy, riciclato — nessun nuovo sviluppo richiesto
 
 ## References
 

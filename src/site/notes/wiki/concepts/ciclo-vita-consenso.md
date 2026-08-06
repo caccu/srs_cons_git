@@ -5,7 +5,9 @@
 
 # Ciclo di Vita del Consenso
 
-Macchina a stati che governa ogni consenso espresso nel sistema [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]].
+Macchina a stati che governa ogni consenso espresso nel sistema [[wiki/concepts/gestione-consensi-applicativo\|Gestione Consensi - Applicativo]]. **Channel-agnostic** — la macchina a stati backend resta valida indipendentemente da quale webapp è in scope di sviluppo.
+
+> 🔴 **Perimetro progetto (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** questo progetto sviluppa **solo la Webapp Operatore**. Le righe/riferimenti "Citt" sotto restano come contesto (la macchina a stati è la stessa), ma non descrivono un deliverable di questo progetto.
 
 ---
 
@@ -41,7 +43,7 @@ NON_ESPRESSO
 ```
 
 **Transizioni dirette ATTIVO ↔ NEGATO (MF11R10 + MF14R12):**
-- ATTIVO → NEGATO: cambio valore via webapp cittadino o operatore (CDU-04 lato citt, CDU-05/CDU-11 lato op). Nessuna riaccettazione informativa richiesta finché l'informativa è quella corrente.
+- ATTIVO → NEGATO: cambio valore via webapp cittadino (❌ fuori scope, CDU-04) o operatore (✅ in scope, CDU-05/CDU-11). Nessuna riaccettazione informativa richiesta finché l'informativa è quella corrente.
 - NEGATO → ATTIVO: simmetrica.
 
 ---
@@ -71,16 +73,18 @@ Garantisce storia completa degli atti di consenso. Vale anche per le transizioni
 
 ## Logica CDU (aggiornata MF45)
 
-| CDU | Stato di partenza | Azione | Richiede riaccettazione informativa? | Lato |
-|---|---|---|---|---|
-| CDU-03 | NON_ESPRESSO | Rilascio | **Sì** — lettura + checkbox presa visione | Citt + Op |
-| CDU-04 | SCADUTO | Modifica con riaccettazione | **Sì** — nuova informativa | Citt + Op |
-| CDU-04 | ANNULLATO | Modifica come rilascio ex-novo | **Sì** — come rilascio ex-novo | Citt + Op |
-| CDU-04 | ATTIVO / NEGATO | Cambio valore (UI cittadino inglobata in CDU-04 — MF45) | **No** | Citt |
-| CDU-05 | ATTIVO o NEGATO | Cambio valore | **No** | **Solo Op** |
-| CDU-09/10/11 | qualsiasi | Equivalenti operatore di CDU-03/04/05 | Variabile | Op |
+| CDU | Stato di partenza | Azione | Richiede riaccettazione informativa? | Lato | Scope sviluppo |
+|---|---|---|---|---|---|
+| CDU-03 | NON_ESPRESSO | Rilascio | **Sì** — lettura + checkbox presa visione | Citt (❌ OUT) + Op (via CDU-09, ✅ IN) | Parziale — solo Op |
+| CDU-04 | SCADUTO | Modifica con riaccettazione | **Sì** — nuova informativa | Citt (❌ OUT) + Op (via CDU-10, ✅ IN) | Parziale — solo Op |
+| CDU-04 | ANNULLATO | Modifica come rilascio ex-novo | **Sì** — come rilascio ex-novo | Citt (❌ OUT) + Op (via CDU-10, ✅ IN) | Parziale — solo Op |
+| CDU-04 | ATTIVO / NEGATO | Cambio valore (UI cittadino inglobata in CDU-04 — MF45) | **No** | Citt | ❌ **OUT** (interamente cittadino) |
+| CDU-05 | ATTIVO o NEGATO | Cambio valore | **No** | **Solo Op** | ✅ **IN** |
+| CDU-09/10/11 | qualsiasi | Equivalenti operatore di CDU-03/04/05 | Variabile | Op | ✅ **IN** — unico canale in scope |
 
-> **Nota MF45R44:** lato **webapp Cittadino**, CDU-05 NON è caso d'uso separato — il flusso "cambio valore" è inglobato in CDU-04 (pulsante unico "Salva"). La distinzione CDU-04/CDU-05 è rilevante solo lato **Operatore** e per la logica interna di tracciatura.
+> **Nota MF45R44 (storico):** lato **webapp Cittadino**, CDU-05 NON è caso d'uso separato — il flusso "cambio valore" è inglobato in CDU-04 (pulsante unico "Salva", decisione [[wiki/docs/adr/ADR-011-merge-cdu-04-05-cittadino\|ADR-011]], **superseded**). La distinzione CDU-04/CDU-05 è rilevante solo lato **Operatore** (in scope) e per la logica interna di tracciatura.
+>
+> 🔴 **Perimetro (06/08/2026):** righe "Citt" fuori dal perimetro di sviluppo — [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]. Solo CDU-09/10/11 (Operatore) sono deliverable di questo progetto.
 
 ---
 
@@ -108,4 +112,5 @@ Se anche solo **1 consenso** di un cittadino per un'ASR è SCADUTO o ANNULLATO �
 |---|---|
 | [ADR-015](ADR-015-storicizzazione-immutabile.md) | Storicizzazione immutabile (no sovrascrittura) |
 | [ADR-016](ADR-016-scaduto-async-batch-02.md) | Stato SCADUTO async via BATCH-02 |
-| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (transizioni dirette ATTIVO↔NEGATO) |
+| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (transizioni dirette ATTIVO↔NEGATO) — **superseded** da ADR-021 |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore |

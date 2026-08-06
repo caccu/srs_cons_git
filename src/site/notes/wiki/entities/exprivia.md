@@ -25,5 +25,5 @@ Società fornitrice responsabile del rifacimento dell'applicativo [[wiki/concept
 | CONSPREF-SRS-V1.0 | **revised_v6** (rev. 1.1, 07/2026 — recepite risposte CSI: Shibboleth SP, APIMBBONE, DBaaS DEV/pre-prod, ADA/Chef) — in attesa approvazione CSI (GOV-01) |
 | Specifica OpenAPI CDU-15/16 | [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]] — 5 TBD aperti, da condividere con ASR |
 | CONSPREF-DMP (migration plan) | **Non ancora formalizzato** — rischio; redazione in carico a CSI Piemonte (confermato 16/07/2026), Exprivia fornisce input tecnici |
-| Audit DDL PG9 → PG17 | Previsto Sprint 0 |
+| Audit DDL PG9 → PG18 | Previsto Sprint 0 (target aggiornato da PG17, call CSI 06/08/2026) |
 | Sprint 0: provisioning request Nivola | Attività critica, avviare giorno 1 |

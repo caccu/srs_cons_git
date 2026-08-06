@@ -97,7 +97,7 @@ Il DB è **esterno all'applicativo** — erogato come servizio gestito da Nivola
 - Credenziali: mai nel codice → gestite lato infrastruttura IaaS CSI → variabili env Spring
 - HikariCP: max-pool-size ≤ 40/replica (istanza 100 conn max, 2 repliche)
 
-> 🔄 **Stato 07/2026 (email CSI):** provisioning DBaaS **in corso**. Per contenere i costi si creano solo gli ambienti **DEV** e **pre-prod** (no PROD in questa fase). Sul DB di **DEV** verrà fornito un **ribaltamento dei dati** attualmente presenti sul DB di **TEST (PostgreSQL 9.6)** → base dati reale per lo sviluppo e per collaudare la migrazione PG9→PG17.
+> 🔄 **Stato 07/2026 (email CSI):** provisioning DBaaS **in corso**. Per contenere i costi si creano solo gli ambienti **DEV** e **pre-prod** (no PROD in questa fase). Sul DB di **DEV** verrà fornito un **ribaltamento dei dati** attualmente presenti sul DB di **TEST (PostgreSQL 9.6)** → base dati reale per lo sviluppo e per collaudare la migrazione PG9→PG18 (target aggiornato da PG17 a PG18, call CSI 06/08/2026).
 
 ---
 

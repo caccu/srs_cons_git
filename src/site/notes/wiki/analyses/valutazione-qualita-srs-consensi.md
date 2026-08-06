@@ -9,6 +9,8 @@
 **Data valutazione:** 2026-05-05
 **Metodo:** analisi incrociata di tutti i documenti disponibili
 
+> 🔴 **Perimetro progetto (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** questo progetto sviluppa **solo la Webapp Operatore**. Punti su GASP Salute/CDU-06 cittadino sotto restano come analisi storica ma non sono più rischi bloccanti per questo progetto.
+
 ---
 
 ---
@@ -29,7 +31,7 @@ L'AS-IS aveva 6 CDU (2019). Il TO-BE ne specifica 16, con espansione logica e be
 
 ### 3. Architettura tecnologica — allineata alle pile CSI
 - Spring Boot 3.4.10+ ✅ (CURRENT)
-- PostgreSQL 17 ✅ (CURRENT da dic 2025)
+- PostgreSQL 18 ✅ (CURRENT — target aggiornato da PG17, call CSI 06/08/2026)
 - Java 17 ✅ (CURRENT)
 - Angular 19 ✅ (CURRENT stack SPA v2.1.0)
 - Infrastruttura IaaS Nivola ✅ (ECaaS/Kubernetes superato — verbale 11/06/2026)
@@ -53,21 +55,20 @@ L'AS-IS aveva 6 CDU (2019). Il TO-BE ne specifica 16, con espansione logica e be
 ### 6. Pianificazione dettagliata
 - 8 fasi, 10 sprint, stima in Story Points (1SP=4h) per ogni attività
 - Identificazione dipendenze critiche (DBaaS Nivola, AURA WSDL, GASP Salute doc)
-- Piano migrazione PG9→PG17 con analisi rischi specifica e procedura cutover dettagliata
+- Piano migrazione PG9→PG18 con analisi rischi specifica e procedura cutover dettagliata
 
 ---
 
 ## Lacune e Rischi ⚠️
 
 ### RISCHIO CRITICO 1 — CONSPREF-DMP non formalizzato
-**Problema:** Il Data Migration Plan PG9→PG17 non esiste ancora come documento formale.
+**Problema:** Il Data Migration Plan PG9→PG18 non esiste ancora come documento formale.
 **Impatto:** Sprint 0 include la bozza v1, ma se il provisioning DBaaS è lento (alta latenza), la Fase 6 Migrazione (sett. 13-16) rischia di slittare.
 **Azione raccomandata:** Avviare la redazione DMP in parallelo all'SRS. ✅ Responsabile redazione confermato 16/07/2026: **CSI Piemonte** (GOV-03 chiuso); resta la produzione della bozza v1.
 
-### ✅ RISCHIO CRITICO 2 — Protocollo GASP Salute — CHIUSO (verbale 11/06/2026)
+### ✅ RISCHIO CRITICO 2 — Protocollo GASP Salute — CHIUSO (verbale 11/06/2026); ❌ ORA FUORI SCOPE (06/08/2026)
 **Protocollo confermato: SAML2.** Dipendenza Spring: `spring-security-saml2-service-provider`.
-**Residuo:** Documentazione tecnica [[wiki/concepts/gasp-salute\|GASP Salute]] (metadata XML IdP, endpoint, entity ID) ancora da acquisire — richiedere in Sprint 0 giorno 1.
-**Impatto residuo:** SAML2 richiede configurazione metadata XML lato SP e librerie dedicate. Più complesso di OIDC ma protocollo noto. CDU-01 può procedere alla progettazione.
+**Aggiornamento 06/08/2026:** [[wiki/concepts/gasp-salute\|GASP Salute]] serviva solo CDU-01b (accesso cittadino), **fuori dal perimetro di sviluppo** di questo progetto ([[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). Rischio non più applicabile: nessuna integrazione GASP da progettare in questo progetto.
 
 ### ✅ RISCHIO MODERATO 3 — OpenAPI CDU-15/16 — PARZIALMENTE MITIGATO
 **Stato:** [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]] (2026-05-06) — 19 punti consolidati, 5 TBD da confermare con CSI.
@@ -108,12 +109,12 @@ Per analisi dettagliata del delta vedi [[wiki/analyses/analysis-gap-as-is-to-be\
 
 | Dimensione | AS-IS (2019) | TO-BE (2026) | Evoluzione |
 |---|---|---|---|
-| CDU | 6 | 16 | +167% — ben giustificato |
-| Download PDF | Non previsto | CDU-06 NUOVO | Aggiunta valore |
+| CDU | 6 | 16 (solo Operatore/BackOffice/SIA in scope di sviluppo — ADR-021) | +167% — ben giustificato |
+| Download PDF ❌ OUT | Non previsto | CDU-06 NUOVO — fuori scope (ADR-021, superseded ADR-019) | Aggiunta valore (non costruita da questo progetto) |
 | API per SIA | Solo SOAP outbound | SOAP + REST CDU-15/16 | Apertura moderna |
-| Stack DB | PostgreSQL 9 (RETIRED) | PostgreSQL 17 (CURRENT) | Obbligo tecnico |
+| Stack DB | PostgreSQL 9 (RETIRED) | PostgreSQL 18 (CURRENT) | Obbligo tecnico |
 | Architettura | Legacy | IaaS Nivola, microservizi Spring Boot | Allineamento CSI |
-| Autenticazione | Non documentata | GASP Salute SPID/CIE | Modernizzazione |
+| Autenticazione ❌ OUT | Non documentata | GASP Salute SPID/CIE — fuori scope (ADR-021) | Modernizzazione (non costruita da questo progetto) |
 
 ---
 
@@ -122,23 +123,23 @@ Per analisi dettagliata del delta vedi [[wiki/analyses/analysis-gap-as-is-to-be\
 | Item | Stato | Note |
 |---|---|---|
 | SRS V1.0 approvata da CSI | ⏳ In revisione | Bozza v2 |
-| Documentazione GASP Salute ricevuta | ❌ Da richiedere | Sprint 0 giorno 1 |
+| Documentazione GASP Salute ricevuta | ⚪ Non più necessaria | Fuori scope (ADR-021, 06/08/2026) — CDU-01b non è un deliverable |
 | WSDL AURA ricevuti | ❌ Da richiedere | Lista servizi da specificare |
-| WSDL Gestione Deleghe ricevuti | ❌ Da richiedere | |
+| WSDL Gestione Deleghe ricevuti | ✅ Già integrato (call 20/07/2026, riconfermato AS-IS legacy riciclato 06/08/2026) | ❌ OUT scope di sviluppo — ADR-021 |
 | DBaaS Nivola DEV provisioned | ❌ Da richiedere | Alta latenza |
 | DBaaS Nivola PROD provisioned | ❌ Da richiedere | Alta latenza |
 | Accesso repo QUASAR CSI | ❌ Da richiedere | Prerequisito UI |
-| Registrazione app PUA (2 profili) | ❌ Da richiedere | |
+| Registrazione app PUA (**1 profilo Operatore**, corretto call CSI 06/08/2026 — era "2 profili") | ❌ Da richiedere | |
 | Credenziali IRIS per AURA | ❌ Da richiedere | |
 | CONSPREF-DMP bozza v1 | ❌ Da produrre | Sprint 0 |
 | Specifica OpenAPI CDU-15/16 bozza | ⚠️ [[wiki/analyses/analysis-2026-05-06-openapi-cdu-15-16\|v0.1-DRAFT prodotta]] — 5 TBD aperti | Condividere con ASR dopo TBD chiusi |
-| Audit DDL PG9 → PG17 | ❌ Pianificato Sprint 0 | |
+| Audit DDL PG9 → PG18 | ❌ Pianificato Sprint 0 | |
 
 ---
 
 ## Domande aperte per il team
 
-1. Chi è il referente formale CSI per GASP Salute? Quando è disponibile la documentazione tecnica?
+1. ~~Chi è il referente formale CSI per GASP Salute? Quando è disponibile la documentazione tecnica?~~ Non più rilevante — GASP fuori scope (ADR-021, 06/08/2026)
 2. La specifica OpenAPI CDU-15/16 va condivisa con i SIA ASR: quali ASR sono coinvolte e chi è il referente?
 3. ~~Il CONSPREF-DMP: chi è il responsabile formale?~~ ✅ Chiuso 16/07/2026: redazione in carico a CSI Piemonte (GOV-03)
 4. I [PROPOSTA] nell'SRS (es. ALG02 BATCH-01 gestione tentativi, CDU-06 PDF) sono stati condivisi con CSI? Qual è la loro risposta?
@@ -154,3 +155,4 @@ Per analisi dettagliata del delta vedi [[wiki/analyses/analysis-gap-as-is-to-be\
 | [ADR-007](ADR-007-batch-01-5min-skip-locked.md) | BATCH-01 5min (rischio AGGIUNTO 4 — ambiguità SRV-01/SRV-03 da chiudere) |
 | [ADR-013](ADR-013-migrazione-pg-dump-restore.md) | Migrazione PG (rischio CRITICO 1 — DMP non formalizzato) |
 | [ADR-016](ADR-016-scaduto-async-batch-02.md) | SCADUTO async (rischio AGGIUNTO 5 — semantica AS-IS vs TO-BE) |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore (chiude rischio GASP, CDU-06) |

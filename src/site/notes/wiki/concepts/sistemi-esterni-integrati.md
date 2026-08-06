@@ -124,18 +124,23 @@ SIA ASR  →  PATCH /api/v1/endpoints/{endp_id}/stato-allineamento { IN_CORSO } 
 
 ## Notificatore di Deleghe (MF33R31) — distinto da UNP
 
+> ✅ **Chiarito (call CSI 06/08/2026):** componente **AS-IS legacy, riciclato** — nessun nuovo sviluppo richiesto. Aggiorna la riga "❌ Da richiedere" precedente in §Stato approvvigionamento sotto.
+
 | Aspetto     | Dettaglio                                                                    |
 | ----------- | ---------------------------------------------------------------------------- |
 | Gestore     | [[wiki/entities/csi-piemonte\|CSI Piemonte]]                                               |
 | Uso         | **Notifica cittadino/delegato post-acquisizione consenso**                   |
 | Timing      | Parte **SOLO dopo conferma notifica aziende** (BATCH-01, stato = COMPLETATO) |
 | Distinzione | Servizio separato dall'UNP — non confondere                                  |
+| Sviluppo    | **AS-IS legacy, riciclato — nessun nuovo sviluppo** (call CSI 06/08/2026)    |
 
 > ⚠️ **Importante:** Notificatore di Deleghe ≠ Notificatore UNP. UNP per notifiche applicative generiche; Notificatore di Deleghe per la conferma al cittadino/delegato a valle dell'acquisizione consenso. Documentare distinzione in SRS §3 e §7 (sezione notifiche).
 
 ---
 
-## Gestione Deleghe
+## Gestione Deleghe ❌ OUT scope
+
+> 🔴 **Fuori dal perimetro di sviluppo** (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]) — l'uso documentato è dal pulsante "Deleghe" della Webapp Cittadino (MF20R19), non un deliverable di questo progetto. Sezione mantenuta come contesto storico.
 
 | Aspetto            | Dettaglio                                                                                                       |
 | ------------------ | --------------------------------------------------------------------------------------------------------------- |
@@ -148,6 +153,8 @@ SIA ASR  →  PATCH /api/v1/endpoints/{endp_id}/stato-allineamento { IN_CORSO } 
 | Stato produzione   | Scenario delegante già attivo in produzione (MF22R21)                                                           |
 
 > ✅ **Chiuso (call CSI 20/07/2026 — INT-02):** l'integrazione con Gestione Deleghe (`getDelegantiService` via API-Piemonte) è **già integrata, non c'è nulla da fare**. Cadono l'accreditamento portale e la firma del token come punti aperti.
+>
+> ✅ **Riconfermato (call CSI 06/08/2026):** componente **AS-IS legacy, riciclato integralmente** — nessun nuovo sviluppo richiesto, indipendentemente dal perimetro di scope. Resta comunque fuori dal perimetro di sviluppo di questo progetto perché l'unico uso documentato è dal pulsante "Deleghe" della Webapp Cittadino (vedi banner sopra).
 
 **Flusso di integrazione (da immagine DelegheApi — verbale 11/06/2026):**
 
@@ -162,28 +169,32 @@ Variante errore [PROPOSTA]: se il servizio non risponde, il sistema impedisce la
 
 ---
 
-## LIS — Laboratorio (canale acquisizione consensi) (MF3R1, MF4R1)
+## LIS — Laboratorio (integrazione BE esistente, MF3R1/MF4R1 — rivisto ADR-020)
+
+> ⚠️ **Rivisto (call CSI 06/08/2026, chiude INT-03):** LIS **non è un canale di acquisizione UI dedicato**. CSI ha chiarito che, sui nuovi sviluppi funzionali e non funzionali, **non esiste un terzo canale di acquisizione consensi** — l'acquisizione presso LIS (e sistemi analoghi come RIS) avviene tramite un'**integrazione BE già presente nel codice sorgente AS-IS**. Attività TO-BE: individuare, verificare e migrare tale integrazione al nuovo stack. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]] (supersede [[wiki/docs/adr/ADR-017-lis-terzo-canale\|ADR-017]]).
 
 | Aspetto | Dettaglio |
 |---|---|
-| Funzione | Acquisizione consenso del cittadino presso il laboratorio (front-office) |
-| Integrazione | Da definire — canale aggiuntivo rispetto a webapp Citt e webapp Operatore |
-| Implicazione SRS | Diagramma di contesto §1/§2 deve riflettere 3 canali, non 2 |
+| Funzione | Acquisizione/sincronizzazione consenso presso il laboratorio, via integrazione backend |
+| Integrazione | **Già esistente nel codice sorgente AS-IS** — da individuare (protocollo/payload) e migrare al nuovo stack, non da progettare ex-novo |
+| Implicazione SRS | Diagramma di contesto §1/§2: **2 canali di acquisizione** (Cittadino, Operatore); LIS compare come sistema esterno integrato, non come canale |
 
-Nota: l'acronimo LIS va chiarito formalmente con CSI nella prossima revisione SRS.
+Nota: l'acronimo LIS resta da chiarire formalmente con CSI, ma non è più bloccante per la progettazione (non blocca più INT-03, chiuso il 06/08/2026).
 
 ---
 
 ## Configuratore Regionale / PUA
 
+> ✅ **Chiarito (call CSI 06/08/2026):** **un solo profilo Operatore** in PUA/Configuratore, che copre **tutte** le nuove funzionalità da sviluppare (CDU-01a, CDU-05, CDU-07÷CDU-14). **Nessun nuovo profilo da creare.** Corregge la precedente ipotesi di "2 profili operatore" (Operatore Sanitario/Amministrativo + Back Office, o Operatore + Amministratore a seconda del documento — nomenclatura mai stata univoca in wiki).
+
 | Sistema | Funzione | Profilo utente |
 |---|---|---|
-| PUA (Punto Unico di Accesso) | Autenticazione operatori sanitari/amministrativi | RUPAR / IRIDE |
-| Configuratore Regionale | Censimento applicazioni, profili operatori, endpoint ASR | Back Office |
+| PUA (Punto Unico di Accesso) | Autenticazione operatore | RUPAR / IRIDE |
+| Configuratore Regionale | Censimento applicazioni, profilo operatore unico, endpoint ASR | **1 profilo Operatore** (unico, copre CDU-01a/05/07÷14) |
 
-> **Nota MF7R5:** Cittadino **NON** è profilo applicativo del Configuratore — accede via webapp dedicata SPID/CIE. Configuratore gestisce solo i profili operatore.
+> **Nota MF7R5:** Cittadino **NON** è profilo applicativo del Configuratore — accede via webapp dedicata SPID/CIE (comunque fuori scope, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). Configuratore gestisce il profilo operatore.
 
-Registrazione app PUA (2 profili operatore) da richiedere a [[wiki/entities/csi-piemonte\|CSI Piemonte]] in Sprint 0 ❌.
+Registrazione app PUA (**1 profilo Operatore** — non 2, call CSI 06/08/2026) da richiedere a [[wiki/entities/csi-piemonte\|CSI Piemonte]] in Sprint 0 ❌.
 
 **Servizio PUA post-autenticazione (SRS v3 §2.3):** dopo il login via PUA, il backend invoca `getTokenInformation2` per leggere il profilo dell'operatore autenticato e adattare dinamicamente l'interfaccia (mostra solo sezioni/CDU abilitati per quel profilo). Un operatore può essere abilitato a entrambi i profili contemporaneamente.
 
@@ -192,35 +203,37 @@ Registrazione app PUA (2 profili operatore) da richiedere a [[wiki/entities/csi-
 ## Mappa integrazioni sintetica (aggiornata)
 
 ```
-[Cittadino] → GASP Salute (SAML2 via Shibboleth SP) → Webapp Citt
-[Cittadino c/o LIS] → operatore LIS → Webapp Operatore (caso d'uso LIS)
+[Cittadino] → GASP Salute (SAML2 via Shibboleth SP) → Webapp Citt   ❌ OUT scope (ADR-021, 06/08/2026)
 [Operatore] → PUA/Configuratore Regionale → Webapp Operatore
                               ↓
 [Applicativo Gestione Consensi]
         ├─ AURA              (SOAP/IRIS) — FindProfiliAnagrafici, getProfiloSanitario
-        ├─ Gestione Deleghe  (SOAP/OAuth2) — verifica deleghe familiari
+        ├─ Gestione Deleghe  (SOAP/OAuth2) — verifica deleghe familiari [❌ OUT scope, uso solo Webapp Citt — ADR-021]
         ├─ Notificatore Deleghe (REST?) — conferma post-acquisizione al cittadino
         ├─ Notificatore UNP  (REST) — notifiche applicative generiche
         ├─ SIA ASR           (SOAP outbound) ← BATCH-01 notifiche puntuali
         ├─ SIA ASR           (REST inbound) ← CDU-15, CDU-16 [spec v0.1-DRAFT]
-        └─ SIA ASR           (REST inbound via API Manager) ← CDU-17 PULL snapshot [✅ confermato 20/07 — swagger da produrre]
+        ├─ SIA ASR           (REST inbound via API Manager) ← CDU-17 PULL snapshot [✅ confermato 20/07 — swagger da produrre]
+        └─ LIS (e analoghi es. RIS) — integrazione BE esistente AS-IS, da individuare e migrare [ADR-020, 06/08/2026]
 ```
+
+> Nota: LIS **non** è più un ramo di accesso UI (`[Cittadino c/o LIS] → operatore LIS → Webapp Operatore`) come da ADR-017 originario — è un'integrazione lato backend, elencata sotto l'applicativo Gestione Consensi al pari degli altri sistemi esterni. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]].
 
 ---
 
 ## Stato approvvigionamento Sprint 0
 
-| Sistema | Cosa serve | Stato |
-|---|---|---|
-| AURA | Credenziali IRIS + WSDL (FindProfiliAnagrafici, getProfiloSanitario) | ✅ Nei properties (call 20/07/2026) — nessun servizio nuovo |
-| SIA ASR | Certificati X509 per ogni ASR (AS-IS) / credenziali OAuth via APIMBBONE (TO-BE) | ❌ Da richiedere (AS-IS) · TO-BE gestito da APIM |
-| Gestione Deleghe | WSDL | ✅ Già integrato (call 20/07/2026) |
-| Notificatore di Deleghe | API + integration spec | ❌ Da richiedere (distinta da UNP) |
-| Notificatore UNP | Già documentato — gitlab.csi.it | ✅ Riferimento disponibile |
-| PUA | Registrazione 2 profili applicativo | ❌ Da richiedere |
-| LIS | Specifica integrazione canale acquisizione | ❌ Da chiarire con CSI (acronimo + spec) |
-| GASP Salute | ~~Documentazione protocollo OIDC/SAML2~~ | ✅ SAML2 confermato (verbale 11/06/2026); metadata SP ricevuti (TEST/preprod, 07/2026) — resta censimento federazione (`identita.federazione@csi.it`) |
-| SistemaTS | — | ⛔ **NON integrato** (decisione MF55R54 — rimosso dal SRS) |
+| Sistema                  | Cosa serve                                                                        | Stato                                                                                                                                    |
+| ------------------------ | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| AURA                     | Credenziali IRIS + WSDL (FindProfiliAnagrafici, getProfiloSanitario)              | ✅ Nei properties (call 20/07/2026) — nessun servizio nuovo                                                                               |
+| SIA ASR                  | Certificati X509 per ogni ASR (AS-IS) / credenziali OAuth via APIMBBONE (TO-BE)   | ❌ Da richiedere (AS-IS) · TO-BE gestito da APIM                                                                                          |
+| Gestione Deleghe ❌ OUT   | WSDL                                                                              | ✅ Già integrato (call 20/07/2026) — fuori scope di sviluppo (ADR-021, 06/08/2026), uso solo Webapp Cittadino                             |
+| Notificatore di Deleghe  | API + integration spec                                                            | ✅ **AS-IS legacy, riciclato — nessun nuovo sviluppo** (call CSI 06/08/2026; era "❌ Da richiedere" prima di questa call, distinta da UNP) |
+| Notificatore UNP         | Già documentato — gitlab.csi.it                                                   | ✅ Riferimento disponibile                                                                                                                |
+| PUA                      | Registrazione **1 profilo Operatore** (era "2 profili", corretto call CSI 06/08/2026) | ❌ Da richiedere                                                                                                                      |
+| LIS (e analoghi es. RIS) | Individuare integrazione BE esistente nel sorgente AS-IS + migrare al nuovo stack | ❌ Da individuare — dipende da accesso repo/DB AS-IS (INT-04, TECH-01)                                                                    |
+| GASP Salute ❌ OUT        | ~~Documentazione protocollo OIDC/SAML2~~                                          | ⚪ Non più necessario — fuori scope di sviluppo (ADR-021, 06/08/2026)                                                                     |
+| SistemaTS                | —                                                                                 | ⛔ **NON integrato** (decisione MF55R54 — rimosso dal SRS)                                                                                |
 
 ---
 
@@ -231,4 +244,5 @@ Registrazione app PUA (2 profili operatore) da richiedere a [[wiki/entities/csi-
 | [ADR-009](ADR-009-eliminazione-sistemats.md) | Eliminazione SistemaTS dall'integrazione |
 | [ADR-012](ADR-012-notificatore-deleghe-post-completato.md) | Notificatore di Deleghe ≠ Notificatore UNP, post-COMPLETATO |
 | [ADR-014](ADR-014-apache-cxf-soap-client.md) | Apache CXF client SOAP (AURA, Deleghe, SIA outbound) |
-| [ADR-017](ADR-017-lis-terzo-canale.md) | LIS terzo canale di acquisizione |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore — Gestione Deleghe/GASP fuori scope |
+| [ADR-020](ADR-020-lis-integrazione-be-esistente.md) | LIS/RIS integrazione BE esistente (supersede [ADR-017](ADR-017-lis-terzo-canale.md)) |

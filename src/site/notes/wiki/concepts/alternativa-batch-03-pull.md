@@ -13,7 +13,7 @@
 **Status:** ✅ **CONFERMATO dal committente (call CSI 20/07/2026)** — CDU-17 rielaborato per intero come da mail cliente.
 
 > ✅ **Rielaborazione CDU-17 — call CSI 20/07/2026.** Il committente ha fornito il rifacimento completo del caso d'uso. Novità rispetto alla prima proposta:
-> - **Attore** = **operatore con profilo Back Office** sulla **web app Gestione Consensi** (accesso da **PUA**), non un "operatore CSI" generico. Scenario tipico: azienda con ≥1 endpoint già attivo (es. RIS) che ne attiva un altro (es. LIS) → serve allineamento.
+> - **Attore** = **operatore con profilo Back Office** sulla **web app Gestione Consensi** (accesso da **PUA**), non un "operatore CSI" generico. Scenario tipico: azienda con ≥1 endpoint già attivo (**es. RIS**) che ne attiva un altro (**es. LIS**) → serve allineamento.
 > - **Variante B (watermark / no-blocco) ELIMINATA.** Resta **solo la Variante A**: il blocco temporaneo delle acquisizioni (`IN_CORSO`) è **obbligatorio** per garantire uno snapshot coerente.
 > - **Nuovo passo 5:** a chiusura, il SIA **comunica alla webapp lo stato `COMPLETATO` + i dati dell'ultimo invio andato a buon fine**, tramite la **canalità PULL-02**.
 > - **PULL-02 (canale notifica) DECISO:** email **e/o** webhook, via **parametro di configurazione** (solo email / solo webhook / entrambi). Con il **webhook** il SIA **espone un servizio REST** il cui **contratto, firma e sicurezza sono forniti da CSI**.

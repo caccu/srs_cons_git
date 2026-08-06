@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-011-merge-cdu-04-05-cittadino/","title":"Merge CDU-04/CDU-05 lato Cittadino con pulsante unico Salva","tags":["cdu-04","cdu-05","ux","cittadino","mf37","mf45","ssot"],"dg-note-properties":{"adr":11,"title":"Merge CDU-04/CDU-05 lato Cittadino con pulsante unico Salva","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["cdu-04","cdu-05","ux","cittadino","mf37","mf45","ssot"],"related_wiki":["[[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF37R36, MF45R44"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-011-merge-cdu-04-05-cittadino/","title":"Merge CDU-04/CDU-05 lato Cittadino con pulsante unico Salva","tags":["cdu-04","cdu-05","ux","cittadino","mf37","mf45","ssot"],"dg-note-properties":{"adr":11,"title":"Merge CDU-04/CDU-05 lato Cittadino con pulsante unico Salva","status":"superseded","date":"2026-05-14","updated":"2026-08-06","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[21],"tags":["cdu-04","cdu-05","ux","cittadino","mf37","mf45","ssot"],"related_wiki":["[[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso]]","[[Gestione Consensi - Applicativo]]","[[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF37R36, MF45R44"]}}
 ---
 
 
@@ -7,7 +7,9 @@
 
 ## Status
 
-`accepted` — decisione MF37R36 + MF45R44 sulla revisione SRS v3.
+`superseded by [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]` — decisione originaria MF37R36 + MF45R44 sulla revisione SRS v3.
+
+> ⚠️ **Superata (call CSI 06/08/2026):** la Webapp Cittadino è **fuori dal perimetro di sviluppo** di questo progetto (vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). Questa decisione, interamente sull'UX cittadino, resta come registro storico ma non guida più lo sviluppo.
 
 ## Context
 

@@ -5,7 +5,7 @@
 
 # CONSPREF-DMP — Tracker Piano Migrazione Dati
 
-**Stato:** 🔴 **Non formalizzato**. Rischio critico per Fase 6 (Sprint 9) migrazione [[wiki/concepts/migrazione-postgres-9-17\|PG9 → PG17]]. ✅ **Responsabile redazione: [[wiki/entities/csi-piemonte\|CSI Piemonte]]** (confermato 16/07/2026 — GOV-03 chiuso).
+**Stato:** 🔴 **Non formalizzato**. Rischio critico per Fase 6 (Sprint 9) migrazione [[wiki/concepts/migrazione-postgres-9-17\|PG9 → PG18]] (target aggiornato da PG17, call CSI 06/08/2026). ✅ **Responsabile redazione: [[wiki/entities/csi-piemonte\|CSI Piemonte]]** (confermato 16/07/2026 — GOV-03 chiuso).
 
 > Questo tracker centralizza lo stato del documento CONSPREF-DMP e i decision-point aperti. Non sostituisce il documento stesso (redazione in carico a [[wiki/entities/csi-piemonte\|CSI Piemonte]], con input tecnici [[wiki/entities/exprivia\|Exprivia S.p.A.]], in Sprint 0).
 

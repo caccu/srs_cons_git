@@ -7,6 +7,8 @@
 
 Sistema centrale per la raccolta, gestione e consultazione dei consensi sanitari dei cittadini piemontesi. Parte dell'ecosistema Sanità Elettronica Regione Piemonte.
 
+> 🔴 **Perimetro progetto (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]):** questo progetto sviluppa **solo la Webapp Operatore**. La Webapp Cittadino esiste ma è **fuori dal perimetro di sviluppo** — non è un deliverable di questo progetto. Le sezioni marcate ❌ **OUT** sotto descrivono funzionalità cittadino non costruite da questo progetto (mantenute come contesto/storia, non come backlog).
+
 ---
 
 ## Tre livelli di consenso
@@ -21,28 +23,30 @@ Sistema centrale per la raccolta, gestione e consultazione dei consensi sanitari
 
 ---
 
-## Canali di acquisizione consenso (MF3R1, MF4R1)
+## Canali di acquisizione consenso (MF3R1, MF4R1 — rivisto ADR-020, ADR-021)
 
-Il cittadino può esprimere il proprio consenso attraverso **tre canali** distinti:
+Il consenso è esprimibile attraverso **due canali** UI a livello di sistema:
 
-| Canale | Descrizione | Profilo accesso |
-|---|---|---|
-| Webapp Cittadino | Webapp dedicata SPID/CIE | Cittadino autenticato |
-| Webapp Operatore | Operatore opera per conto dell'assistito | Operatore PUA (RUPAR/IRIDE) |
-| **LIS** | Acquisizione presso il Laboratorio (canale di front-office) | Operatore LIS dedicato |
+| Canale | Descrizione | Profilo accesso | Scope di sviluppo |
+|---|---|---|---|
+| Webapp Cittadino | Webapp dedicata SPID/CIE | Cittadino autenticato | ❌ **OUT** — esiste ma fuori dal perimetro di questo progetto ([[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]) |
+| Webapp Operatore | Operatore opera per conto dell'assistito | Operatore PUA (RUPAR/IRIDE) | ✅ **IN** — unico deliverable di questo progetto |
 
-> Decisione MF4R1: aggiungere didascalia nel diagramma di contesto: "Consensi esprimibili anche presso LIS oltre webapp cittadino e Operatore". Aggiornare SRS §1/§2.
+> ⚠️ **Rivisto (call CSI 06/08/2026, chiude INT-03):** LIS **non è un terzo canale di acquisizione UI**. La decisione MF4R1 ("Consensi esprimibili anche presso LIS") si riferisce a un'**integrazione BE già presente nel codice sorgente AS-IS** ([[wiki/concepts/sistemi-esterni-integrati\|Sistemi Esterni Integrati]] §LIS), non a un nuovo canale da progettare. Attività TO-BE: verificare e migrare l'integrazione esistente al nuovo stack. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]] (supersede [[wiki/docs/adr/ADR-017-lis-terzo-canale\|ADR-017]]).
+>
+> 🔴 **Perimetro (call CSI 06/08/2026):** di questi due canali, solo la **Webapp Operatore** è in scope di sviluppo di questo progetto. Vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]].
 
 ---
 
-## Profili utente (aggiornato MF7, MF16)
+## Profili utente (aggiornato MF7, MF16 — perimetro ADR-021, profilo unico 06/08/2026)
 
-| Profilo                            | Accesso                                                          | CDU                    | Profilo applicativo Configuratore?      |
-| ---------------------------------- | ---------------------------------------------------------------- | ---------------------- | --------------------------------------- |
-| **Cittadino**                      | SPID/CIE via [[wiki/concepts/gasp-salute\|GASP Salute]] su **webapp dedicata** | CDU-01b, CDU-02÷CDU-06 | ❌ **NO** — non gestito da Configuratore |
-| Operatore Sanitario/Amministrativo | PUA / RUPAR/IRIDE                                                | CDU-01a, CDU-07÷CDU-11 | Sì                                      |
-| Operatore di Back Office           | PUA / RUPAR/IRIDE                                                | CDU-12÷CDU-14          | Sì                                      |
-| SIA Aziendale                      | API REST (OAuth2 Bearer JWT)                                     | CDU-15, CDU-16, CDU-17 | N/A — autenticazione machine-to-machine |
+> ✅ **Chiarito (call CSI 06/08/2026):** **un solo profilo Operatore**, unico, copre **tutte** le nuove funzionalità da sviluppare (CDU-01a, CDU-05, CDU-07÷CDU-14). **Nessun nuovo profilo da creare** in PUA/Configuratore — corregge la precedente distinzione "Operatore Sanitario/Amministrativo" vs "Operatore di Back Office" come profili applicativi separati.
+
+| Profilo             | Accesso                                                          | CDU                              | Profilo applicativo Configuratore?      | Scope sviluppo |
+| -------------------- | ---------------------------------------------------------------- | --------------------------------- | --------------------------------------- | --- |
+| **Cittadino**         | SPID/CIE via [[wiki/concepts/gasp-salute\|GASP Salute]] su **webapp dedicata** | CDU-01b, CDU-02÷CDU-06            | ❌ **NO** — non gestito da Configuratore | ❌ **OUT** — [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]] |
+| **Operatore** (unico) | PUA / RUPAR/IRIDE                                                | CDU-01a, CDU-05, CDU-07÷CDU-14    | Sì — **1 solo profilo**                 | ✅ IN — unico deliverable |
+| SIA Aziendale         | API REST (OAuth2 Bearer JWT)                                     | CDU-15, CDU-16, CDU-17            | N/A — autenticazione machine-to-machine | ✅ IN |
 
 ### Nota su profilo Cittadino (MF7R5)
 
@@ -52,19 +56,21 @@ Implicazione: nelle tabelle dei profili in SRS aggiungere colonna "NOTE" che mar
 
 ---
 
-## CDU-01 split (MF16R15, MF18R17)
+## CDU-01 split (MF16R15, MF18R17 — perimetro ADR-021)
 
 Il caso d'uso di autenticazione viene diviso in due sotto-scenari espliciti:
 
-### CDU-01a — Accesso Operatore
+### CDU-01a — Accesso Operatore ✅ IN scope
 
 | Aspetto | Dettaglio |
 |---|---|
 | Accesso | RUPAR / IRIDE / SPID via PUA |
-| Selezione profilo | Sì — il sistema mostra la selezione del profilo operatore |
+| Selezione profilo | ❌ No — **un solo profilo Operatore** (call CSI 06/08/2026), niente selezione multipla |
 | Precondizioni | Operatore censito in Configuratore Regionale |
 
-### CDU-01b — Accesso Cittadino
+### CDU-01b — Accesso Cittadino ❌ OUT scope
+
+> 🔴 **Fuori dal perimetro di sviluppo** (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]) — la Webapp Cittadino esiste ma non è un deliverable di questo progetto.
 
 | Aspetto | Dettaglio |
 |---|---|
@@ -74,7 +80,9 @@ Il caso d'uso di autenticazione viene diviso in due sotto-scenari espliciti:
 
 ---
 
-## Flusso Deleghe (MF20R19, MF22R21)
+## Flusso Deleghe (MF20R19, MF22R21) ❌ OUT scope
+
+> 🔴 **Fuori dal perimetro di sviluppo** (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]) — scenario interamente sulla Webapp Cittadino, non un deliverable di questo progetto. Mantenuto come contesto storico.
 
 > La webapp del cittadino mostra **sempre** il cruscotto dell'utente autenticato. Se il cittadino vuole operare per conto di un delegante, clicca il pulsante **"Deleghe"**, che mostra l'elenco dei deleganti attivi. Selezionando un delegante, il sistema carica il cruscotto consensi di quel soggetto.
 
@@ -90,24 +98,28 @@ Variante 6.1.3 [PROPOSTA]: se il servizio Gestione Deleghe non risponde o restit
 
 ## Funzionalità principali TO-BE
 
-### Area Cittadino (webapp dedicata)
+### Area Cittadino (webapp dedicata) ❌ OUT scope
+
+> 🔴 **Fuori dal perimetro di sviluppo** (call CSI 06/08/2026, [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]). La Webapp Cittadino esiste ma questi CDU non sono un deliverable di questo progetto. Sezione mantenuta come contesto/storia.
 
 - **CDU-02** Consultazione cruscotto consensi: mostra **tutti i tipi configurati** (regionale=1 record, aziendale=N record per azienda) anche quelli non ancora espressi (MF26R25). Vedi [[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso — Single Source of Truth]].
 - **CDU-03** Rilascio nuovo consenso (con visualizzazione informativa PDF)
-- **CDU-04** Modifica consenso — **ingloba anche il cambio valore** (CDU-05 non separato lato cittadino, MF45R44). Pulsante unico "Salva" (MF37R36).
-- **CDU-06** Download PDF — scope ridotto (MF47R46):
+- **CDU-04** Modifica consenso — **ingloba anche il cambio valore** (CDU-05 non separato lato cittadino, MF45R44). Pulsante unico "Salva" (MF37R36). Decisione [[wiki/docs/adr/ADR-011-merge-cdu-04-05-cittadino\|ADR-011]], superseded.
+- **CDU-06** Download PDF — scope ridotto (MF47R46). Decisione [[wiki/docs/adr/ADR-019-cdu-06-pdf-scope-ridotto\|ADR-019]], superseded:
   - Cittadino stampa PDF della **sola informativa accettata**
   - **Senza** firma digitale
   - **Senza** valore consenso espresso
   - Struttura ulteriore: `[PROPOSTA]` da concordare (MF49R48, MF51R50)
 
-### Area Operatore
+### Area Operatore ✅ IN scope
 
 - Ricerca assistito via **AURA** (FindProfiliAnagrafici + getProfiloSanitario). Se CF non trovato → messaggio "La ricerca con il filtro fornito non ha prodotto risultati". **Nessuna chiamata a SistemaTS** (MF53R52, MF55R54).
-- Gestione consensi per conto dell'assistito — CDU-09 (rilascio), CDU-10 (modifica), CDU-11 (cambio valore). Composizione pagina **identica al lato cittadino**, motore Form Renderer unico (MF57R56). Vedi [[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso — Single Source of Truth]].
+- Gestione consensi per conto dell'assistito — CDU-09 (rilascio), CDU-10 (modifica), CDU-11 (cambio valore). Motore Form Renderer ([[wiki/concepts/composizione-dinamica-form-consenso\|Composizione Dinamica Form Consenso — Single Source of Truth]]) — in questo progetto usato **solo dalla Webapp Operatore** (vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]; il riuso con la Webapp Cittadino non è più in scope).
 - Tracciatura: `fonte_id='PASS'`, `login_operazione`, `ruoloop_id` valorizzati con dati operatore.
 
-### Area Back Office
+### Area Back Office ✅ IN scope
+
+> Nota (06/08/2026): funzioni descritte come area distinta, ma sotto lo **stesso profilo Operatore unico** — non un secondo profilo Configuratore separato.
 
 - Configurazione tipi consenso (parametri dinamici — input del Form Renderer)
 - Gestione informative (upload PDF, versioning)
@@ -137,7 +149,7 @@ Vedi [[wiki/concepts/ciclo-vita-consenso\|Ciclo di Vita del Consenso]]. Aggiorna
 
 ## Architettura
 
-Vedi [[wiki/concepts/architettura-iaas\|Architettura IaaS]]. Nuovo componente da aggiungere in SRS §3.3: **Form Renderer dinamico** (motore di rendering form-consenso unico, condiviso fra webapp Cittadino e webapp Operatore — vincolo SSoT MF57R56).
+Vedi [[wiki/concepts/architettura-iaas\|Architettura IaaS]]. Componente da aggiungere in SRS §3.3: **Form Renderer dinamico** (motore di rendering form-consenso — vincolo SSoT MF57R56, nato per uso condiviso Cittadino+Operatore, in questo progetto usato **solo dalla Webapp Operatore**, vedi [[wiki/docs/adr/ADR-021-perimetro-solo-operatore\|ADR-021]]).
 
 ---
 
@@ -157,8 +169,9 @@ Vedi [[wiki/concepts/architettura-iaas\|Architettura IaaS]]. Nuovo componente da
 | ADR | Decisione |
 |---|---|
 | [ADR-001](ADR-001-stack-tecnologico.md) | Stack tecnologico |
-| [ADR-010](ADR-010-cdu-01-split.md) | Split CDU-01 in CDU-01a Operatore + CDU-01b Cittadino |
-| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (pulsante unico) |
-| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer dinamico |
-| [ADR-017](ADR-017-lis-terzo-canale.md) | LIS terzo canale di acquisizione |
-| [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) | CDU-06 PDF scope ridotto |
+| [ADR-010](ADR-010-cdu-01-split.md) | Split CDU-01 in CDU-01a Operatore + CDU-01b Cittadino (nota scope: solo 01a in scope) |
+| [ADR-011](ADR-011-merge-cdu-04-05-cittadino.md) | Merge CDU-04/05 lato Cittadino (pulsante unico) — **superseded** da ADR-021 |
+| [ADR-008](ADR-008-ssot-form-renderer.md) | SSoT Form Renderer dinamico (nota scope: solo Webapp Operatore) |
+| [ADR-020](ADR-020-lis-integrazione-be-esistente.md) | LIS/RIS integrazione BE esistente (supersede [ADR-017](ADR-017-lis-terzo-canale.md)) |
+| [ADR-019](ADR-019-cdu-06-pdf-scope-ridotto.md) | CDU-06 PDF scope ridotto — **superseded** da ADR-021 |
+| [ADR-021](ADR-021-perimetro-solo-operatore.md) | Perimetro progetto: solo Webapp Operatore |

@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-017-lis-terzo-canale/","title":"LIS come terzo canale di acquisizione consenso","tags":["lis","canali-acquisizione","mf3","mf4","integrazione","diagramma-contesto"],"dg-note-properties":{"adr":17,"title":"LIS come terzo canale di acquisizione consenso","status":"accepted","date":"2026-05-14","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[],"tags":["lis","canali-acquisizione","mf3","mf4","integrazione","diagramma-contesto"],"related_wiki":["[[Gestione Consensi - Applicativo]]","[[Sistemi Esterni Integrati]]","[[composizione-dinamica-form-consenso|Composizione Dinamica Form Consenso]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF3R1, MF4R1"]}}
+{"dg-publish":true,"permalink":"/wiki/docs/adr/adr-017-lis-terzo-canale/","title":"LIS come terzo canale di acquisizione consenso","tags":["lis","canali-acquisizione","mf3","mf4","integrazione","diagramma-contesto"],"dg-note-properties":{"adr":17,"title":"LIS come terzo canale di acquisizione consenso","status":"superseded","date":"2026-05-14","updated":"2026-08-06","deciders":["Marco Forneris","Exprivia"],"supersedes":[],"superseded-by":[20],"tags":["lis","canali-acquisizione","mf3","mf4","integrazione","diagramma-contesto"],"related_wiki":["[[Gestione Consensi - Applicativo]]","[[Sistemi Esterni Integrati]]","[[composizione-dinamica-form-consenso|Composizione Dinamica Form Consenso]]"],"sources":["[[wiki/analyses/analysis-2026-05-14-risposte-mf-srs-v3\|Risposte MF SRS v3]] MF3R1, MF4R1"]}}
 ---
 
 
@@ -7,7 +7,9 @@
 
 ## Status
 
-`accepted` — decisione MF3R1 + MF4R1 sulla revisione SRS v3. **Acronimo LIS da chiarire formalmente con CSI** (INT-03).
+`superseded by [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]]` — decisione originaria MF3R1 + MF4R1 sulla revisione SRS v3.
+
+> ⚠️ **Superata (call CSI 06/08/2026, INT-03 chiuso):** CSI ha chiarito che **non esiste un terzo canale di acquisizione consensi**. Per i nuovi sviluppi (funzionali e non funzionali), l'acquisizione presso LIS/RIS **avviene tramite un'integrazione BE già presente nel codice sorgente AS-IS** — non un nuovo canale UI da costruire. Attività residua: verificare l'integrazione esistente e migrarla al nuovo stack. Vedi [[wiki/docs/adr/ADR-020-lis-integrazione-be-esistente\|ADR-020]] per la decisione aggiornata. Questa pagina resta come registro storico della decisione originaria (poi rivelatasi basata su un'interpretazione errata di "canale").
 
 ## Context
 
@@ -24,11 +26,11 @@ LIS è una funzione di front-office laboratorio (Laboratorio?). L'acronimo non �
 
 Aggiungere **LIS** come terzo canale di acquisizione consensi:
 
-| Canale | Descrizione | Profilo accesso |
-|---|---|---|
-| Webapp Cittadino | Webapp dedicata SPID/CIE | Cittadino autenticato |
-| Webapp Operatore | Operatore opera per conto dell'assistito | Operatore PUA (RUPAR/IRIDE) |
-| **LIS** | Acquisizione presso il Laboratorio (front-office) | Operatore LIS dedicato |
+| Canale           | Descrizione                                       | Profilo accesso             |
+| ---------------- | ------------------------------------------------- | --------------------------- |
+| Webapp Cittadino | Webapp dedicata SPID/CIE                          | Cittadino autenticato       |
+| Webapp Operatore | Operatore opera per conto dell'assistito          | Operatore PUA (RUPAR/IRIDE) |
+| **LIS**          | Acquisizione presso il Laboratorio (front-office) | Operatore LIS dedicato      |
 
 Implicazioni documentali:
 - SRS §1/§2 diagramma di contesto: 3 canali, non 2
