@@ -141,4 +141,3 @@ Quasi tutti i punti si chiudono in **tre modi**:
 1. **CSI ci dà un accesso o una risorsa** (database, repository, credenziali) → richiesta formale.
 2. **CSI ci dà documentazione tecnica** (metadata GASP, WSDL AURA/Deleghe, URL e firma token) → consegna documenti.
 3. **CSI/Regione prende una decisione** (variante snapshot, scope, deroghe sul SRS) → si decide in riunione e si verbalizza.
-
