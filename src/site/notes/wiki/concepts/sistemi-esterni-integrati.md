@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/wiki/concepts/sistemi-esterni-integrati/","title":"Sistemi Esterni Integrati","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"dg-note-properties":{"title":"Sistemi Esterni Integrati","aliases":["Sistemi Esterni Integrati"],"type":"concept","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"created":"2026-05-05","updated":"2026-07-20","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2026-03-02-domande-srs-csi-v02"],"related":["[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[GASP Salute]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
+{"dg-publish":true,"permalink":"/wiki/concepts/sistemi-esterni-integrati/","title":"Sistemi Esterni Integrati","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"dg-note-properties":{"title":"Sistemi Esterni Integrati","aliases":["Sistemi Esterni Integrati"],"type":"concept","tags":["integrazione","soap","rest","aura","sia","notificatore","gestione-deleghe","pua","configuratore","lis","mf53","mf55","mf33"],"created":"2026-05-05","updated":"2026-08-06","sources":["2026-03-02-conspref-srs-v1-revised","2019-06-01-webservice-consenso-regionale-v03","2026-03-02-domande-srs-csi-v02"],"related":["[[Gestione Consensi - Applicativo]]","[[Architettura IaaS]]","[[CSI Piemonte]]","[[wiki/concepts/batch-processes\|Processi Batch — BATCH-01, BATCH-02, BATCH-03]]","[[GASP Salute]]","[[analysis-2026-05-14-risposte-mf-srs-v3]]"]}}
 ---
 
 
@@ -134,7 +134,7 @@ SIA ASR  →  PATCH /api/v1/endpoints/{endp_id}/stato-allineamento { IN_CORSO } 
 | Distinzione | Servizio separato dall'UNP — non confondere                                  |
 | Sviluppo    | **AS-IS legacy, riciclato — nessun nuovo sviluppo** (call CSI 06/08/2026)    |
 
-> ⚠️ **Importante:** Notificatore di Deleghe ≠ Notificatore UNP. UNP per notifiche applicative generiche; Notificatore di Deleghe per la conferma al cittadino/delegato a valle dell'acquisizione consenso. Documentare distinzione in SRS §3 e §7 (sezione notifiche).
+> ⚠️ **Importante:** Notificatore di Deleghe ≠ Notificatore UNP. UNP per notifiche applicative generiche; Notificatore di Deleghe per la conferma al cittadino/delegato a valle dell'acquisizione consenso. Documentare distinzione in SRS §3 e §7 (sezione notifiche). Decisione formalizzata in [[wiki/docs/adr/ADR-012-notificatore-deleghe-post-completato\|ADR-012]].
 
 ---
 
