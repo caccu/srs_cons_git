@@ -94,10 +94,9 @@ Dettaglio completo: [[wiki/analyses/valutazione-qualita-srs-consensi\|Valutazion
 - [[wiki/analyses/analysis-2026-05-27-punti-aperti-spiegati\|Punti Aperti — Spiegati in Modo Semplice]] — Versione in linguaggio piano del tracker: per ogni punto cosa significa, perché blocca, come si chiude
 - [[wiki/analyses/analysis-2026-06-10-riassunto-presentazione-cliente\|Riassunto Esecutivo — Presentazione Progetto Gestione Consensi]] — Sintesi completa per presentazione cliente: contesto, funzionalità, architettura, sicurezza, batch, migrazione, pianificazione, ADR, punti aperti
 - [[wiki/analyses/conspref-dmp-tracker\|CONSPREF-DMP — Tracker Piano Migrazione Dati]] — Tracker stato Data Migration Plan PG9→PG18 (target aggiornato da PG17); 7 sezioni con owner.
-- [[wiki/analyses/proposte-allineamento-SRS-vs-wiki\|Proposte di allineamento SRS ↔ Wiki]] — esiti audit A/B/C, deliverable SRS allineato 2026-06-18 (APPLICATO)
 - [[wiki/analyses/analysis-2026-08-05-stato-scaduto-comunicazione-sia\|Stato SCADUTO — semantica e comunicazione asincrona ai SIA/ASR (BAT-03)]] — Stato consolidato SCADUTO (wiki + SRS v6), omonimia AS-IS/TO-BE, buco canale async (no notifica, fuori snapshot CDU-17), 3 opzioni + checklist call CSI
 - [[wiki/analyses/analysis-2026-08-05-stato-scaduto-spiegato-semplice\|Stato SCADUTO — Spiegato in Modo Semplice]] — Versione in linguaggio piano per il cliente non tecnico: analogia del modulo firmato, tranello del cambio di significato, 3 strade con pro/contro, 8 domande per la call
-- [[wiki/analyses/analysis-2026-07-15-allineamento-srs-wiki\|Allineamento SRS v1.0 revised v5 → Wiki (2026-07-15)]] — Audit workflow SRS v5 vs wiki: 16 incongruenze (1 critica Manutenzione ASR assente, 4 alte "no API Gateway"/residuo GASP/Trident, 7 medie, 4 basse) con correzioni da applicare al DOCX
+
 
 ---
 
